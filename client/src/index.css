@@ -2,3 +2,19 @@ body {
   background:#eee;
   font-family: "arial"
 ;}
+
+.key-tables{
+  padding: 20px;
+  margin: auto;
+}
+#key-details{
+  padding: 20px;
+}
+
+#add-key{
+  padding: 20px;
+}
+
+#key-list{
+  padding: 20px;
+}

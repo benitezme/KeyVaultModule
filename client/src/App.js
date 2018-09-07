@@ -2,9 +2,20 @@ import React, { Component } from 'react';
 import ApolloClient from 'apollo-boost';
 import {ApolloProvider} from 'react-apollo';
 
+import { Route, BrowserRouter, Switch } from 'react-router-dom';
+
 //Components
-import KeyList from './components/KeyList';
-import AddKey from './components/AddKey';
+import ButtonAppBar from './components/Material-UI/ButtonAppBar'
+import Home from './components/Home'
+import Keys from './components/Keys'
+import Browse from './components/Browse'
+// import Search from './components/Search'
+// import About from './components/About'
+// import Contact from './components/Contact'
+// import Post from './components/Post'
+// import Footer from './components/Footer'
+
+
 
 //Apollo client setup
 
@@ -15,13 +26,22 @@ const client = new ApolloClient({
 class App extends Component {
   render() {
     return (
-      <ApolloProvider client={client}>
-        <div className="main">
-          <h1>Key Vault Module</h1>
-          <KeyList />
-          <AddKey />
-        </div>
-      </ApolloProvider>
+      <BrowserRouter>
+        <ApolloProvider client={client}>
+          <div className="main">
+            <ButtonAppBar/>
+            <Switch>
+              <Route exact path='/' component={Home}/>
+              <Route path='/keys' component={Keys} />
+              <Route path='/browse' component={Browse} />
+              {/* <Route path='/search' component={Search} />
+              <Route path='/about' component={About} />
+              <Route path='/contact' component={Contact} />
+              <Route path='/:post_id' component={Post} /> */}
+            </Switch>
+          </div>
+        </ApolloProvider>
+      </BrowserRouter>
     );
   }
 }

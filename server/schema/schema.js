@@ -145,14 +145,25 @@ const Mutation = new GraphQLObjectType({
 
         newKey.id = newKey._id;
         return new Promise((resolve, reject) => {
-          newKey.save((err) => {
+          User.findOne({authId: args.authId}, (err, user) => {
             if(err) reject(err);
             else{
-              saveAuditLog(newKey.id, 'addKey');
-              resolve(newKey);
+              if (user.authId === args.authId) {
+                  return resolve(user);
+                } else {
+                  return null;
+                }
             }
           })
         })
+
+return User.findOne({authId: args.authId});
+        if (user.authId === args.authId) {
+            return user;
+          } else {
+            return null;
+          }
+
       }
     },
     deactivateKey:{

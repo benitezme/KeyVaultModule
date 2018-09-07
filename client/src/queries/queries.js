@@ -49,7 +49,7 @@ const addKeyMutation = gql`
   }
 `
 
-const getBookQuery = gql`
+const getKeyQuery = gql`
   query($id: ID!){
     key(id: $id) {
       id
@@ -66,4 +66,4 @@ const getBookQuery = gql`
   }
 `
 
-export {getExchangesQuery, getKeysQuery, addKeyMutation, getBookQuery};
+export {getExchangesQuery, getKeysQuery, addKeyMutation, getKeyQuery};

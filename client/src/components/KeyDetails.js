@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {graphql} from 'react-apollo';
-import {getBookQuery} from '../queries/queries';
+import {getKeyQuery} from '../queries/queries';
 
 class KeyDetails extends Component {
   displayKeyDetails(){
@@ -20,7 +20,7 @@ class KeyDetails extends Component {
       )
     }else{
       return (
-        <div>No book selected</div>
+        <div></div>
       )
     }
   }
@@ -34,7 +34,7 @@ class KeyDetails extends Component {
   }
 }
 
-export default graphql(getBookQuery,{
+export default graphql(getKeyQuery,{
   options:(props) => {
     return{
       variables:{
