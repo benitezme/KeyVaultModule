@@ -6,7 +6,7 @@ import React, { Component } from 'react'
 
 // Images
 
-import PortraitImage from '../img/aa-logo-dark-8.png'
+// import PortraitImage from '../img/aa-logo-dark-8.png'
 
 class Home extends Component {
 

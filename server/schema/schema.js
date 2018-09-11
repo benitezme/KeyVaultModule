@@ -17,8 +17,9 @@ const {
 } = graphql;
 
 function saveAuditLog(keyId, action, details ){
+  let authIdOnSession = 1; //TODO get from session
   var auditLogEntry = new AuditLog({
-    authId: '1', //TODO get the user id from the session
+    authId: authIdOnSession,
     keyId: keyId,
     action: action,
     details: details,
@@ -81,20 +82,11 @@ const AuditLogType = new GraphQLObjectType({
 const RootQuery = new GraphQLObjectType({
   name:'RootQueryType',
   fields: {
-    key: {
-      type: KeyType,
-      args: {id: {type: GraphQLID}},
-      resolve(parent, args){
-        console.log(args.id)
-        if(args.id)
-          return Key.findById({_id: args.id});
-      }
-    },
     keys: {
       type: new GraphQLList(KeyType),
-      args: {authId: {type: GraphQLID}},
       resolve(parent, args){
-        return Key.find({authId: args.authId});
+        let authIdOnSession = 1; //TODO get from session
+        return Key.find({authId: authIdOnSession});
       }
     },
     auditLogs: {
@@ -118,7 +110,6 @@ const Mutation = new GraphQLObjectType({
     addKey:{
       type: KeyType,
       args: {
-        authId: {type: new GraphQLNonNull(GraphQLID)},
         key: {type: new GraphQLNonNull(GraphQLString)},
         secret: {type: new GraphQLNonNull(GraphQLString)}, //TODO Encript
         type: {type: new GraphQLNonNull(GraphQLString)}, //TODO Tipify
@@ -130,8 +121,9 @@ const Mutation = new GraphQLObjectType({
       },
       resolve (parent,args){
         //TODO Relocate business logic for resolve methods
+        let authIdOnSession = 1; //TODO get from session
         let newKey = new Key({
-          authId: args.authId, //TODO the user only can create it's own keys
+          authId: authIdOnSession,
           key: args.key,
           secret: args.secret,
           type: args.type,
@@ -145,25 +137,14 @@ const Mutation = new GraphQLObjectType({
 
         newKey.id = newKey._id;
         return new Promise((resolve, reject) => {
-          User.findOne({authId: args.authId}, (err, user) => {
+          newKey.save((err) => {
             if(err) reject(err);
             else{
-              if (user.authId === args.authId) {
-                  return resolve(user);
-                } else {
-                  return null;
-                }
+              saveAuditLog(newKey.id, 'addKey');
+              resolve(newKey);
             }
           })
         })
-
-return User.findOne({authId: args.authId});
-        if (user.authId === args.authId) {
-            return user;
-          } else {
-            return null;
-          }
-
       }
     },
     deactivateKey:{
@@ -211,16 +192,16 @@ return User.findOne({authId: args.authId});
     signTransaction:{
       type: SignedTransactionType,
       args: {
-        authId: {type: new GraphQLNonNull(GraphQLID)}, //TODO Get from the session
         botId: {type: new GraphQLNonNull(GraphQLID)}, //TODO validate botid
         transaction: {type: new GraphQLNonNull(GraphQLString)}
       },
       resolve (parent,args){
         //TODO Relocate business logic for resolve methods
+        let authIdOnSession = 1; //TODO get from session
         //Retrieve key
         return new Promise((resolve, reject) => {
           Key.findOne({$and: [
-              {authId: args.authId},
+              {authId: authIdOnSession},
               {botId: args.botId}
           ]}).exec(function(err, key){
                 if (key) {
@@ -249,7 +230,17 @@ return User.findOne({authId: args.authId});
         });
 
       }
+    },
+    authenticate: {
+    type: GraphQLString,
+    args: {
+      idToken: {type: new GraphQLNonNull(GraphQLString)}
+    },
+    resolve(parent, { idToken }) {
+      return 'Authenticated'
     }
+  },
+    // TODO pending authentication method
   }
 });
 

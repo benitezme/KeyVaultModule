@@ -1,4 +1,4 @@
-import {gql} from 'apollo-boost';
+import gql from 'graphql-tag';
 
 const getExchangesQuery = gql`
   {
@@ -12,8 +12,8 @@ const getExchangesQuery = gql`
 
 //TODO take the session authId
 const getKeysQuery = gql`
-  {
-    keys(authId: "1") {
+{
+    keys{
       id
       authId
       key
@@ -29,11 +29,10 @@ const getKeysQuery = gql`
 `
 
 const addKeyMutation = gql`
-  mutation($authId: ID!, $key: String!, $secret: String!, $type: String!,
+  mutation($key: String!, $secret: String!, $type: String!,
             $description: String!, $exchange: String!, $validFrom: String!,
             $validTo: String!, $botId: ID!){
     addKey(
-      authId: $authId,
       key: $key,
       secret: $secret,
       type: $type,
@@ -49,21 +48,4 @@ const addKeyMutation = gql`
   }
 `
 
-const getKeyQuery = gql`
-  query($id: ID!){
-    key(id: $id) {
-      id
-      authId
-      key
-      type
-      description
-      exchange
-      validFrom
-      validTo
-      active
-      botId
-    }
-  }
-`
-
-export {getExchangesQuery, getKeysQuery, addKeyMutation, getKeyQuery};
+export {getExchangesQuery, getKeysQuery, addKeyMutation};
