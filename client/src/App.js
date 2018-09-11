@@ -19,7 +19,7 @@ import Logout from './components/Logout'
 import Auth from './auth/index'
 
 //Apollo client setup
-const httpLink = new HttpLink({ uri: 'http://localhost:4000/graphql', changeOrigin: true })
+const httpLink = new HttpLink({ uri: 'http://localhost:4002/graphql', changeOrigin: true })
 
 const errorLink= onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors)
