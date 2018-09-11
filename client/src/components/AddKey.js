@@ -16,9 +16,6 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Input from '@material-ui/core/Input';
 import classNames from 'classnames';
-import Button from '@material-ui/core/Button';
-import AddIcon from '@material-ui/icons/Add';
-
 
 import { compose as composer } from 'recompose';
 
@@ -26,15 +23,21 @@ const styles = theme => ({
   container: {
     display: 'flex',
     flexWrap: 'wrap',
-    padding: 20
+    padding: 20,
+    height: '100%'
   },
   textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
-    width: 200,
+    width: '60%',
+    marginLeft:'20%',
+    marginBottom: 10
   },
   menu: {
     width: 200,
+  },
+  button: {
+    position: 'fixed',
+    bottom: '10px',
+    right: '10px',
   },
 });
 
@@ -63,8 +66,8 @@ class AddKey extends Component {
       type:'',
       description:'',
       exchangeId:'',
-      validFrom: new Date(),
-      validTo: new Date(),
+      validFrom: '',
+      validTo: '',
       active:'',
       botId:''
     }
@@ -83,6 +86,17 @@ class AddKey extends Component {
         )
       })
     }
+  }
+
+  displayBots(){
+    var bots = ['Artudito', 'Robert'];
+    return bots.map(bot => {
+      return (
+        <MenuItem key={bot} value={bot}>
+          {bot}
+        </MenuItem>
+      )
+    })
   }
 
   submitForm(e){
@@ -117,7 +131,8 @@ class AddKey extends Component {
   render() {
     const { classes } = this.props;
     return (
-      <form className={classes.container} noValidate autoComplete="off" onSubmit={this.submitForm.bind(this)}>
+      <form className={classes.root} noValidate autoComplete="off" onSubmit={this.submitForm.bind(this)}>
+
         <TextField
           id="key"
           label="Key"
@@ -217,16 +232,15 @@ class AddKey extends Component {
              onChange={(e)=>this.setState({botId:e.target.value})}
              fullWidth
              >
-               {/* {this.bots()} */}
+               {this.displayBots()}
            </TextField>
 
          {/* <Button variant="fab" color="primary" aria-label="Add"
-           className={classes.button} component={addKeyMutation}>
+           className={classes.button} >
                  <AddIcon />
          </Button> */}
-         <button>+</button>
+         {/* <button>+</button> */}
       </form>
-
     );
   }
 }
