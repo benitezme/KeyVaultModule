@@ -41,12 +41,15 @@ class BrowseKeys extends Component {
     const { classes } = this.props
     const data = this.props.data
     if (data.loading) {
-      return <Typography className={classes.root} variant='subheading'>Loading keys...</Typography>
+      return (
+        <Typography className={classes.root} variant='subheading'>Loading keys...</Typography>
+      )
     } else if (data.keys) {
       return this.displayKeys()
     } else if (data.error) {
-      return
+      return (
         <Typography className={classes.root} variant='subheading'>There has been an error.</Typography>
+      )
     } else {
       return (
         <div>
@@ -57,20 +60,12 @@ class BrowseKeys extends Component {
     }
   }
 
-  disableKey () {
-    console.log('disable')
-  }
-
-  editKey () {
-    console.log('edit')
-  }
-
   displayKeys () {
     var data = this.props.data
     const length = data.keys.length
     return data.keys.map((key, i) => {
       if (length === i + 1) {
-        return <KeyDialog key={key.id} isEdit />
+        return <KeyDialog key={key.id} />
       } else {
         return <ListKeys key={key.id} currentKey={key} />
       }

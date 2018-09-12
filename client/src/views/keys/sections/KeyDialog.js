@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import AddKey from './AddKey'
-import EditKey from './EditKey'
 
 // Material-ui
 import AddIcon from '@material-ui/icons/Add'
@@ -35,33 +34,10 @@ class KeyDialog extends Component {
     this.setState({ isNewKeyDialogOpen: false })
   };
 
-  renderContent(){
-    if(this.props.isEdit){
-      return (
-        <EditKey handleNewKeyDialogClose={this.handleNewKeyDialogClose} selected={this.state.selected}/>
-      )
-    }else{
-      return (
-        <EditKey handleNewKeyDialogClose={this.handleNewKeyDialogClose} selected={this.state.selected}/>
-      
-      )
-    }
-  }
-
-  // <AddKey handleNewKeyDialogClose={this.handleNewKeyDialogClose}/>
-
-  renderTitle(){
-    if (this.props.isEdit){
-      return 'Edit Key'
-    }else{
-      return 'Add a new Key'
-    }
-  }
-
   render () {
     const { classes } = this.props
     return (
-      <div key='addNewKey'>
+      <div>
       <Button variant="fab" color="primary"
         aria-label="addNewKey" className={classes.button}
         onClick={this.handleNewKeyDialogOpen} >
@@ -73,14 +49,14 @@ class KeyDialog extends Component {
           aria-labelledby="addKey-dialog-title"
         >
           <DialogTitle id="addKey-dialog-title">
-            { this.renderTitle() }
+            Add a new Key
           </DialogTitle>
           <DialogContent>
             <DialogContentText>
               You will need to complete this form with the information from
               the exchange.
             </DialogContentText>
-            { this.renderContent() }
+            <AddKey handleNewKeyDialogClose={this.handleNewKeyDialogClose}/>
           </DialogContent>
         </Dialog>
       </div>

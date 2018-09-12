@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import EditKey from './EditKey'
 
 // Images
 import Poloniex from '../../../img/poloniex.png'
@@ -6,7 +7,8 @@ import Binance from '../../../img/binance.png'
 
 // Material-ui
 import {
-  Grid, Paper, Typography, ButtonBase, Button
+  Grid, Paper, Typography, ButtonBase, Button,
+  Dialog, DialogContent, DialogContentText, DialogTitle
 } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 
@@ -29,16 +31,21 @@ const styles = theme => ({
 
   },
   buttonList: {
-    marginRight: 20
+    margin: theme.spacing.unit,
+    float: 'right',
+  },
+  buttonGrid: {
+    marginTop: -20,
   }
+
 })
 
 class ListKeys extends Component {
 
-  constructor(props){
+  constructor (props) {
     super(props)
     this.state = {
-      type:''
+      isEditKeyDialogOpen: false,
     }
   }
 
@@ -64,24 +71,49 @@ class ListKeys extends Component {
                 <Typography gutterBottom>Active: {key.active.toString()}</Typography>
                 <Typography gutterBottom>Boot: {key.botId}</Typography>
               </Grid>
-              <Grid item>
+              <Grid item className={classes.buttonGrid}>
                 <Button
                   className={classes.buttonList}
                   variant='outlined' color='primary' size='small'
                   onClick={() => this.editKey()}
                   >Edit</Button>
-                <Button
-                  className={classes.buttonList}
-                  variant='outlined' color='secondary' size='small'
-                  onClick={() => this.disableKey()}
-                  >Disable</Button>
 
+                  <Dialog
+                      open={this.state.isEditKeyDialogOpen}
+                      onClose={this.handleEditKeyDialogClose}
+                      aria-labelledby="addKey-dialog-title"
+                    >
+                      <DialogTitle id="addKey-dialog-title">
+                        Edit Key
+                      </DialogTitle>
+                      <DialogContent>
+                        <DialogContentText>
+                          You will need to complete this form with the information from
+                          the exchange.
+                        </DialogContentText>
+
+                        <EditKey currentKey={key} />
+
+                      </DialogContent>
+                    </Dialog>
               </Grid>
             </Grid>
           </Grid>
         </Grid>
       </Paper>
     )
+  }
+
+  handleEditKeyDialogOpen = () => {
+    this.setState({ isEditKeyDialogOpen: true })
+  };
+
+  handleEditKeyDialogClose = () => {
+    this.setState({ isEditKeyDialogOpen: false })
+  };
+
+  editKey () {
+    this.setState({ isEditKeyDialogOpen: true })
   }
 
   getImage (exchange) {

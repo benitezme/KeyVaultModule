@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {graphql, compose} from 'react-apollo'
-import { getKeyQuery, getKeysQuery } from '../../../queries'
+import { getKeysQuery } from '../../../queries'
 
 import { withStyles } from '@material-ui/core/styles'
 import classNames from 'classnames'
@@ -9,15 +9,14 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff'
 
 import {
    MenuItem, Button, IconButton, InputAdornment, TextField,
-   FormControl, InputLabel, Input
+   FormControl, InputLabel, Input, FormControlLabel, Checkbox
 } from '@material-ui/core'
 
 const styles = theme => ({
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap',
+  root: {
+    flexGrow: 1,
     padding: 20,
-    height: '100%'
+    margin: 10
   },
   textField: {
     width: '60%',
@@ -28,9 +27,7 @@ const styles = theme => ({
     width: 200,
   },
   button: {
-    position: 'fixed',
-    bottom: '10px',
-    right: '10px',
+    margin: theme.spacing.unit,
   },
   actionButton: {
     textAlign: 'center',
@@ -45,42 +42,28 @@ class EditKey extends Component {
 
   constructor(props){
     super(props)
+    const key = this.props.currentKey
     this.state = {
-      type:'',
-      description:'',
-      validFrom: '',
-      validTo: '',
-      active:'',
-      botId:'',
+      key: key.key,
+      keyError:'',
+      secret: '',
+      type: key.type,
+      description: key.description,
+      exchange: key.exchange,
+      validFrom:  key.validFrom,
+      validTo:  key.validTo,
+      active: key.active,
+      botId: key.botId,
       showPassword : false, //for showing the secret
-    }
-  }
-
-  submitForm(e){
-    e.preventDefault()
-    const err = this.validate()
-    if (err){
-      this.props.addKeyMutation({ //TODO change to modify key
-        variables:{
-          type: this.state.type,
-          description: this.state.description,
-          validFrom: this.state.validFrom,
-          validTo: this.state.validTo,
-          active: this.state.active,
-          botId: this.state.botId
-        },
-        refetchQueries: [{query: getKeysQuery}]
-      })
-
-      this.props.handleNewKeyDialogClose()
+      isEditKeyDialogOpen: false,
     }
   }
 
   render() {
     const { classes } = this.props
     return (
-      <form className={classes.root} noValidate autoComplete="off" onSubmit={this.submitForm.bind(this)}>
 
+      <form className={classes.root} noValidate autoComplete="off" onSubmit={this.submitForm.bind(this)}>
         <TextField
           id="key"
           label="Key"
@@ -156,6 +139,7 @@ class EditKey extends Component {
               id="validFrom"
               label="Valid From"
               type="datetime-local"
+              value={this.state.validFrom}
               className={classes.textField}
               InputLabelProps={{
                 shrink: true,
@@ -168,6 +152,7 @@ class EditKey extends Component {
             id="validTo"
             label="Valid To"
             type="datetime-local"
+            value={this.state.validTo}
             className={classes.textField}
             InputLabelProps={{
               shrink: true,
@@ -190,15 +175,73 @@ class EditKey extends Component {
            <br />
 
            <div className={classes.actionButton} >
+             <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.active}
+                    onChange={this.handleChange('active')}
+                    value="active"
+                    color="primary"
+                  />
+                }
+                label="Active"
+              />
              <Button
                type="submit"
                variant="outlined" color="primary">
                Edit Key
              </Button>
+             {/* <Button className={classes.button}
+               onClick={this.handleEditKeyDialogClose}
+               variant="outlined" >
+               Cancel
+             </Button> */}
            </div>
 
       </form>
-    );
+    )
+  }
+
+  handleChange = active => event => {
+      this.setState({ active: event.target.checked });
+    };
+
+  handleMouseDownPassword = event => {
+     event.preventDefault();
+   };
+
+  handleClickShowPassword = () => {
+    //TODO GetSecret from Server
+      this.setState(state => ({ showPassword: !state.showPassword }));
+    };
+
+  handleEditKeyDialogOpen = () => {
+    this.setState({ isEditKeyDialogOpen: true })
+  };
+
+  handleEditKeyDialogClose = () => {
+    console.log(this)
+    this.setState({ isEditKeyDialogOpen: false })
+  };
+
+  submitForm(e){
+    e.preventDefault()
+    const err = this.validate()
+    if (err){
+      this.props.addKeyMutation({ //TODO change to modify key
+        variables:{
+          type: this.state.type,
+          description: this.state.description,
+          validFrom: this.state.validFrom,
+          validTo: this.state.validTo,
+          active: this.state.active,
+          botId: this.state.botId
+        },
+        refetchQueries: [{query: getKeysQuery}]
+      })
+
+      this.handleEditKeyDialogClose()
+    }
   }
 
   displayBots(){
@@ -211,15 +254,4 @@ class EditKey extends Component {
   }
 }
 
-export default compose(
-  graphql(getKeyQuery, {
-    options: (props) => {
-      return {
-        variables: {
-          id: props.keyId
-        }
-      }
-    }
-  }),
-  withStyles(styles)
-)(EditKey)
+export default withStyles(styles)(EditKey)
