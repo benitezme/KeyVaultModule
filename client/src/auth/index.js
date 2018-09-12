@@ -8,8 +8,6 @@ import { client } from '../App'
 
 import { AUTH_CONFIG } from './Auth0'
 
-console.log(process.env.AUTH0_CLIENTID)
-
 const AUTHENTICATE = gql`
   mutation authenticate($idToken: String!) {
     authenticate(idToken: $idToken) {
@@ -106,12 +104,12 @@ class Auth {
       }
       console.log('setSession idTokenPayload: ', authResult.idTokenPayload)
 
-      //TODO Commented temporarly
+      // TODO Commented temporarly
       // this.signinOrCreateAccount({ ...data })
       this.cb(data)
       console.log(authResult.idTokenPayload)
       setItem('user', JSON.stringify(authResult.idTokenPayload))
-      window.location.reload() //TODO Fix this
+      window.location.reload() // TODO Fix this
       if (window.location.href.includes(`callback`)) {
         window.location.href = '/'
       }

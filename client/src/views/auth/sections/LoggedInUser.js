@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import {auth} from '../App';
-import { getItem } from '../utils/local-storage'
-import LoggedInUserMenu from './LoggedInUserMenu'
+import { auth } from '../../../App';
+import { getItem } from '../../../utils/local-storage'
+import { LoggedInUserMenu } from '../../nav'
 // import {getUserByAuthIdQuery} from '../queries/queries';
 
 class LoggedInUser extends Component {
@@ -12,7 +12,7 @@ class LoggedInUser extends Component {
 
   displayLoggedInUser(){
     let user= this.state.user;
-    console.log('Logged in User: '+JSON.stringify(user));
+    // console.log('Logged in User: '+JSON.stringify(user));
 
     if(user){
       let displayName = "No Display Name";

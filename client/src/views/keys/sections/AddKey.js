@@ -1,23 +1,17 @@
-import React, { Component } from 'react';
-import {graphql, compose} from 'react-apollo';
-import {getExchangesQuery, addKeyMutation, getKeysQuery} from '../queries/queries';
-
+import React, { Component } from 'react'
+import {graphql, compose} from 'react-apollo'
+import {getExchangesQuery, addKeyMutation, getKeysQuery} from '../../../queries'
 
 //Material-ui
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import MenuItem from '@material-ui/core/MenuItem';
-import IconButton from '@material-ui/core/IconButton';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import TextField from '@material-ui/core/TextField';
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import Input from '@material-ui/core/Input';
-import classNames from 'classnames';
+import { withStyles } from '@material-ui/core/styles'
+import classNames from 'classnames'
+import Visibility from '@material-ui/icons/Visibility'
+import VisibilityOff from '@material-ui/icons/VisibilityOff'
 
-import { compose as composer } from 'recompose';
+import {
+   MenuItem, Button, IconButton, InputAdornment, TextField,
+   FormControl, InputLabel, Input
+} from '@material-ui/core'
 
 const styles = theme => ({
   container: {
@@ -39,44 +33,38 @@ const styles = theme => ({
     bottom: '10px',
     right: '10px',
   },
+  actionButton: {
+    textAlign: 'center',
+    marginTop: 10
+  },
+
 });
 
-const types = [
-  {
-    value: 'Development',
-    label: 'Development',
-  },
-  {
-    value: 'Live',
-    label: 'Live',
-  },
-  {
-    value: 'Competition',
-    label: 'Competition',
-  },
-];
+const types = [ 'Development', 'Live', 'Competition' ]
 
 class AddKey extends Component {
+
   constructor(props){
     super(props);
-    this.state={
-      authId:'',
+    this.state = {
       key:'',
+      keyError:'',
       secret:'',
       type:'',
       description:'',
-      exchangeId:'',
+      exchange:'',
       validFrom: '',
       validTo: '',
       active:'',
-      botId:''
+      botId:'',
+      showPassword : false, //for showing the secret
     }
   }
 
   displayExchanges(){
-    var data = this.props.getExchangesQuery;
+    var data = this.props.getExchangesQuery
     if(data.loading){
-      return <option>Loading exchanges...</option>;
+      return <option>Loading exchanges...</option>
     }else{
       return data.exchanges.map(exchange => {
         return (
@@ -100,23 +88,46 @@ class AddKey extends Component {
   }
 
   submitForm(e){
-    e.preventDefault();
-    this.props.addKeyMutation({
-      variables:{
-        authId: 1, //TODO take the session authId
-        key: this.state.key,
-        secret: this.state.secret,
-        type: this.state.type,
-        description: this.state.description,
-        exchange: this.state.exchangeId,
-        validFrom: this.state.validFrom,
-        validTo: this.state.validTo,
-        active: this.state.active,
-        botId: this.state.botId,
-        showPassword : false, //for showing the secret
-      },
-      refetchQueries: [{query: getKeysQuery}]
-    });
+    e.preventDefault()
+    const err = this.validate()
+    if (err){
+      this.props.addKeyMutation({
+        variables:{
+          key: this.state.key,
+          secret: this.state.secret,
+          type: this.state.type,
+          description: this.state.description,
+          exchange: this.state.exchange,
+          validFrom: this.state.validFrom,
+          validTo: this.state.validTo,
+          active: this.state.active,
+          botId: this.state.botId
+        },
+        refetchQueries: [{query: getKeysQuery}]
+      })
+
+      this.props.handleNewKeyDialogClose()
+    }
+  }
+
+  validate(){
+    let isError = false
+    const errors = {}
+
+    if(this.state.key.length < 1) {
+      isError = true
+      errors.keyError = "Key can't be empty."
+    }
+
+    if(isError){
+      this.state({
+        ...this.state,
+        ...errors
+      })
+    }
+
+    return errors;
+
   }
 
   handleMouseDownPassword = event => {
@@ -129,13 +140,14 @@ class AddKey extends Component {
 
   //TODO create keys types on schema, field Type
   render() {
-    const { classes } = this.props;
+    const { classes } = this.props
     return (
       <form className={classes.root} noValidate autoComplete="off" onSubmit={this.submitForm.bind(this)}>
 
         <TextField
           id="key"
           label="Key"
+          validators={this.state.keyError}
           className={classes.textField}
           value={this.state.key}
           onChange={(e)=>this.setState({key:e.target.value})}
@@ -163,7 +175,18 @@ class AddKey extends Component {
                 </InputAdornment>
               }
           />
-          </FormControl>
+        </FormControl>
+
+        <TextField
+           select
+           label="Exchange"
+           className={classNames(classes.margin, classes.textField)}
+           value={this.state.exchange}
+           onChange={(e)=> this.setState({exchange:e.target.value})}
+           fullWidth
+           >
+             {this.displayExchanges()}
+        </TextField>
 
         <TextField
            select
@@ -174,8 +197,8 @@ class AddKey extends Component {
            fullWidth
            >
            {types.map(option => (
-             <MenuItem key={option.value} value={option.value}>
-               {option.label}
+             <MenuItem key={option} value={option}>
+               {option}
              </MenuItem>
            ))}
          </TextField>
@@ -188,17 +211,6 @@ class AddKey extends Component {
            onChange={(e)=>this.setState({description:e.target.value})}
            fullWidth
          />
-
-         <TextField
-            select
-            label="Exchange"
-            className={classNames(classes.margin, classes.textField)}
-            value={this.state.exchangeId}
-            onChange={(e)=>this.setState({exchangeId:e.target.value})}
-            fullWidth
-            >
-              {this.displayExchanges()}
-          </TextField>
 
           <TextField
               id="validFrom"
@@ -228,31 +240,32 @@ class AddKey extends Component {
              select
              label="Bot"
              className={classNames(classes.margin, classes.textField)}
-             value={this.state.exchangeId}
+             value={this.state.botId}
              onChange={(e)=>this.setState({botId:e.target.value})}
              fullWidth
              >
                {this.displayBots()}
            </TextField>
 
-         {/* <Button variant="fab" color="primary" aria-label="Add"
-           className={classes.button} >
-                 <AddIcon />
-         </Button> */}
-         {/* <button>+</button> */}
+           <br />
+
+           <div className={classes.actionButton} >
+             <Button
+               type="submit"
+               variant="outlined" color="primary">
+               Add Key
+             </Button>
+           </div>
+
       </form>
     );
   }
 }
 
-AddKey.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
-
-export default composer(
+export default compose(
   compose(
     graphql(getExchangesQuery,{name:'getExchangesQuery'}),
     graphql(addKeyMutation,{name:'addKeyMutation'})
   ),
   withStyles(styles)
-)(AddKey);
+)(AddKey)

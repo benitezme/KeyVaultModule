@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import gql from 'graphql-tag'
 
 const getExchangesQuery = gql`
   {
@@ -10,7 +10,7 @@ const getExchangesQuery = gql`
   }
 `
 
-//TODO take the session authId
+// TODO take the session authId
 const getKeysQuery = gql`
 {
     keys{
@@ -48,4 +48,21 @@ const addKeyMutation = gql`
   }
 `
 
-export {getExchangesQuery, getKeysQuery, addKeyMutation};
+const getKeyQuery = gql`
+  query($id: ID!){
+    key(id: $id) {
+      id
+      authId
+      key
+      type
+      description
+      exchange
+      validFrom
+      validTo
+      active
+      botId
+    }
+  }
+`
+
+export { getExchangesQuery, getKeysQuery, addKeyMutation, getKeyQuery }

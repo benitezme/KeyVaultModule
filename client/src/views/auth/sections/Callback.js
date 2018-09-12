@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 
 class Callback extends Component {
-  render() {
+  render () {
     return (
-        <div>
+      <div>
           Authenticating...
         </div>
     )
