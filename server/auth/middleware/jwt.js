@@ -4,6 +4,14 @@ const AUTH_CONFIG = require('../Auth0');
 // Authentication middleware. When used, the
 // if the access token exists, it be verified against
 // the Auth0 JSON Web Key Set
+
+const checkJWTinit = function (req) {
+  console.log('checkJWTinit')
+  console.log('req.headers', req.headers)
+  console.log('AUTH_CONFIG', AUTH_CONFIG)
+  return checkJWT
+}
+
 const checkJwt = jwt({
   // Dynamically provide a signing key
   // based on the kid in the header and
@@ -20,6 +28,6 @@ const checkJwt = jwt({
   audience: AUTH_CONFIG.api_audience,
   issuer: AUTH_CONFIG.issuer,
   algorithms: [`RS256`]
-});
+})
 
-module.exports = checkJwt ;
+module.exports = checkJwt;
