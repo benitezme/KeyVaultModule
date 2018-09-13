@@ -107,7 +107,7 @@ const RootQuery = new GraphQLObjectType({
     keys: {
       type: new GraphQLList(KeyType),
       resolve (parent, args, context) {
-        console.log("Context: "+JSON.stringify(context))
+        console.log("Context: ", context)
         let authIdOnSession = 1 // TODO get from session
         return Key.find({authId: authIdOnSession})
       }
@@ -194,7 +194,7 @@ const Mutation = new GraphQLObjectType({
           active: args.active,
           botId: args.botId
         }
-        
+
         saveAuditLog(args.id, 'editKey')
 
         return Key.findOneAndUpdate(query, update, options)  // TODO check return value

@@ -6,7 +6,7 @@ import { validObject, deleteCookie } from '../utils/js-helpers'
 
 import { client } from '../App'
 
-import { AUTH_CONFIG } from './Auth0'
+import AUTH_CONFIG from './Auth0'
 
 const AUTHENTICATE = gql`
   mutation authenticate($idToken: String!) {
