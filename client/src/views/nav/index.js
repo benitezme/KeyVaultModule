@@ -1,4 +1,4 @@
-import LoggedInUserMenu from './sections/LoggedInUserMenu'
+import LoggedInUser from './sections/LoggedInUser'
 import NavBar from './sections/NavBar'
 
-export { LoggedInUserMenu, NavBar }
+export { LoggedInUser, NavBar }

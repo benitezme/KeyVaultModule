@@ -1,16 +1,17 @@
 import React, { Component } from 'react'
-
+import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import {AppBar, Typography, IconButton, Toolbar} from '@material-ui/core'
-import HomeIcon from '@material-ui/icons/Home'
+
 import BrowseIcon from '@material-ui/icons/ImportContacts'
 
 import { Link } from 'react-router-dom'
+import { getItem } from '../../../utils/local-storage'
 
 // components
-import { LoggedInUser } from '../../auth'
+import LoggedInUser from './LoggedInUser'
+import LoggedOut from './LoggedOut'
 
-const HomeLink = props => <Link to='/' {...props} />
 const BrowseLink = props => <Link to='/browse' {...props} />
 
 const styles = {
@@ -34,22 +35,19 @@ class NavBar extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      authId: null
+      authId: null,
+      user: null,
     }
   }
 
-  componentDidMount () {
-    const getUser = window.localStorage.getItem('user')
-    let user = JSON.parse(getUser)
-
-    if (user) {
-      const authId = user.sub
-      this.setState({ authId: authId })
-    }
+  async componentDidMount () {
+    const user = await getItem('user')
+    this.setState({ user })
   }
 
   render () {
-    const { classes } = this.props
+    const { classes, auth } = this.props
+    let user = JSON.parse(this.state.user)
     return (
       <div className={classes.root}>
         <AppBar position='static'>
@@ -58,15 +56,33 @@ class NavBar extends Component {
               Key Vault Module
             </Typography>
 
-            <IconButton className={classes.menuButton} color='inherit' title='Home' component={HomeLink}><HomeIcon /></IconButton>
-            <IconButton className={classes.menuButton} color='inherit' title='Browse your keys' component={BrowseLink}><BrowseIcon /></IconButton>
+            {this.state.user !== undefined && this.state.user !== null ? (
+              <React.Fragment>
+                <IconButton
+                  className={classes.menuButton}
+                  color='inherit'
+                  title='Browse your keys'
+                  component={BrowseLink}
+                >
+                  <BrowseIcon />
+                </IconButton>
 
-            <LoggedInUser authId={this.state.authId} />
+                <LoggedInUser user={user} auth={auth} styles={styles} />
+              </React.Fragment>
+            ) : (
+              <LoggedOut auth={auth} styles={styles} />
+            )}
+
           </Toolbar>
         </AppBar>
       </div>
     )
   }
+}
+
+NavBar.propTypes = {
+  classes: PropTypes.object.isRequired,
+  auth: PropTypes.object.isRequired
 }
 
 export default withStyles(styles)(NavBar)

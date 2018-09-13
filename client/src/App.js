@@ -54,7 +54,7 @@ class App extends Component {
     return (
       <BrowserRouter>
         <ApolloProvider client={client}>
-          <NavBar />
+          <NavBar auth={auth} />
           <Switch>
             <Route exact path='/' component={Home} />
             <Route path='/browse' component={BrowseKeys} />
