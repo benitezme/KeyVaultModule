@@ -42,10 +42,6 @@ class LoggedInUserMenu extends Component {
           open={Boolean(this.state.menu)}
           onClose={this.handleClose}
         >
-          <MenuItem onClick={this.handleClose} component={UserLink}>
-            <ProfileIcon />
-            <div>Profile</div>
-          </MenuItem>
           <MenuItem onClick={this.handleLogout} component={LogoutLink}>
             <LogoutIcon />
             <div>Logout</div>

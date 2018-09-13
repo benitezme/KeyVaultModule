@@ -11,13 +11,8 @@ import { AUTH_CONFIG } from './Auth0'
 const AUTHENTICATE = gql`
   mutation authenticate($idToken: String!) {
     authenticate(idToken: $idToken) {
-      id
-      nickname
-      auth0id
-      profile {
-        email
-        avatar
-      }
+      alias
+      authId
     }
   }
 `
@@ -105,11 +100,11 @@ class Auth {
       console.log('setSession idTokenPayload: ', authResult.idTokenPayload)
 
       // TODO Commented temporarly
-      // this.signinOrCreateAccount({ ...data })
+      this.signinOrCreateAccount({ ...data })
       this.cb(data)
       console.log(authResult.idTokenPayload)
       setItem('user', JSON.stringify(authResult.idTokenPayload))
-      window.location.reload() // TODO Fix this
+      // window.location.reload() // TODO Fix this
       if (window.location.href.includes(`callback`)) {
         window.location.href = '/'
       }
@@ -133,7 +128,7 @@ class Auth {
       })
 
       console.log('signinOrCreateAccount auth: ', await data)
-      setItem('user', data.data.authenticate.auth0id)
+      setItem('user', JSON.stringify(data.data.authenticate))
       if (window.location.href.includes(`callback`)) {
         window.location.href = '/'
       } else {
@@ -199,7 +194,6 @@ class Auth {
       this.login()
     }
 
-    console.log('handleAuth.isAuthenticated 2: ', checkSSO, user)
     if (validObject(checkSSO, 'error')) {
       return false
     } else {

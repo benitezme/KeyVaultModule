@@ -48,6 +48,24 @@ const addKeyMutation = gql`
   }
 `
 
+const editKeyMutation = gql`
+  mutation($id: ID!, $type: String!, $description: String!, $validFrom: String!,
+            $validTo: String!, $active: Boolean!, $botId: ID!){
+    editKey(
+      id: $id,
+      type: $type,
+      description: $description,
+      validFrom: $validFrom,
+      validTo: $validTo,
+      active: $active,
+      botId: $botId
+    ){
+      id
+      key
+    }
+  }
+`
+
 const getKeyQuery = gql`
   query($id: ID!){
     key(id: $id) {
@@ -65,4 +83,4 @@ const getKeyQuery = gql`
   }
 `
 
-export { getExchangesQuery, getKeysQuery, addKeyMutation, getKeyQuery }
+export { getExchangesQuery, getKeysQuery, addKeyMutation, editKeyMutation, getKeyQuery }

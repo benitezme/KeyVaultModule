@@ -50,7 +50,10 @@ export const client = new ApolloClient({
   cache: new InMemoryCache()
 })
 
-export const auth = new Auth(result => console.log('auth result', result), client)
+export const auth = new Auth(
+  result => console.log('auth result', result),
+  client
+)
 
 /* Here we change the default Material UI theme for Advanced Algos brand colors. */
 

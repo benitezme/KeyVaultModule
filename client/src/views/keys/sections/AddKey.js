@@ -120,7 +120,7 @@ class AddKey extends Component {
     }
 
     if(isError){
-      this.state({
+      this.setState({
         ...this.state,
         ...errors
       })

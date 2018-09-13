@@ -76,7 +76,7 @@ function decodeToken (token, callBackFunction) {
             callBackFunction(global.DEFAULT_FAIL_RESPONSE);
             return;
           }
-
+          
           callBackFunction(global.DEFAULT_OK_RESPONSE, decoded);
         }
     }

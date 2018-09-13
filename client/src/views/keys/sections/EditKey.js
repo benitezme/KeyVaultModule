@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {graphql, compose} from 'react-apollo'
-import { getKeysQuery } from '../../../queries'
+import { getKeysQuery, editKeyMutation } from '../../../queries'
 
 import { withStyles } from '@material-ui/core/styles'
 import classNames from 'classnames'
@@ -44,6 +44,7 @@ class EditKey extends Component {
     super(props)
     const key = this.props.currentKey
     this.state = {
+      id: key.id,
       key: key.key,
       keyError:'',
       secret: '',
@@ -55,7 +56,6 @@ class EditKey extends Component {
       active: key.active,
       botId: key.botId,
       showPassword : false, //for showing the secret
-      isEditKeyDialogOpen: false,
     }
   }
 
@@ -188,6 +188,7 @@ class EditKey extends Component {
               />
              <Button
                type="submit"
+               onClick={this.handleEditKeyDialogClose}
                variant="outlined" color="primary">
                Edit Key
              </Button>
@@ -215,33 +216,21 @@ class EditKey extends Component {
       this.setState(state => ({ showPassword: !state.showPassword }));
     };
 
-  handleEditKeyDialogOpen = () => {
-    this.setState({ isEditKeyDialogOpen: true })
-  };
-
-  handleEditKeyDialogClose = () => {
-    console.log(this)
-    this.setState({ isEditKeyDialogOpen: false })
-  };
-
   submitForm(e){
     e.preventDefault()
-    const err = this.validate()
-    if (err){
-      this.props.addKeyMutation({ //TODO change to modify key
-        variables:{
-          type: this.state.type,
-          description: this.state.description,
-          validFrom: this.state.validFrom,
-          validTo: this.state.validTo,
-          active: this.state.active,
-          botId: this.state.botId
-        },
-        refetchQueries: [{query: getKeysQuery}]
-      })
-
-      this.handleEditKeyDialogClose()
-    }
+    this.props.mutate({
+      variables:{
+        id: this.state.id,
+        type: this.state.type,
+        description: this.state.description,
+        validFrom: this.state.validFrom,
+        validTo: this.state.validTo,
+        active: this.state.active,
+        botId: this.state.botId
+      },
+      refetchQueries: [{query: getKeysQuery}]
+    })
+    this.props.handleEditKeyDialogClose();
   }
 
   displayBots(){
@@ -254,4 +243,7 @@ class EditKey extends Component {
   }
 }
 
-export default withStyles(styles)(EditKey)
+export default compose(
+  graphql(editKeyMutation),
+  withStyles(styles)
+)(EditKey)

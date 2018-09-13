@@ -68,7 +68,7 @@ class ListKeys extends Component {
                 <Typography gutterBottom>Description: {key.description}</Typography>
                 <Typography gutterBottom>Valid From: {key.validFrom}</Typography>
                 <Typography gutterBottom>Valid To: {key.validTo}</Typography>
-                <Typography gutterBottom>Active: {key.active.toString()}</Typography>
+                <Typography gutterBottom>Active: {key.active !== null ? key.active.toString():''}</Typography>
                 <Typography gutterBottom>Boot: {key.botId}</Typography>
               </Grid>
               <Grid item className={classes.buttonGrid}>
@@ -92,7 +92,7 @@ class ListKeys extends Component {
                           the exchange.
                         </DialogContentText>
 
-                        <EditKey currentKey={key} />
+                        <EditKey currentKey={key} handleEditKeyDialogClose={this.handleEditKeyDialogClose}/>
 
                       </DialogContent>
                     </Dialog>
