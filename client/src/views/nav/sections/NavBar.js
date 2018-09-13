@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core/styles'
 import {AppBar, Typography, IconButton, Toolbar} from '@material-ui/core'
 
 import BrowseIcon from '@material-ui/icons/ImportContacts'
+import HomeIcon from '@material-ui/icons/Home'
 
 import { Link } from 'react-router-dom'
 import { getItem } from '../../../utils/local-storage'
@@ -12,7 +13,10 @@ import { getItem } from '../../../utils/local-storage'
 import LoggedInUser from './LoggedInUser'
 import LoggedOut from './LoggedOut'
 
+import AALogo from '../../../img/aa-logo-dark-8.png'
+
 const BrowseLink = props => <Link to='/browse' {...props} />
+const HomeLink = props => <Link to='/' {...props} />
 
 const styles = {
   root: {
@@ -27,6 +31,12 @@ const styles = {
   },
   login: {
     cursor: 'pointer'
+  },
+  img: {
+    margin: 20,
+    display: 'block',
+    maxWidth: 120,
+    maxHeight: 24
   }
 }
 
@@ -52,10 +62,12 @@ class NavBar extends Component {
       <div className={classes.root}>
         <AppBar position='static'>
           <Toolbar>
+            <img className={classes.img} src={AALogo} alt='Advanced Algos' />
             <Typography variant='title' color='inherit' className={classes.flex}>
               Key Vault Module
             </Typography>
 
+            <IconButton className={classes.menuButton} color='inherit' title='Home' component={HomeLink}><HomeIcon /></IconButton>
             {this.state.user !== undefined && this.state.user !== null ? (
               <React.Fragment>
                 <IconButton

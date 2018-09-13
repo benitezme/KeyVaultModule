@@ -9,6 +9,9 @@ import { setContext } from 'apollo-link-context'
 
 import { Route, BrowserRouter, Switch } from 'react-router-dom'
 
+// Material UI
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
+
 // Components
 import Auth from './auth/index'
 import Home from './views/Home'
@@ -49,21 +52,32 @@ export const client = new ApolloClient({
 
 export const auth = new Auth(result => console.log('auth result', result), client)
 
+/* Here we change the default Material UI theme for Advanced Algos brand colors. */
+
+const theme = createMuiTheme({
+  palette: {
+    primary: { main: '#303036' }, // DARK.
+    secondary: { main: '#CC5835' } // RUSTED_RED.
+  }
+})
+
 class App extends Component {
   render () {
     return (
       <BrowserRouter>
         <ApolloProvider client={client}>
-          <NavBar auth={auth} />
-          <Switch>
-            <Route exact path='/' component={Home} />
-            <Route path='/browse' component={BrowseKeys} />
-            <Route path='/logout' component={Logout} />
-            <Route path='/callback' render={(props) => {
-              auth.handleAuthentication(props)
-              return <Callback {...props} />
-            }} />
-          </Switch>
+          <MuiThemeProvider theme={theme}>
+            <NavBar auth={auth} />
+            <Switch>
+              <Route exact path='/' component={Home} />
+              <Route path='/browse' component={BrowseKeys} />
+              <Route path='/logout' component={Logout} />
+              <Route path='/callback' render={(props) => {
+                auth.handleAuthentication(props)
+                return <Callback {...props} />
+              }} />
+            </Switch>
+          </MuiThemeProvider>
         </ApolloProvider>
       </BrowserRouter>
     )
