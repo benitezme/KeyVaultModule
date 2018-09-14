@@ -7,7 +7,7 @@ import KeyDialog from './KeyDialog'
 import ListKeys from './ListKeys'
 
 // Material-ui
-import { Typography } from '@material-ui/core'
+import { Typography, Paper } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 
 const styles = theme => ({
@@ -42,20 +42,24 @@ class BrowseKeys extends Component {
     const data = this.props.data
     if (data.loading) {
       return (
-        <Typography className={classes.root} variant='subheading'>Loading keys...</Typography>
+        <Paper className={classes.root}>
+          <Typography variant='subheading'>Loading keys...</Typography>
+        </Paper>
       )
-    } else if (data.keys) {
+    } else if (data.keys && data.keys.length > 0) {
       return this.displayKeys()
     } else if (data.error) {
       return (
-        <Typography className={classes.root} variant='subheading'>There has been an error.</Typography>
+        <Paper className={classes.root}>
+          <Typography className={classes.root} variant='subheading'>There has been an error.</Typography>
+        </Paper>
       )
     } else {
       return (
-        <div>
-          <Typography className={classes.root} variant='subheading'>You don't have any key yet.</Typography>
+        <Paper className={classes.root}>
+          <Typography className={classes.root} variant='subheading'>You don't have any keys yet.</Typography>
           <KeyDialog />
-        </div>
+        </Paper>
       )
     }
   }
@@ -65,7 +69,12 @@ class BrowseKeys extends Component {
     const length = data.keys.length
     return data.keys.map((key, i) => {
       if (length === i + 1) {
-        return <KeyDialog key={key.id} />
+        return (
+          <React.Fragment key='keyList'>
+            <ListKeys key={key.id} currentKey={key} />
+            <KeyDialog key='addKeyDialog' />
+          </React.Fragment>
+        )
       } else {
         return <ListKeys key={key.id} currentKey={key} />
       }

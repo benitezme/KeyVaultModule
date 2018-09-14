@@ -117,9 +117,9 @@ class ListKeys extends Component {
   }
 
   getImage (exchange) {
-    if (exchange === 'Poloniex') {
+    if (exchange === '1') {
       return Poloniex
-    } else {
+    } else if (exchange === '2'){
       return Binance
     }
   }

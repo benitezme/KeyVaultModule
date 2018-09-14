@@ -10,7 +10,6 @@ const getExchangesQuery = gql`
   }
 `
 
-// TODO take the session authId
 const getKeysQuery = gql`
 {
     keys{
@@ -29,17 +28,18 @@ const getKeysQuery = gql`
 `
 
 const addKeyMutation = gql`
-  mutation($key: String!, $secret: String!, $type: String!,
-            $description: String!, $exchange: String!, $validFrom: String!,
-            $validTo: String!, $botId: ID!){
+  mutation($key: String!, $secret: String!, $exchange: String!,
+            $type: String!, $description: String!, $validFrom: String!,
+            $validTo: String!, $active: Boolean!, $botId: ID!){
     addKey(
       key: $key,
       secret: $secret,
+      exchange: $exchange,
       type: $type,
       description: $description,
-      exchange: $exchange,
       validFrom: $validFrom,
       validTo: $validTo,
+      active: $active,
       botId: $botId
     ){
       id

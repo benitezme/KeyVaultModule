@@ -16,7 +16,7 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 import Auth from './auth/index'
 import Home from './views/Home'
 import { Callback, Logout } from './views/auth'
-import { NavBar } from './views/nav'
+import { NavBar, Footer } from './views/nav'
 import { BrowseKeys } from './views/keys'
 
 // Apollo client setup
@@ -70,6 +70,7 @@ class App extends Component {
       <BrowserRouter>
         <ApolloProvider client={client}>
           <MuiThemeProvider theme={theme}>
+            <div className='App'>
             <NavBar auth={auth} />
             <Switch>
               <Route exact path='/' component={Home} />
@@ -80,6 +81,8 @@ class App extends Component {
                 return <Callback {...props} />
               }} />
             </Switch>
+            <Footer />
+            </div>
           </MuiThemeProvider>
         </ApolloProvider>
       </BrowserRouter>

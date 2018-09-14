@@ -7,7 +7,6 @@ const cors = require('cors');
 const jwt = require('express-jwt');
 const jwksRsa = require('jwks-rsa');
 const AUTH_CONFIG = require('./auth/Auth0');
-const checkJwt = require('./auth/middleware/jwt');
 
 const app = express();
 
@@ -44,7 +43,6 @@ app.use('/graphql',
     algorithms: [`RS256`]
   }),
   function (req, res, next) {
-    console.log(req.user)
     // if (err) return res.status(401).send(`[Authenticate Token Error] ${err.message}`);
     return next()
   }

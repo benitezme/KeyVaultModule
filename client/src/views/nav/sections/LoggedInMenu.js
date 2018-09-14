@@ -5,10 +5,8 @@ import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import { Link } from 'react-router-dom'
 
-import ProfileIcon from '@material-ui/icons/Person'
 import LogoutIcon from '@material-ui/icons/DirectionsWalk'
 
-const UserLink = props => <Link to='/user' {...props} />
 const LogoutLink = props => <Link to='/logout' {...props} />
 
 class LoggedInUserMenu extends Component {

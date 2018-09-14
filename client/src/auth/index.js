@@ -6,7 +6,7 @@ import { validObject, deleteCookie } from '../utils/js-helpers'
 
 import { client } from '../App'
 
-import AUTH_CONFIG from './Auth0'
+import { AUTH_CONFIG } from './Auth0'
 
 const AUTHENTICATE = gql`
   mutation authenticate($idToken: String!) {
@@ -99,12 +99,10 @@ class Auth {
       }
       console.log('setSession idTokenPayload: ', authResult.idTokenPayload)
 
-      // TODO Commented temporarly
       this.signinOrCreateAccount({ ...data })
       this.cb(data)
       console.log(authResult.idTokenPayload)
       setItem('user', JSON.stringify(authResult.idTokenPayload))
-      // window.location.reload() // TODO Fix this
       if (window.location.href.includes(`callback`)) {
         window.location.href = '/'
       }
@@ -192,6 +190,7 @@ class Auth {
 
     if (/manage|profile|create|dashboard/.test(window.location.href) && !user) {
       this.login()
+
     }
 
     if (validObject(checkSSO, 'error')) {

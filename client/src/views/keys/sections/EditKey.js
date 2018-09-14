@@ -36,7 +36,16 @@ const styles = theme => ({
 });
 
 const types = [ 'Development', 'Live', 'Competition' ]
-const exchanges = [ 'Poloniex', 'Binance' ]
+const exchanges = [
+  {
+    id: '1',
+    name: 'Poloniex'
+  },
+  {
+    id: '2',
+    name: 'Binance'
+  }
+]
 
 class EditKey extends Component {
 
@@ -109,7 +118,7 @@ class EditKey extends Component {
            disabled
            >
              {exchanges.map(option => (
-               <MenuItem key={option} value={option}>{option}</MenuItem>
+               <MenuItem key={option.id} value={option.id}>{option.name}</MenuItem>
              ))}
          </TextField>
 

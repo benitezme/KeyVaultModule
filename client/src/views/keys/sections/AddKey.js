@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import {graphql, compose} from 'react-apollo'
-import {getExchangesQuery, addKeyMutation, getKeysQuery} from '../../../queries'
+import { graphql, compose } from 'react-apollo'
+import { addKeyMutation, getKeysQuery } from '../../../queries'
 
 //Material-ui
 import { withStyles } from '@material-ui/core/styles'
@@ -41,6 +41,16 @@ const styles = theme => ({
 });
 
 const types = [ 'Development', 'Live', 'Competition' ]
+const exchanges = [
+  {
+    id: '1',
+    name: 'Poloniex'
+  },
+  {
+    id: '2',
+    name: 'Binance'
+  }
+]
 
 class AddKey extends Component {
 
@@ -48,86 +58,19 @@ class AddKey extends Component {
     super(props);
     this.state = {
       key:'',
-      keyError:'',
+      keyError: false,
       secret:'',
+      secretError: false,
+      exchange:'',
+      exchangeError: false,
       type:'',
       description:'',
-      exchange:'',
       validFrom: '',
       validTo: '',
-      active:'',
+      active: true,
       botId:'',
       showPassword : false, //for showing the secret
     }
-  }
-
-  displayExchanges(){
-    var data = this.props.getExchangesQuery
-    if(data.loading){
-      return <option>Loading exchanges...</option>
-    }else{
-      return data.exchanges.map(exchange => {
-        return (
-          <MenuItem key={exchange.id} value={exchange.id}>
-            {exchange.name}
-          </MenuItem>
-        )
-      })
-    }
-  }
-
-  displayBots(){
-    var bots = ['Artudito', 'Robert'];
-    return bots.map(bot => {
-      return (
-        <MenuItem key={bot} value={bot}>
-          {bot}
-        </MenuItem>
-      )
-    })
-  }
-
-  submitForm(e){
-    e.preventDefault()
-    const err = this.validate()
-    if (err){
-      this.props.addKeyMutation({
-        variables:{
-          key: this.state.key,
-          secret: this.state.secret,
-          type: this.state.type,
-          description: this.state.description,
-          exchange: this.state.exchange,
-          validFrom: this.state.validFrom,
-          validTo: this.state.validTo,
-          active: this.state.active,
-          botId: this.state.botId
-        },
-        refetchQueries: [{query: getKeysQuery}]
-      })
-
-      this.props.handleNewKeyDialogClose()
-    }
-  }
-
-  validate(){
-    let isError = false
-    const errors = {}
-
-    if(this.state.key.length < 1) {
-      isError = true
-      errors.keyError = "Key can't be empty."
-    }
-
-    if(isError){
-      this.setState({
-        ...this.state,
-        ...errors
-      })
-    }
-
-    return errors;
-
   }
 
   handleMouseDownPassword = event => {
@@ -138,21 +81,21 @@ class AddKey extends Component {
       this.setState(state => ({ showPassword: !state.showPassword }));
     };
 
-  //TODO create keys types on schema, field Type
   render() {
     const { classes } = this.props
     return (
       <form className={classes.root} noValidate autoComplete="off" onSubmit={this.submitForm.bind(this)}>
 
-        <TextField
-          id="key"
-          label="Key"
-          validators={this.state.keyError}
-          className={classes.textField}
-          value={this.state.key}
-          onChange={(e)=>this.setState({key:e.target.value})}
-          fullWidth
-        />
+          <TextField
+            id="key"
+            label="Key"
+            className={classes.textField}
+            value={this.state.key}
+            onChange={(e)=>this.setState({key:e.target.value})}
+            onBlur={(e)=>this.setState({keyError:false})}
+            error={this.state.keyError}
+            fullWidth
+          />
 
         <FormControl className={classNames(classes.margin, classes.textField)}>
           <InputLabel htmlFor="secret">Secret</InputLabel>
@@ -162,6 +105,8 @@ class AddKey extends Component {
             label="Secret"
             value={this.state.secret}
             onChange={(e)=>this.setState({secret:e.target.value})}
+            onBlur={(e)=>this.setState({secretError:false})}
+            error={this.state.secretError}
             fullWidth
             endAdornment={
                 <InputAdornment position="end">
@@ -183,9 +128,13 @@ class AddKey extends Component {
            className={classNames(classes.margin, classes.textField)}
            value={this.state.exchange}
            onChange={(e)=> this.setState({exchange:e.target.value})}
+           onBlur={(e)=>this.setState({exchangeError:false})}
+           error={this.state.exchangeError}
            fullWidth
            >
-             {this.displayExchanges()}
+             {exchanges.map(option => (
+               <MenuItem key={option.id} value={option.id}>{option.name}</MenuItem>
+             ))}
         </TextField>
 
         <TextField
@@ -260,12 +209,64 @@ class AddKey extends Component {
       </form>
     );
   }
+
+    displayBots(){
+      var bots = ['Artudito', 'Robert'];
+      return bots.map(bot => {
+        return (
+          <MenuItem key={bot} value={bot}>
+            {bot}
+          </MenuItem>
+        )
+      })
+    }
+
+    submitForm(e){
+      e.preventDefault()
+      const err = this.validate()
+      if (!err){
+        this.props.mutate({
+          variables:{
+            key: this.state.key,
+            secret: this.state.secret,
+            type: this.state.type,
+            description: this.state.description,
+            exchange: this.state.exchange,
+            validFrom: this.state.validFrom,
+            validTo: this.state.validTo,
+            active: this.state.active,
+            botId: this.state.botId
+          },
+          refetchQueries: [{query: getKeysQuery}]
+        })
+
+        this.props.handleNewKeyDialogClose()
+      }
+    }
+
+    validate(){
+      let isError = false
+
+      if(this.state.key.length < 1) {
+        isError = true
+        this.setState(state => ({ keyError: true }));
+      }
+
+      if(this.state.secret.length < 1) {
+        isError = true
+        this.setState(state => ({ secretError: true }));
+      }
+      if(this.state.exchange.length < 1) {
+        isError = true
+        this.setState(state => ({ exchangeError: true }));
+      }
+
+      return isError;
+
+    }
 }
 
 export default compose(
-  compose(
-    graphql(getExchangesQuery,{name:'getExchangesQuery'}),
-    graphql(addKeyMutation,{name:'addKeyMutation'})
-  ),
+    graphql(addKeyMutation),
   withStyles(styles)
 )(AddKey)

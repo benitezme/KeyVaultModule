@@ -21,8 +21,8 @@ const {
   GraphQLList
 } = graphql
 
-function saveAuditLog (keyId, action, details) {
-  let authIdOnSession = 1 // TODO get from session
+function saveAuditLog (keyId, action, context, details) {
+  let authIdOnSession = context.user.sub
   var auditLogEntry = new AuditLog({
     authId: authIdOnSession,
     keyId: keyId,
@@ -107,8 +107,7 @@ const RootQuery = new GraphQLObjectType({
     keys: {
       type: new GraphQLList(KeyType),
       resolve (parent, args, context) {
-        console.log("Context: ", context)
-        let authIdOnSession = 1 // TODO get from session
+        let authIdOnSession = context.user.sub // TODO can this be changed?
         return Key.find({authId: authIdOnSession})
       }
     },
@@ -135,35 +134,37 @@ const Mutation = new GraphQLObjectType({
       args: {
         key: {type: new GraphQLNonNull(GraphQLString)},
         secret: {type: new GraphQLNonNull(GraphQLString)}, // TODO Encript
-        type: {type: new GraphQLNonNull(GraphQLString)}, // TODO Tipify
-        description: {type: GraphQLString},
         exchange: {type: new GraphQLNonNull(GraphQLString)},
-        validFrom: {type: new GraphQLNonNull(GraphQLString)},
-        validTo: {type: new GraphQLNonNull(GraphQLString)},
+        type: {type: GraphQLString}, // TODO Tipify
+        description: {type: GraphQLString},
+        validFrom: {type: GraphQLString},
+        validTo: {type: GraphQLString},
+        active: {type: GraphQLBoolean},
         botId: {type: GraphQLID}
       },
-      resolve (parent, args) {
+      resolve (parent, args, context) {
         // TODO Relocate business logic for resolve methods
-        let authIdOnSession = 1 // TODO get from session
+        let authIdOnSession = context.user.sub
         let newKey = new Key({
           authId: authIdOnSession,
           key: args.key,
           secret: args.secret,
+          exchange: args.exchange,
           type: args.type,
           description: args.description,
-          exchange: args.exchange,
           validFrom: args.validFrom,
           validTo: args.validTo,
-          active: true,
+          active: args.active,
           botId: args.botId
         })
 
+        //TODO Validate key, secret and exchange are not empty
         newKey.id = newKey._id
         return new Promise((resolve, reject) => {
           newKey.save((err) => {
             if (err) reject(err)
             else {
-              saveAuditLog(newKey.id, 'addKey')
+              saveAuditLog(newKey.id, 'addKey', context)
               resolve(newKey)
             }
           })
@@ -181,9 +182,9 @@ const Mutation = new GraphQLObjectType({
         active: {type: GraphQLBoolean},
         botId: {type: GraphQLID}
       },
-      resolve (parent, args) {
+      resolve (parent, args, context) {
         // TODO Relocate business logic for resolve methods
-        let authIdOnSession = 1 // TODO get from session
+        let authIdOnSession = context.user.sub
         var query = {_id: args.id}
         var options = { new: true}
         let update = {
@@ -195,7 +196,7 @@ const Mutation = new GraphQLObjectType({
           botId: args.botId
         }
 
-        saveAuditLog(args.id, 'editKey')
+        saveAuditLog(args.id, 'editKey', context)
 
         return Key.findOneAndUpdate(query, update, options)  // TODO check return value
       }
@@ -213,7 +214,7 @@ const Mutation = new GraphQLObjectType({
           var update = { botId: args.botId}
           Key.updateOne(query, update).exec(function (err, key) {
             if (key) {
-              saveAuditLog(key.id, 'assignKeyBot')
+              saveAuditLog(key.id, 'assignKeyBot', context)
               resolve('Sucessfully assigned key to bot: ' + args.botId)
             } else {
                   // TODO Pending error handling
@@ -229,9 +230,9 @@ const Mutation = new GraphQLObjectType({
         botId: {type: new GraphQLNonNull(GraphQLID)}, // TODO validate botid
         transaction: {type: new GraphQLNonNull(GraphQLString)}
       },
-      resolve (parent, args) {
+      resolve (parent, args, context) {
         // TODO Relocate business logic for resolve methods
-        let authIdOnSession = 1 // TODO get from session
+        let authIdOnSession = context.user.sub
         // Retrieve key
         return new Promise((resolve, reject) => {
           Key.findOne({$and: [
@@ -247,7 +248,7 @@ const Mutation = new GraphQLObjectType({
                         .update(args.transaction)
                         .digest('hex')
 
-              saveAuditLog(key.id, 'signTransaction')
+              saveAuditLog(key.id, 'signTransaction', context)
 
               var signedTransaction = {
                 signature: qsSignature,
