@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {graphql, compose} from 'react-apollo'
-import { getKeysQuery, editKeyMutation } from '../../../queries'
+import { getSecret, getKeysQuery, editKeyMutation } from '../../../queries'
 
 import { withStyles } from '@material-ui/core/styles'
 import classNames from 'classnames'
@@ -90,7 +90,7 @@ class EditKey extends Component {
             id="secret"
             type={this.state.showPassword ? 'text' : 'password'}
             label="Secret"
-            value={this.state.secret}
+            value={this.props.getSecret.loading ? '' : this.props.getSecret.secret}
             onChange={(e)=>this.setState({secret:e.target.value})}
             fullWidth
             disabled
@@ -201,11 +201,7 @@ class EditKey extends Component {
                variant="outlined" color="primary">
                Edit Key
              </Button>
-             {/* <Button className={classes.button}
-               onClick={this.handleEditKeyDialogClose}
-               variant="outlined" >
-               Cancel
-             </Button> */}
+
            </div>
 
       </form>
@@ -221,13 +217,12 @@ class EditKey extends Component {
    };
 
   handleClickShowPassword = () => {
-    //TODO GetSecret from Server
       this.setState(state => ({ showPassword: !state.showPassword }));
     };
 
   submitForm(e){
     e.preventDefault()
-    this.props.mutate({
+    this.props.editKeyMutation({
       variables:{
         id: this.state.id,
         type: this.state.type,
@@ -253,6 +248,18 @@ class EditKey extends Component {
 }
 
 export default compose(
-  graphql(editKeyMutation),
+  compose(
+    graphql(editKeyMutation,{name:'editKeyMutation'}),
+    graphql(getSecret, { // What follows is the way to pass a parameter to a query.
+      name: 'getSecret',
+      options: (props) => {
+        return {
+          variables: {
+            id: props.currentKey.id
+          }
+        }
+      }
+    })
+  ),
   withStyles(styles)
 )(EditKey)

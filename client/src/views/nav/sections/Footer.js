@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { NavLink } from 'react-router-dom'
 import { compose } from 'recompose'
 import { withStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
@@ -40,19 +39,10 @@ class Footer extends Component {
       <Grid className={classes.button} container justify='center' spacing={24}>
         <Grid item>
           <Button color='primary' className={classes.button}>
-            <NavLink to='/browse'>Browse</NavLink>
-          </Button>
-        </Grid>
-        <Grid item>
-          <Button color='primary' className={classes.button}>
             <a href='http://www.advancedalgos.net'><img className={classes.img} alt='complex' src={AALogo} /></a>
           </Button>
         </Grid>
-        <Grid item>
-          <Button color='primary' className={classes.button}>
-            <NavLink to='/modules'>Modules</NavLink>
-          </Button>
-        </Grid>
+
       </Grid>
 
     )

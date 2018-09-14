@@ -7,6 +7,7 @@ const cors = require('cors');
 const jwt = require('express-jwt');
 const jwksRsa = require('jwks-rsa');
 const AUTH_CONFIG = require('./auth/Auth0');
+const dbConfig = require('./auth/dbConfig')
 
 const app = express();
 
@@ -14,8 +15,7 @@ const app = express();
 app.use(cors());
 
 // Database Connection
-mongoose.connect('mongodb://exchange:admin123@ds143932.mlab.com:43932/exchangedb',
-  { useNewUrlParser: true });
+mongoose.connect(dbConfig.connectionString, { useNewUrlParser: true });
 
 mongoose.connection.once('open',()=>{
   console.log('Connected to the DB.');

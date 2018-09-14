@@ -1,12 +1,8 @@
 import gql from 'graphql-tag'
 
-const getExchangesQuery = gql`
-  {
-    exchanges{
-      id
-      name
-      description
-    }
+const getSecret = gql`
+  query($id: ID!){
+    secret(id: $id)
   }
 `
 
@@ -83,4 +79,4 @@ const getKeyQuery = gql`
   }
 `
 
-export { getExchangesQuery, getKeysQuery, addKeyMutation, editKeyMutation, getKeyQuery }
+export { getSecret, getKeysQuery, addKeyMutation, editKeyMutation, getKeyQuery }

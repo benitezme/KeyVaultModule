@@ -8,6 +8,7 @@ const Key = require('../models/key')
 const AuditLog = require('../models/auditLog')
 const exchanges = require('../models/exchange')
 const tokenDecoder = require('../auth/token-decoder')
+const utils = require('../auth/utils')
 
 const {
   GraphQLObjectType,
@@ -23,12 +24,23 @@ const {
 
 function saveAuditLog (keyId, action, context, details) {
   let authIdOnSession = context.user.sub
+  let localDate = new Date()
+  let date = new Date(Date.UTC(
+    localDate.getUTCFullYear(),
+    localDate.getUTCMonth(),
+    localDate.getUTCDate(),
+    localDate.getUTCHours(),
+    localDate.getUTCMinutes(),
+    localDate.getUTCSeconds(),
+    localDate.getUTCMilliseconds())
+  )
+
   var auditLogEntry = new AuditLog({
     authId: authIdOnSession,
     keyId: keyId,
     action: action,
     details: details,
-    date: new Date().valueOf() // TODO create UTC date
+    date: date.toISOString()
   })
   auditLogEntry.save() // TODO Error management
 }
@@ -122,6 +134,32 @@ const RootQuery = new GraphQLObjectType({
       resolve (parent, args) {
         return exchanges
       }
+    },
+    secret: {
+      type: GraphQLString,
+      args: {id: {type: new GraphQLNonNull(GraphQLID)}},
+      resolve (parent, args, context) {
+        let authIdOnSession = context.user.sub
+        return new Promise((resolve, reject) => {
+          Key.findOne({$and: [
+              {_id: args.id},
+              {authId: authIdOnSession},
+          ]}, (err, key) => {
+            if (err || key === null) reject(err)
+            else {
+
+              saveAuditLog(key.id, 'secretRequested', context)
+
+              //TODO change password
+              const decipher = crypto.createDecipher('aes192', utils.serverSecret);
+              let decrypted = decipher.update(key.secret, 'hex', 'utf8');
+              decrypted += decipher.final('utf8');
+
+              resolve(decrypted)
+            }
+          })
+        })
+      }
     }
   }
 })
@@ -145,10 +183,16 @@ const Mutation = new GraphQLObjectType({
       resolve (parent, args, context) {
         // TODO Relocate business logic for resolve methods
         let authIdOnSession = context.user.sub
+
+        //TODO change password
+        const cipher = crypto.createCipher('aes192', utils.serverSecret)
+        let secret = cipher.update(args.secret, 'utf8', 'hex')
+        secret += cipher.final('hex')
+
         let newKey = new Key({
           authId: authIdOnSession,
           key: args.key,
-          secret: args.secret,
+          secret: secret,
           exchange: args.exchange,
           type: args.type,
           description: args.description,
@@ -158,7 +202,7 @@ const Mutation = new GraphQLObjectType({
           botId: args.botId
         })
 
-        //TODO Validate key, secret and exchange are not empty
+        // TODO Validate key, secret and exchange are not empty
         newKey.id = newKey._id
         return new Promise((resolve, reject) => {
           newKey.save((err) => {
@@ -353,8 +397,6 @@ function authenticate (encodedToken, callBackFunction) {
 
           */
 
-          global.Sessions.set(encodedToken, user.id)
-
           callBackFunction(global.DEFAULT_OK_RESPONSE, { authId: authId, alias: user.alias })
           return
         }
@@ -406,76 +448,63 @@ function authenticate (encodedToken, callBackFunction) {
   }
 }
 
-//TODO Call Users Module
-function findUserByAuthId(authId, callBackFunction) {
-
+// TODO Call Users Module
+function findUserByAuthId (authId, callBackFunction) {
   try {
-
-    if (INFO_LOG === true) { console.log("[INFO] " + MODULE_NAME + " -> findUserByAuthId -> Entering function."); }
-    if (INFO_LOG === true) { console.log("[INFO] " + MODULE_NAME + " -> findUserByAuthId -> authId = " + authId); }
+    if (INFO_LOG === true) { console.log('[INFO] ' + MODULE_NAME + ' -> findUserByAuthId -> Entering function.') }
+    if (INFO_LOG === true) { console.log('[INFO] ' + MODULE_NAME + ' -> findUserByAuthId -> authId = ' + authId) }
 
     if (authId === null || authId === undefined) {
+      if (INFO_LOG === true) { console.log('[INFO] ' + MODULE_NAME + ' -> findUserByAuthId -> User requested not specified.') }
+      if (INFO_LOG === true) { console.log('[INFO] ' + MODULE_NAME + ' -> findUserByAuthId -> args.authId = ' + authId) }
 
-      if (INFO_LOG === true) { console.log("[INFO] " + MODULE_NAME + " -> findUserByAuthId -> User requested not specified."); }
-      if (INFO_LOG === true) { console.log("[INFO] " + MODULE_NAME + " -> findUserByAuthId -> args.authId = " + authId); }
-
-      callBackFunction(global.DEFAULT_FAIL_RESPONSE, { error: "Bad Request" });
-      return;
+      callBackFunction(global.DEFAULT_FAIL_RESPONSE, { error: 'Bad Request' })
+      return
     }
 
     // User.findOne({authId: authId}, onUserReceived)
     onUserReceived(undefined, {authId: authId})
 
-    function onUserReceived(err, user) {
-
-      if(err) {
-        if (ERROR_LOG === true) { console.log("[ERROR] " + MODULE_NAME + " -> findUserByAuthId -> onUserReceived -> Database Error."); }
-        if (ERROR_LOG === true) { console.log("[ERROR] " + MODULE_NAME + " -> findUserByAuthId -> onUserReceived -> err = " + err); }
-        callBackFunction(global.DEFAULT_FAIL_RESPONSE, { error: err });
-      }
-      else{
-
+    function onUserReceived (err, user) {
+      if (err) {
+        if (ERROR_LOG === true) { console.log('[ERROR] ' + MODULE_NAME + ' -> findUserByAuthId -> onUserReceived -> Database Error.') }
+        if (ERROR_LOG === true) { console.log('[ERROR] ' + MODULE_NAME + ' -> findUserByAuthId -> onUserReceived -> err = ' + err) }
+        callBackFunction(global.DEFAULT_FAIL_RESPONSE, { error: err })
+      } else {
         if (user === null) {
-
-          if (INFO_LOG === true) { console.log("[INFO] " + MODULE_NAME + " -> findUserByAuthId -> onUserReceived -> User not found at Database."); }
-          if (INFO_LOG === true) { console.log("[INFO] " + MODULE_NAME + " -> findUserByAuthId -> onUserReceived -> args.authId = " + authId); }
+          if (INFO_LOG === true) { console.log('[INFO] ' + MODULE_NAME + ' -> findUserByAuthId -> onUserReceived -> User not found at Database.') }
+          if (INFO_LOG === true) { console.log('[INFO] ' + MODULE_NAME + ' -> findUserByAuthId -> onUserReceived -> args.authId = ' + authId) }
 
           let customResponse = {
-              result: global.CUSTOM_OK_RESPONSE.result,
-              message: "User Not Found"
-          };
+            result: global.CUSTOM_OK_RESPONSE.result,
+            message: 'User Not Found'
+          }
 
-          callBackFunction(customResponse, { error: customResponse.message });
-          return;
+          callBackFunction(customResponse, { error: customResponse.message })
+          return
         }
 
         if (user.authId === authId && user.authId !== undefined) {
+          if (INFO_LOG === true) { console.log('[INFO] ' + MODULE_NAME + ' -> findUserByAuthId -> onUserReceived -> User found at Database.') }
+          if (INFO_LOG === true) { console.log('[INFO] ' + MODULE_NAME + ' -> findUserByAuthId -> onUserReceived -> args.authId = ' + authId) }
 
-          if (INFO_LOG === true) { console.log("[INFO] " + MODULE_NAME + " -> findUserByAuthId -> onUserReceived -> User found at Database."); }
-          if (INFO_LOG === true) { console.log("[INFO] " + MODULE_NAME + " -> findUserByAuthId -> onUserReceived -> args.authId = " + authId); }
-
-          callBackFunction(global.DEFAULT_OK_RESPONSE, user);
-          return;
-
+          callBackFunction(global.DEFAULT_OK_RESPONSE, user)
+          return
         } else {
+          if (INFO_LOG === true) { console.log('[INFO] ' + MODULE_NAME + ' -> findUserByAuthId -> onUserReceived -> User found at Database is not the user requested.') }
+          if (INFO_LOG === true) { console.log('[INFO] ' + MODULE_NAME + ' -> findUserByAuthId -> onUserReceived -> args.authId = ' + authId) }
+          if (INFO_LOG === true) { console.log('[INFO] ' + MODULE_NAME + ' -> findUserByAuthId -> onUserReceived -> user.authId = ' + user.authId) }
 
-          if (INFO_LOG === true) { console.log("[INFO] " + MODULE_NAME + " -> findUserByAuthId -> onUserReceived -> User found at Database is not the user requested."); }
-          if (INFO_LOG === true) { console.log("[INFO] " + MODULE_NAME + " -> findUserByAuthId -> onUserReceived -> args.authId = " + authId); }
-          if (INFO_LOG === true) { console.log("[INFO] " + MODULE_NAME + " -> findUserByAuthId -> onUserReceived -> user.authId = " + user.authId); }
-
-          callBackFunction(global.DEFAULT_FAIL_RESPONSE, { error: err });
-          return;
+          callBackFunction(global.DEFAULT_FAIL_RESPONSE, { error: err })
+          return
         }
       }
     }
-  } catch(err) {
-
-    if (global.ERROR_LOG === true) { console.log("[ERROR] " + MODULE_NAME + " -> findUserByAuthId -> err.message = " + err.message); }
-    callBackFunction(global.DEFAULT_FAIL_RESPONSE, { error: err });
-
+  } catch (err) {
+    if (global.ERROR_LOG === true) { console.log('[ERROR] ' + MODULE_NAME + ' -> findUserByAuthId -> err.message = ' + err.message) }
+    callBackFunction(global.DEFAULT_FAIL_RESPONSE, { error: err })
   }
 }
-
 
 module.exports = new GraphQLSchema({
   query: RootQuery,
