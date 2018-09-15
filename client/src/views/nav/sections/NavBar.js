@@ -64,7 +64,7 @@ class NavBar extends Component {
           <Toolbar>
             <img className={classes.img} src={AALogo} alt='Advanced Algos' />
             <Typography variant='title' color='inherit' className={classes.flex}>
-              Key Vault Module
+              Key Vault
             </Typography>
 
             <IconButton className={classes.menuButton} color='inherit' title='Home' component={HomeLink}><HomeIcon /></IconButton>

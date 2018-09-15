@@ -448,7 +448,8 @@ function authenticate (encodedToken, callBackFunction) {
   }
 }
 
-// TODO Call Users Module
+// TODO Call Users Module, if it doesn't exist create it
+
 function findUserByAuthId (authId, callBackFunction) {
   try {
     if (INFO_LOG === true) { console.log('[INFO] ' + MODULE_NAME + ' -> findUserByAuthId -> Entering function.') }
