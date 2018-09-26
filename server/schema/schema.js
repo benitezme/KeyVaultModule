@@ -7,8 +7,7 @@ const exchanges = require('../models/exchange')
 const utils = require('../auth/utils')
 
 const authenticator = require('./resolvers/Authenticator')
-const appRoot = require('app-root-path')
-const logger = require(`${appRoot}/server/config/logger`)
+const logger = require('../config/logger')
 
 const {
   GraphQLObjectType,

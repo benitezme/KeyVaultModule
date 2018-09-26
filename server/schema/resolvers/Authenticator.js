@@ -1,6 +1,5 @@
-const appRoot = require('app-root-path')
-const logger = require(`${appRoot}/server/config/logger`)
-const tokenDecoder = require(`${appRoot}/server/auth/token-decoder`)
+const logger = require('../../config/logger')
+const tokenDecoder = require('../../auth/token-decoder')
 
 class Authenticator {
 

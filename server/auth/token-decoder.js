@@ -1,6 +1,5 @@
-const MODULE_NAME = "token-decoder";
-const appRoot = require('app-root-path')
-const logger = require(`${appRoot}/server/config/logger`)
+const MODULE_NAME = "token-decoder"
+const logger = require('../config/logger')
 /*
    JSON Web Token (JWT) is a compact, URL-safe means of representing
    claims to be transferred between two parties.  The claims in a JWT
