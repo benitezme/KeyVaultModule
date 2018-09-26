@@ -1,5 +1,6 @@
 const MODULE_NAME = "token-decoder";
-
+const appRoot = require('app-root-path')
+const logger = require(`${appRoot}/server/config/logger`)
 /*
    JSON Web Token (JWT) is a compact, URL-safe means of representing
    claims to be transferred between two parties.  The claims in a JWT
@@ -26,7 +27,7 @@ function decodeToken (token, callBackFunction) {
 
   try{
 
-    if (global.INFO_LOG === true) { console.log("[INFO] " + MODULE_NAME + " -> decodeToken -> Entering function."); }
+    logger.info('decodeToken -> Entering function.')
 
     const decoded = JSONWebToken.decode(token, { complete: true });
     const header = decoded.header;
@@ -37,8 +38,8 @@ function decodeToken (token, callBackFunction) {
       header.kid === null ||
       payload === null
     ) {
-        if (global.ERROR_LOG === true) { console.log ("[ERROR] " + MODULE_NAME + " -> decodeToken -> Invalid Token. "); }
-        if (global.ERROR_LOG === true) { console.log ("[ERROR] " + MODULE_NAME + " -> decodeToken -> token = " + token); }
+        logger.error('decodeToken -> Invalid Token. ')
+        logger.error('decodeToken -> token = ' + token)
         callBackFunction(global.DEFAULT_FAIL_RESPONSE);
         return;
     }
@@ -47,13 +48,13 @@ function decodeToken (token, callBackFunction) {
 
     function onKeyReady(err, key) {
 
-      if (global.INFO_LOG === true) { console.log("[INFO] " + MODULE_NAME + " -> decodeToken -> onKeyReady -> Entering function."); }
+      logger.debug('decodeToken -> onKeyReady -> Entering function.')
 
       if (err) {
 
-        if (global.ERROR_LOG === true) { console.log ("[ERROR] " + MODULE_NAME + " -> decodeToken -> onKeyReady -> Error getting the key. "); }
-        if (global.ERROR_LOG === true) { console.log ("[ERROR] " + MODULE_NAME + " -> decodeToken -> onKeyReady -> key = " + key); }
-        if (global.ERROR_LOG === true) { console.log ("[ERROR] " + MODULE_NAME + " -> decodeToken -> onKeyReady -> err = " + err); }
+        logger.error('decodeToken -> onKeyReady -> Error getting the key. ')
+        logger.error('decodeToken -> onKeyReady -> key = ' + key)
+        logger.error('decodeToken -> onKeyReady -> err = ' + err)
         callBackFunction(global.DEFAULT_FAIL_RESPONSE);
         return;
       }
@@ -66,23 +67,23 @@ function decodeToken (token, callBackFunction) {
 
         function onVerified(err, decoded) {
 
-          if (global.INFO_LOG === true) { console.log("[INFO] " + MODULE_NAME + " -> decodeToken -> onKeyReady -> onVerified -> Entering function."); }
+          logger.debug('decodeToken -> onKeyReady -> onVerified -> Entering function.')
 
           if (err) {
 
-            if (global.ERROR_LOG === true) { console.log ("[ERROR] " + MODULE_NAME + " -> decodeToken -> onKeyReady -> onVerified -> Error verifying. "); }
-            if (global.ERROR_LOG === true) { console.log ("[ERROR] " + MODULE_NAME + " -> decodeToken -> onKeyReady -> onVerified -> decoded = " + decoded); }
-            if (global.ERROR_LOG === true) { console.log ("[ERROR] " + MODULE_NAME + " -> decodeToken -> onKeyReady -> onVerified -> err = " + err); }
+            logger.error('decodeToken -> onKeyReady -> onVerified -> Error verifying. ')
+            logger.error('decodeToken -> onKeyReady -> onVerified -> decoded = ' + decoded)
+            logger.error('decodeToken -> onKeyReady -> onVerified -> err = ' + err)
             callBackFunction(global.DEFAULT_FAIL_RESPONSE);
             return;
           }
-          
+
           callBackFunction(global.DEFAULT_OK_RESPONSE, decoded);
         }
     }
   } catch(err) {
 
-    if (global.ERROR_LOG === true) { console.log("[ERROR] " + MODULE_NAME + " -> decodeToken -> err = " + err); }
+    logger.error('decodeToken -> err = ' + err)
     callBackFunction(global.DEFAULT_FAIL_RESPONSE);
 
   }
