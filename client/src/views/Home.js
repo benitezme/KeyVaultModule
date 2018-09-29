@@ -50,7 +50,7 @@ class Home extends Component {
             <Avatar>
               <ActivityIcon />
             </Avatar>
-            <ListItemText primary="Review acivity associated to your keys. (On Development)" />
+            <ListItemText primary="Review activity associated to your keys. (On Development)" />
           </ListItem>
         </List>
 

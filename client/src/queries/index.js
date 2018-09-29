@@ -79,4 +79,25 @@ const getKeyQuery = gql`
   }
 `
 
-export { getSecret, getKeysQuery, addKeyMutation, editKeyMutation, getKeyQuery }
+const getUserByAuthId = gql`
+query($authId: String){
+    userByAuthId (authId: $authId){
+      id
+      alias
+      firstName
+      middleName
+      lastName
+      bio
+      email
+      emailVerified
+      isDeveloper
+      isDataAnalyst
+      isTrader
+      role {
+        id
+      }
+    }
+}
+`
+
+export { getSecret, getKeysQuery, addKeyMutation, editKeyMutation, getKeyQuery, getUserByAuthId }
