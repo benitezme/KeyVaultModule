@@ -25,9 +25,10 @@ import { BrowseKeys } from './views/keys'
 
 let graphqlEndpoint ='http://localhost:4002/graphql'
 // let graphqlEndpoint ='https://keyvault-api.advancedalgos.net/graphql'
-const httpUserLink = new HttpLink({ uri: 'https://users-api.advancedalgos.net/graphql' })
+
 
 const httpLink = new HttpLink({ uri: graphqlEndpoint })
+const httpUserLink = new HttpLink({ uri: 'https://users-api.advancedalgos.net/graphql' })
 
 const authRetryLink = onError(
   ({ graphQLErrors, networkError, operation, forward }) => {
@@ -69,26 +70,28 @@ const authRetryLink = onError(
   }
 )
 
-const authLink = setContext(async (_, { headers }) => {
+const authLink = setContext((_, { headers }) => {
   // get the authentication token from local storage if it exists
-  await getItem('access_token').then(token => {
-    return {
-      headers: {
-        ...headers,
-        Authorization: token ? `Bearer ${token}` : ``
-      }
+  const token = localStorage.getItem('access_token')
+  // return the headers to the context so httpLink can read them
+  return {
+    headers: {
+      ...headers,
+      Authorization: token ? `Bearer ${token}` : ``
     }
-  })
+  }
 })
+
+const cache = new InMemoryCache().restore(window.__APOLLO_STATE__)
 
 export const client = new ApolloClient({
   link: ApolloLink.from([authRetryLink, authLink, httpLink]),
-  cache: new InMemoryCache()
+  cache
 })
 
 export const userClient = new ApolloClient({
   link: ApolloLink.from([authRetryLink, authLink, httpUserLink]),
-  cache: new InMemoryCache()
+  cache
 })
 
 export const auth = new Auth(

@@ -306,7 +306,7 @@ const Mutation = new GraphQLObjectType({
         })
       }
     },
-    authenticate: {
+    authenticate_old: {
       type: UserType,
       args: {
         idToken: {type: new GraphQLNonNull(GraphQLString)}

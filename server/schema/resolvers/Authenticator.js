@@ -5,7 +5,10 @@ class Authenticator {
 
   resolve(parent, args){
     var self = this
-    /* In order to be able to wait for asyc calls to the database, and authorization authority, we need to return a promise to GraphQL. */
+
+    /* In order to be able to wait for asyc calls to the database, 
+      and authorization authority, we need to return a promise to GraphQL.
+    */
     const promiseToGraphQL = new Promise((resolve, reject) => {
       logger.debug('resolve -> Promise -> Entering function.')
       self.authenticate(args.idToken, onAuthenticated)
