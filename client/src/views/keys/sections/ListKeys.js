@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
 import EditKey from './EditKey'
+import AuditLogList from './AuditLogList'
+
+
 
 // Images
 import Poloniex from '../../../img/poloniex.png'
@@ -46,6 +49,7 @@ class ListKeys extends Component {
     super(props)
     this.state = {
       isEditKeyDialogOpen: false,
+      isAuditLogDialogOpen: false
     }
   }
 
@@ -75,6 +79,11 @@ class ListKeys extends Component {
                 <Button
                   className={classes.buttonList}
                   variant='outlined' color='primary' size='small'
+                  onClick={() => this.auditLog()}
+                  >Review Audit Log</Button>
+                <Button
+                  className={classes.buttonList}
+                  variant='outlined' color='primary' size='small'
                   onClick={() => this.editKey()}
                   >Edit</Button>
 
@@ -96,6 +105,19 @@ class ListKeys extends Component {
 
                       </DialogContent>
                     </Dialog>
+
+                    <Dialog
+                        open={this.state.isAuditLogDialogOpen}
+                        onClose={this.handleAuditLogDialogClose}
+                        aria-labelledby="auditLog-dialog-title"
+                      >
+                        <DialogTitle id="auditLog-dialog-title">
+                          Audit Log History
+                        </DialogTitle>
+                        <DialogContent>
+                          <AuditLogList currentKey={key} handleEditKeyDialogClose={this.handleAuditLogDialogClose}/>
+                        </DialogContent>
+                      </Dialog>
               </Grid>
             </Grid>
           </Grid>
@@ -104,16 +126,20 @@ class ListKeys extends Component {
     )
   }
 
-  handleEditKeyDialogOpen = () => {
+  editKey () {
     this.setState({ isEditKeyDialogOpen: true })
-  };
+  }
 
   handleEditKeyDialogClose = () => {
     this.setState({ isEditKeyDialogOpen: false })
-  };
+  }
 
-  editKey () {
-    this.setState({ isEditKeyDialogOpen: true })
+  auditLog () {
+    this.setState({ isAuditLogDialogOpen: true })
+  }
+
+  handleAuditLogDialogClose = () => {
+    this.setState({ isAuditLogDialogOpen: false })
   }
 
   getImage (exchange) {

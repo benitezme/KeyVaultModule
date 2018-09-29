@@ -124,8 +124,15 @@ const RootQuery = new GraphQLObjectType({
     },
     auditLogs: {
       type: new GraphQLList(AuditLogType),
-      resolve (parent, args) {
-        return AuditLog.find({})
+      args: {
+        key: {type: new GraphQLNonNull(GraphQLString)}
+      },
+      resolve (parent, args, context) {
+        let authIdOnSession = context.user.sub
+        return AuditLog.find({
+          authId: authIdOnSession,
+          keyId: args.key
+        })
       }
     },
     exchanges: {

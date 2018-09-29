@@ -267,6 +267,6 @@ class AddKey extends Component {
 }
 
 export default compose(
-    graphql(addKeyMutation),
+  graphql(addKeyMutation),
   withStyles(styles)
 )(AddKey)
