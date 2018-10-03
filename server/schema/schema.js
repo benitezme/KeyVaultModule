@@ -41,6 +41,8 @@ function saveAuditLog (keyId, action, context, details) {
     details: details,
     date: date.toISOString()
   })
+
+  logger.info('saveAuditLog -> Saving a new Audit Log Record.')
   auditLogEntry.save() // TODO Error management
 }
 
@@ -64,6 +66,7 @@ const UserType = new GraphQLObjectType({
 const SignedTransactionType = new GraphQLObjectType({
   name: 'SignedTransaction',
   fields: () => ({
+    key: {type: GraphQLString},
     signature: {type: GraphQLString},
     date: {type: GraphQLString}
   })
@@ -276,44 +279,60 @@ const Mutation = new GraphQLObjectType({
     signTransaction: {
       type: SignedTransactionType,
       args: {
-        botId: {type: new GraphQLNonNull(GraphQLID)}, // TODO validate botid
+        botId: {type: GraphQLString}, // TODO validate botid
         transaction: {type: new GraphQLNonNull(GraphQLString)}
       },
       resolve (parent, args, context) {
         // TODO Relocate business logic for resolve methods
-        let authIdOnSession = context.user.sub
-        // Retrieve key
-        return new Promise((resolve, reject) => {
-          Key.findOne({$and: [
-              {authId: authIdOnSession},
-              {botId: args.botId}
-          ]}).exec(function (err, key) {
-            if (key) {
+        logger.info('signTransaction -> resolve -> Entering function.')
+        if(!context){
+          logger.error('signTransaction -> resolve -> Authentication Fail.')
+          return 'Error: Authentication Fail.'
+        } else if(context.user.sub !== utils.exchangeModuleId){
+          logger.error('signTransaction -> resolve -> User not found: ' + context.user.sub)
+            return 'Error: User not found.'
+        } else {
+          logger.info('signTransaction -> resolve -> Retrieve key started.')
+          return new Promise((resolve, reject) => {
+            Key.findOne({$and: [
+                {botId: args.botId},
+                {exchange: 1},
+                {type: 'Competition'}
+                // {botId: args.botId}
+              ]}).exec(function (err, key) {
+                if (key) {
+                  logger.info('signTransaction -> resolve -> Retrieve key -> Key found.')
                   // Get exchange properties
-              var exchange = _.find(exchanges, {description: key.exchange})
+                  var exchange = _.find(exchanges, {id: key.exchange})
+
+                  const decipher = crypto.createDecipher('aes192', utils.serverSecret);
+                  let secret = decipher.update(key.secret, 'hex', 'utf8');
+                  secret += decipher.final('utf8');
 
                   // Sign transaction
-              var qsSignature = crypto.createHmac(exchange.algorithm, key.secret)
-                        .update(args.transaction)
-                        .digest('hex')
+                  var qsSignature = crypto.createHmac(exchange.algorithm, secret)
+                            .update(args.transaction)
+                            .digest('hex')
 
-              saveAuditLog(key.id, 'signTransaction', context)
+                  saveAuditLog(key.id, 'signTransaction', context, args.transaction)
 
-              var signedTransaction = {
-                signature: qsSignature,
-                date: new Date().valueOf()
+                  var signedTransaction = {
+                    key: key.key,
+                    signature: qsSignature,
+                    date: new Date().valueOf()
+                  }
+
+                  resolve(signedTransaction)
+                } else {
+                  logger.info('signTransaction -> resolve -> Retrieve key -> Key not found.')
+                  reject('Error: key not found.')
               }
-
-              resolve(signedTransaction)
-            } else {
-                  // TODO Pending error handling
-              reject('Error: key not found.')
-            }
+            })
           })
-        })
+        }
       }
     },
-    authenticate_old: {
+    authenticate: {
       type: UserType,
       args: {
         idToken: {type: new GraphQLNonNull(GraphQLString)}
