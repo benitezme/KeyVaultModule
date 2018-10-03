@@ -8,6 +8,8 @@ import classNames from 'classnames'
 import Visibility from '@material-ui/icons/Visibility'
 import VisibilityOff from '@material-ui/icons/VisibilityOff'
 
+import { types, exchanges, bots} from '../../../queries/models'
+
 import {
    MenuItem, Button, IconButton, InputAdornment, TextField,
    FormControl, InputLabel, Input
@@ -39,18 +41,6 @@ const styles = theme => ({
   },
 
 });
-
-const types = [ 'Development', 'Live', 'Competition' ]
-const exchanges = [
-  {
-    id: '1',
-    name: 'Poloniex'
-  },
-  {
-    id: '2',
-    name: 'Binance'
-  }
-]
 
 class AddKey extends Component {
 
@@ -211,7 +201,6 @@ class AddKey extends Component {
   }
 
     displayBots(){
-      var bots = ['Artudito', 'Robert'];
       return bots.map(bot => {
         return (
           <MenuItem key={bot} value={bot}>

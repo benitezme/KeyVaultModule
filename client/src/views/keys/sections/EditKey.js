@@ -12,6 +12,8 @@ import {
    FormControl, InputLabel, Input, FormControlLabel, Checkbox
 } from '@material-ui/core'
 
+import { types, exchanges, bots} from '../../../queries/models'
+
 const styles = theme => ({
   root: {
     flexGrow: 1,
@@ -34,18 +36,6 @@ const styles = theme => ({
     marginTop: 10
   },
 });
-
-const types = [ 'Development', 'Live', 'Competition' ]
-const exchanges = [
-  {
-    id: '1',
-    name: 'Poloniex'
-  },
-  {
-    id: '2',
-    name: 'Binance'
-  }
-]
 
 class EditKey extends Component {
 
@@ -238,7 +228,6 @@ class EditKey extends Component {
   }
 
   displayBots(){
-    var bots = ['Artudito', 'Robert'];
     return bots.map(bot => {
       return (
         <MenuItem key={bot} value={bot}>{bot}</MenuItem>

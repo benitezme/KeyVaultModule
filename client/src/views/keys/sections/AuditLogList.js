@@ -5,14 +5,6 @@ import { getAuditLog } from '../../../queries'
 import { Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core';
 
 import { withStyles } from '@material-ui/core/styles'
-import classNames from 'classnames'
-import Visibility from '@material-ui/icons/Visibility'
-import VisibilityOff from '@material-ui/icons/VisibilityOff'
-
-import {
-   MenuItem, Button, IconButton, InputAdornment, TextField,
-   FormControl, InputLabel, Input, FormControlLabel, Checkbox
-} from '@material-ui/core'
 
 const styles = theme => ({
   root: {
@@ -61,11 +53,10 @@ class AuditLogList extends Component {
       if(!data.auditLogs){
         return <Typography className={classes.root} variant='subheading'>There has been an erorr.</Typography>
       }
-      if(data.auditLogs.length == 0){
+      if(data.auditLogs.length === 0){
         return <Typography className={classes.root} variant='subheading'>There is no audit history for this key.</Typography>
       }
 
-      const length = data.auditLogs.length
       return (
         <Table className={classes.table}>
           <TableHead>

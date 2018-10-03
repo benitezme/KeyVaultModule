@@ -68,12 +68,12 @@ class ListKeys extends Component {
             <Grid item xs container direction='column' spacing={16}>
               <Grid item xs>
                 <Typography gutterBottom variant='headline'>Key: {key.key}</Typography>
+                <Typography gutterBottom>Bot: {key.botId}</Typography>
                 <Typography gutterBottom>Type: {key.type}</Typography>
                 <Typography gutterBottom>Description: {key.description}</Typography>
                 <Typography gutterBottom>Valid From: {key.validFrom}</Typography>
                 <Typography gutterBottom>Valid To: {key.validTo}</Typography>
                 <Typography gutterBottom>Active: {key.active !== null ? key.active.toString():''}</Typography>
-                <Typography gutterBottom>Boot: {key.botId}</Typography>
               </Grid>
               <Grid item className={classes.buttonGrid}>
                 <Button
