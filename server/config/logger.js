@@ -1,4 +1,5 @@
-const winston = require('winston');
+const { createLogger, format, transports } = require('winston')
+const { combine, timestamp, simple } = format
 
 const options = {
   file: {
@@ -9,33 +10,30 @@ const options = {
     maxsize: 5242880, // 5MB
     maxFiles: 5,
     colorize: false,
+    timestamp: true
   },
   console: {
     level: 'debug',
     handleExceptions: true,
     json: false,
     colorize: true,
-  },
-};
-
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.simple(),
-  transports: [
-    new winston.transports.File(options.file),
-    new winston.transports.Console(options.console)
-  ],
-  exitOnError: false, // do not exit on handled exceptions
-});
-
-//
-// If we're not in production then log to the `console` with the format:
-// `${info.level}: ${info.message} JSON.stringify({ ...rest }) `
-//
-if (process.env.NODE_ENV !== 'production') {
-  logger.add(new winston.transports.Console({
-    format: winston.format.simple()
-  }));
+    timestamp: true
+  }
 }
 
-module.exports = logger;
+const logger = createLogger({
+  level: 'info',
+  format: combine(
+    timestamp({
+      format: 'YYYY-MM-DD HH:mm:ss'
+    }),
+    simple()
+  ),
+  transports: [
+    new transports.File(options.file),
+    new transports.Console(options.console)
+  ],
+  exitOnError: false // do not exit on handled exceptions
+})
+
+module.exports = logger
