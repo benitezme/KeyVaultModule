@@ -288,9 +288,6 @@ const Mutation = new GraphQLObjectType({
         if(!context){
           logger.error('signTransaction -> resolve -> Authentication Fail.')
           return 'Error: Authentication Fail.'
-        } else if(context.user.sub !== utils.exchangeModuleId){
-          logger.error('signTransaction -> resolve -> User not found: ' + context.user.sub)
-            return 'Error: User not found.'
         } else {
           logger.info('signTransaction -> resolve -> Retrieve key started.')
           return new Promise((resolve, reject) => {

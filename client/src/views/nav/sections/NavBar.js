@@ -13,32 +13,43 @@ import { getItem } from '../../../utils/local-storage'
 import LoggedInUser from './LoggedInUser'
 import LoggedOut from './LoggedOut'
 
-import AALogo from '../../../img/aa-logo-dark-8.png'
+import AALogo from '../../../img/aa-logo-dark.svg'
 
 const BrowseLink = props => <Link to='/browse' {...props} />
 const HomeLink = props => <Link to='/' {...props} />
 
-const styles = {
+const styles = theme => ({
+  '@global': {
+    body: {
+      backgroundColor: theme.palette.common.white
+    }
+  },
   root: {
     flexGrow: 1
   },
+  colorDefault: {
+    color: '#000'
+  },
   flex: {
     flexGrow: 1
+  },
+  toolbarTitle: {
+    flex: 1
   },
   menuButton: {
     marginLeft: -12,
     marginRight: 20
   },
-  login: {
-    cursor: 'pointer'
+  appBar: {
+    position: 'relative'
   },
   img: {
     margin: 20,
     display: 'block',
-    maxWidth: 120,
-    maxHeight: 24
+    maxWidth: 240,
+    maxHeight: 48
   }
-}
+})
 
 class NavBar extends Component {
 
@@ -60,7 +71,7 @@ class NavBar extends Component {
     let user = JSON.parse(this.state.user)
     return (
       <div className={classes.root}>
-        <AppBar position='static'>
+        <AppBar position='static' className={ classes.appBar }>
           <Toolbar>
             <img className={classes.img} src={AALogo} alt='Advanced Algos' />
             <Typography variant='title' color='inherit' className={classes.flex}>
