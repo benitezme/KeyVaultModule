@@ -176,14 +176,14 @@ class AddKey extends Component {
           />
 
           <TextField
-             select
+             // select
              label="Bot"
              className={classNames(classes.margin, classes.textField)}
              value={this.state.botId}
              onChange={(e)=>this.setState({botId:e.target.value})}
              fullWidth
              >
-               {this.displayBots()}
+               {/* {this.displayBots()} */}
            </TextField>
 
            <br />

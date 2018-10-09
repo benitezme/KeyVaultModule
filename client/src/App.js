@@ -24,8 +24,8 @@ import { BrowseKeys } from './views/keys'
 
 // Apollo client setup
 
-let graphqlEndpoint ='http://localhost:4002/graphql'
-// let graphqlEndpoint ='https://keyvault-api.advancedalgos.net/graphql'
+// let graphqlEndpoint ='http://localhost:4002/graphql'
+let graphqlEndpoint ='https://keyvault-api.advancedalgos.net/graphql'
 
 
 const httpLink = new HttpLink({ uri: graphqlEndpoint })
