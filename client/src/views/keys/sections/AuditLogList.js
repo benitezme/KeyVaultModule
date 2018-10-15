@@ -50,10 +50,10 @@ class AuditLogList extends Component {
       return <Typography className={classes.root} variant='subheading'>Loading...</Typography>
     }else{
 
-      if(!data.auditLogs){
+      if(!data.keyVault_AuditLogs){
         return <Typography className={classes.root} variant='subheading'>There has been an erorr.</Typography>
       }
-      if(data.auditLogs.length === 0){
+      if(data.keyVault_AuditLogs.length === 0){
         return <Typography className={classes.root} variant='subheading'>There is no audit history for this key.</Typography>
       }
 
@@ -68,7 +68,7 @@ class AuditLogList extends Component {
           </TableHead>
 
           <TableBody>
-            {data.auditLogs.map(row => {
+            {data.keyVault_AuditLogs.map(row => {
               return (
                 <TableRow key={row.id}>
                   <TableCell component="th" scope="row">

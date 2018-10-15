@@ -22,19 +22,10 @@ class BrowseKeys extends Component {
 
   constructor (props) {
     super(props)
+    let user = localStorage.getItem('user')
     this.state = {
-      selected: 'selected1',
-      user: null
+      user: JSON.parse(user)
     }
-  }
-
-  componentDidMount () {
-    this._asyncRequest = getItem('user').then(
-      user => {
-        this._asyncRequest = null
-        this.setState({user: JSON.parse(user)})
-      }
-    )
   }
 
   render () {
@@ -46,7 +37,7 @@ class BrowseKeys extends Component {
           <Typography variant='subheading'>Loading keys...</Typography>
         </Paper>
       )
-    } else if (data.keys && data.keys.length > 0) {
+    } else if (data.keyVault_Keys && data.keyVault_Keys.length > 0) {
       return this.displayKeys()
     } else if (data.error) {
       return (
@@ -66,8 +57,8 @@ class BrowseKeys extends Component {
 
   displayKeys () {
     var data = this.props.data
-    const length = data.keys.length
-    return data.keys.map((key, i) => {
+    const length = data.keyVault_Keys.length
+    return data.keyVault_Keys.map((key, i) => {
       if (length === i + 1) {
         return (
           <React.Fragment key='keyList'>

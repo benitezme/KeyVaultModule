@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import EditKey from './EditKey'
 import AuditLogList from './AuditLogList'
-
-
-
+import { graphql, compose } from 'react-apollo'
+import { removeKeyMutation, getKeysQuery } from '../../../queries'
 // Images
 import Poloniex from '../../../img/poloniex.png'
 import Binance from '../../../img/binance.png'
@@ -70,10 +69,12 @@ class ListKeys extends Component {
                 <Typography gutterBottom variant='headline'>Key: {key.key}</Typography>
                 <Typography gutterBottom>Bot: {key.botId}</Typography>
                 <Typography gutterBottom>Type: {key.type}</Typography>
+                {/*
                 <Typography gutterBottom>Description: {key.description}</Typography>
                 <Typography gutterBottom>Valid From: {key.validFrom}</Typography>
                 <Typography gutterBottom>Valid To: {key.validTo}</Typography>
                 <Typography gutterBottom>Active: {key.active !== null ? key.active.toString():''}</Typography>
+                */}
               </Grid>
               <Grid item className={classes.buttonGrid}>
                 <Button
@@ -86,6 +87,11 @@ class ListKeys extends Component {
                   variant='outlined' color='primary' size='small'
                   onClick={() => this.editKey()}
                   >Edit</Button>
+                  <Button
+                    className={classes.buttonList}
+                    variant='outlined' color='primary' size='small'
+                    onClick={() => this.removeKey(key)}
+                    >Remove</Button>
 
                   <Dialog
                       open={this.state.isEditKeyDialogOpen}
@@ -130,6 +136,15 @@ class ListKeys extends Component {
     this.setState({ isEditKeyDialogOpen: true })
   }
 
+  removeKey (key) {
+    this.props.mutate({
+      variables:{
+        id: key.id
+      },
+      refetchQueries: [{query: getKeysQuery}]
+    })
+  }
+
   handleEditKeyDialogClose = () => {
     this.setState({ isEditKeyDialogOpen: false })
   }
@@ -151,4 +166,7 @@ class ListKeys extends Component {
   }
 }
 
-export default withStyles(styles)(ListKeys)
+export default compose(
+  graphql(removeKeyMutation),
+  withStyles(styles)
+)(ListKeys)

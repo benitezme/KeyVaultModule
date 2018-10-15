@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { graphql, compose } from 'react-apollo'
-import { addKeyMutation, getKeysQuery } from '../../../queries'
+import { addKeyMutation, getKeysQuery, getBotsQuery } from '../../../queries'
 
 //Material-ui
 import { withStyles } from '@material-ui/core/styles'
@@ -51,9 +51,9 @@ class AddKey extends Component {
       keyError: false,
       secret:'',
       secretError: false,
-      exchange:'',
+      exchange:'1', //Default Value
       exchangeError: false,
-      type:'',
+      type:'Competition', //Default Value
       description:'',
       validFrom: '',
       validTo: '',
@@ -61,6 +61,11 @@ class AddKey extends Component {
       botId:'',
       showPassword : false, //for showing the secret
     }
+  }
+
+  componentDidMount(){
+    this.state.type='Competition'
+    this.state.exchange='1'
   }
 
   handleMouseDownPassword = event => {
@@ -151,7 +156,7 @@ class AddKey extends Component {
            fullWidth
          />
 
-          <TextField
+          {/* <TextField
               id="validFrom"
               label="Valid From"
               type="datetime-local"
@@ -173,7 +178,7 @@ class AddKey extends Component {
             }}
             onChange={(e)=>this.setState({validTo:e.target.value})}
             fullWidth
-          />
+          /> */}
 
           <TextField
              // select
@@ -182,6 +187,7 @@ class AddKey extends Component {
              value={this.state.botId}
              onChange={(e)=>this.setState({botId:e.target.value})}
              fullWidth
+             disabled
              >
                {/* {this.displayBots()} */}
            </TextField>

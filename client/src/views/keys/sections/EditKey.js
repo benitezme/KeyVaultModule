@@ -80,7 +80,7 @@ class EditKey extends Component {
             id="secret"
             type={this.state.showPassword ? 'text' : 'password'}
             label="Secret"
-            value={this.props.getSecret.loading ? '' : this.props.getSecret.secret}
+            value={this.props.getSecret.loading ? '' : this.props.getSecret.keyVault_Secret}
             onChange={(e)=>this.setState({secret:e.target.value})}
             fullWidth
             disabled
@@ -119,6 +119,7 @@ class EditKey extends Component {
            value={this.state.type}
            onChange={(e)=>this.setState({type:e.target.value})}
            fullWidth
+           disabled
            >
              {types.map(option => (
                <MenuItem key={option} value={option}>{option}</MenuItem>
@@ -134,7 +135,7 @@ class EditKey extends Component {
            fullWidth
          />
 
-          <TextField
+          {/* <TextField
               id="validFrom"
               label="Valid From"
               type="datetime-local"
@@ -158,7 +159,7 @@ class EditKey extends Component {
             }}
             onChange={(e)=>this.setState({validTo:e.target.value})}
             fullWidth
-          />
+          /> */}
 
           <TextField
              // select
@@ -174,7 +175,7 @@ class EditKey extends Component {
            <br />
 
            <div className={classes.actionButton} >
-             <FormControlLabel
+             {/* <FormControlLabel
                 control={
                   <Checkbox
                     checked={this.state.active}
@@ -184,7 +185,7 @@ class EditKey extends Component {
                   />
                 }
                 label="Active"
-              />
+              /> */}
              <Button
                type="submit"
                onClick={this.handleEditKeyDialogClose}
@@ -222,7 +223,7 @@ class EditKey extends Component {
         active: this.state.active,
         botId: this.state.botId
       },
-      refetchQueries: [{query: getKeysQuery}]
+      refetchQueries: [{query: getKeysQuery, getSecret}]
     })
     this.props.handleEditKeyDialogClose();
   }
