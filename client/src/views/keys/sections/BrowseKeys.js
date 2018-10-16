@@ -40,20 +40,11 @@ class BrowseKeys extends Component {
     } else if (data.keyVault_Keys && data.keyVault_Keys.length > 0) {
       return this.displayKeys()
     } else if (data.error) {
-      console.log(data.error)
-      if(data.error.message.includes('401')){
         return (
           <Paper className={classes.root}>
             <Typography className={classes.root} variant='subheading'>Please Login to access your keys.</Typography>
           </Paper>
         )
-      } else{
-        return (
-          <Paper className={classes.root}>
-            <Typography className={classes.root} variant='subheading'>There has been an error.</Typography>
-          </Paper>
-        )
-      }
     } else {
       return (
         <Paper className={classes.root}>
