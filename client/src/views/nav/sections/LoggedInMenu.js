@@ -5,6 +5,7 @@ import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import { Link } from 'react-router-dom'
 
+import ProfileIcon from '@material-ui/icons/Person'
 import LogoutIcon from '@material-ui/icons/DirectionsWalk'
 
 const LogoutLink = props => <Link to='/logout' {...props} />
@@ -40,6 +41,10 @@ class LoggedInUserMenu extends Component {
           open={Boolean(this.state.menu)}
           onClose={this.handleClose}
         >
+          <MenuItem onClick={this.handleProfile}>
+            <ProfileIcon />
+            <div>Profile</div>
+          </MenuItem>
           <MenuItem onClick={this.handleLogout} component={LogoutLink}>
             <LogoutIcon />
             <div>Logout</div>
@@ -60,6 +65,10 @@ class LoggedInUserMenu extends Component {
   handleLogout () {
     this.props.auth.logout()
     this.setState({ menu: null })
+  }
+
+  handleProfile () {
+    window.location.replace('https://users.advancedalgos.net/user');
   }
 }
 

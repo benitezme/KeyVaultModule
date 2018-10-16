@@ -22,7 +22,7 @@ class Home extends Component {
     const { classes } = this.props
     return (
       <Paper className={classes.root}>
-        <Typography gutterBottom variant='display3'>Welcome! On this module you will be able to:</Typography>
+        <Typography gutterBottom variant='display3'>Welcome!</Typography>
 
         <List>
           <ListItem>
@@ -43,14 +43,14 @@ class Home extends Component {
             <Avatar>
               <AssingIcon />
             </Avatar>
-            <ListItemText primary="Assign one or more keys to a Financial Being." />
+            <ListItemText primary="Assign keys to Financial Beings." />
           </ListItem>
 
           <ListItem>
             <Avatar>
               <ActivityIcon />
             </Avatar>
-            <ListItemText primary="Review acivity associated to your keys. (On Development)" />
+            <ListItemText primary="Review activity associated to your keys." />
           </ListItem>
         </List>
 

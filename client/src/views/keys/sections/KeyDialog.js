@@ -5,14 +5,21 @@ import AddKey from './AddKey'
 import AddIcon from '@material-ui/icons/Add'
 import { withStyles } from '@material-ui/core/styles'
 import {
-  Button, Dialog, DialogContent, DialogContentText, DialogTitle
+  Button, Dialog, DialogContent, DialogContentText, DialogTitle, Paper, Typography
 } from '@material-ui/core'
 
 const styles = theme => ({
   button: {
-    position: 'fixed',
-    bottom: '10px',
-    right: '10px',
+    display: 'block',
+    marginTop: '1em',
+    marginLeft: 'auto',
+    lineHeight: '1em',
+    marginRight: 'auto',
+  },
+  root:{
+    flexGrow: 1,
+    padding: 20,
+    margin: 10
   },
 })
 
@@ -37,29 +44,30 @@ class KeyDialog extends Component {
   render () {
     const { classes } = this.props
     return (
-      <div>
-      <Button variant="fab" color="primary"
-        aria-label="addNewKey" className={classes.button}
-        onClick={this.handleNewKeyDialogOpen} >
-          <AddIcon />
-      </Button>
-      <Dialog
-          open={this.state.isNewKeyDialogOpen}
-          onClose={this.handleNewKeyDialogClose}
-          aria-labelledby="addKey-dialog-title"
-        >
-          <DialogTitle id="addKey-dialog-title">
-            Add a new Key
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              You will need to complete this form with the information from
-              the exchange.
-            </DialogContentText>
-            <AddKey handleNewKeyDialogClose={this.handleNewKeyDialogClose}/>
-          </DialogContent>
-        </Dialog>
-      </div>
+        <Paper className={classes.root}>
+          <Typography gutterBottom variant='headline'>Create another Key:</Typography>
+          <Button variant="fab" color="primary"
+            aria-label="addNewKey" className={classes.button}
+            onClick={this.handleNewKeyDialogOpen} >
+              <AddIcon />
+          </Button>
+          <Dialog
+              open={this.state.isNewKeyDialogOpen}
+              onClose={this.handleNewKeyDialogClose}
+              aria-labelledby="addKey-dialog-title"
+            >
+              <DialogTitle id="addKey-dialog-title">
+                Add a new Key
+              </DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  You will need to complete this form with the information from
+                  the exchange.
+                </DialogContentText>
+                <AddKey handleNewKeyDialogClose={this.handleNewKeyDialogClose}/>
+              </DialogContent>
+            </Dialog>
+          </Paper>
     )
   }
 }

@@ -1,4 +1,4 @@
-body {
-  background:#eee;
-  font-family: "arial";
+body{
+  margin: 0;
+  overflow-x: hidden;
 }

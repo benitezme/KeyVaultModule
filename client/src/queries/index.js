@@ -79,4 +79,15 @@ const getKeyQuery = gql`
   }
 `
 
-export { getSecret, getKeysQuery, addKeyMutation, editKeyMutation, getKeyQuery }
+const getAuditLog = gql`
+  query($key: String!){
+    auditLogs(key: $key){
+      id,
+      date,
+      action,
+      details
+    }
+  }
+`
+
+export { getSecret, getKeysQuery, addKeyMutation, editKeyMutation, getKeyQuery, getAuditLog }

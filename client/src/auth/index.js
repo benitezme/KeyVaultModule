@@ -4,7 +4,10 @@ import gql from 'graphql-tag'
 import { getItem, setItem, removeItem } from '../utils/local-storage'
 import { validObject, deleteCookie } from '../utils/js-helpers'
 
-import { client } from '../App'
+/*
+  The users module will be responsible for authenticate the user
+*/
+import { userClient } from '../App'
 
 import { AUTH_CONFIG } from './Auth0'
 
@@ -113,14 +116,14 @@ class Auth {
   async signinOrCreateAccount ({ accessToken, idToken, expiresAt }) {
     console.log(
       'signinOrCreateAccount: ',
-      client,
+      userClient,
       this.apolloClient,
       accessToken,
       idToken,
       expiresAt
     )
     try {
-      const data = await client.mutate({
+      const data = await userClient.mutate({
         mutation: AUTHENTICATE,
         variables: { idToken }
       })

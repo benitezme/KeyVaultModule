@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
 import EditKey from './EditKey'
+import AuditLogList from './AuditLogList'
+
+
 
 // Images
 import Poloniex from '../../../img/poloniex.png'
@@ -46,6 +49,7 @@ class ListKeys extends Component {
     super(props)
     this.state = {
       isEditKeyDialogOpen: false,
+      isAuditLogDialogOpen: false
     }
   }
 
@@ -64,14 +68,19 @@ class ListKeys extends Component {
             <Grid item xs container direction='column' spacing={16}>
               <Grid item xs>
                 <Typography gutterBottom variant='headline'>Key: {key.key}</Typography>
+                <Typography gutterBottom>Bot: {key.botId}</Typography>
                 <Typography gutterBottom>Type: {key.type}</Typography>
                 <Typography gutterBottom>Description: {key.description}</Typography>
                 <Typography gutterBottom>Valid From: {key.validFrom}</Typography>
                 <Typography gutterBottom>Valid To: {key.validTo}</Typography>
                 <Typography gutterBottom>Active: {key.active !== null ? key.active.toString():''}</Typography>
-                <Typography gutterBottom>Boot: {key.botId}</Typography>
               </Grid>
               <Grid item className={classes.buttonGrid}>
+                <Button
+                  className={classes.buttonList}
+                  variant='outlined' color='primary' size='small'
+                  onClick={() => this.auditLog()}
+                  >Review Audit Log</Button>
                 <Button
                   className={classes.buttonList}
                   variant='outlined' color='primary' size='small'
@@ -96,6 +105,19 @@ class ListKeys extends Component {
 
                       </DialogContent>
                     </Dialog>
+
+                    <Dialog
+                        open={this.state.isAuditLogDialogOpen}
+                        onClose={this.handleAuditLogDialogClose}
+                        aria-labelledby="auditLog-dialog-title"
+                      >
+                        <DialogTitle id="auditLog-dialog-title">
+                          Audit Log History
+                        </DialogTitle>
+                        <DialogContent>
+                          <AuditLogList currentKey={key} handleEditKeyDialogClose={this.handleAuditLogDialogClose}/>
+                        </DialogContent>
+                      </Dialog>
               </Grid>
             </Grid>
           </Grid>
@@ -104,16 +126,20 @@ class ListKeys extends Component {
     )
   }
 
-  handleEditKeyDialogOpen = () => {
+  editKey () {
     this.setState({ isEditKeyDialogOpen: true })
-  };
+  }
 
   handleEditKeyDialogClose = () => {
     this.setState({ isEditKeyDialogOpen: false })
-  };
+  }
 
-  editKey () {
-    this.setState({ isEditKeyDialogOpen: true })
+  auditLog () {
+    this.setState({ isAuditLogDialogOpen: true })
+  }
+
+  handleAuditLogDialogClose = () => {
+    this.setState({ isAuditLogDialogOpen: false })
   }
 
   getImage (exchange) {
