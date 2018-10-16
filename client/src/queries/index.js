@@ -90,12 +90,12 @@ const getAuditLog = gql`
   }
 `
 const getBotsQuery = gql`
-  query($owner: String!){
-    teams_TeamsByOwner(ownerId: $ownerId){
-      id,
-      date,
-      action,
-      details
+  query{
+    teams_FbByTeamMember{
+      name
+      fb{
+        name
+      }
     }
   }
 `
