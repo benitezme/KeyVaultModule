@@ -43,8 +43,14 @@ app.use('/graphql',
     algorithms: [`RS256`]
   }),
   function (req, res, next) {
-    // if (err) return res.status(401).send(`[Authenticate Token Error] ${err.message}`);
-    return next()
+    if (!req.user){
+      let error = {
+        error:'Authentication Error'
+      }
+      return res.status(401).send(error)
+    } else {
+      return next()
+    }
   }
 );
 
