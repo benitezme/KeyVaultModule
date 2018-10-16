@@ -2,13 +2,13 @@ import gql from 'graphql-tag'
 
 const getSecret = gql`
   query($id: ID!){
-    secret(id: $id)
+    keyVault_Secret(id: $id)
   }
 `
 
 const getKeysQuery = gql`
 {
-    keys{
+    keyVault_Keys{
       id
       authId
       key
@@ -27,7 +27,7 @@ const addKeyMutation = gql`
   mutation($key: String!, $secret: String!, $exchange: String!,
             $type: String!, $description: String!, $validFrom: String!,
             $validTo: String!, $active: Boolean!, $botId: ID!){
-    addKey(
+    keyVault_AddKey(
       key: $key,
       secret: $secret,
       exchange: $exchange,
@@ -47,7 +47,7 @@ const addKeyMutation = gql`
 const editKeyMutation = gql`
   mutation($id: ID!, $type: String!, $description: String!, $validFrom: String!,
             $validTo: String!, $active: Boolean!, $botId: ID!){
-    editKey(
+    keyVault_EditKey(
       id: $id,
       type: $type,
       description: $description,
@@ -64,7 +64,7 @@ const editKeyMutation = gql`
 
 const getKeyQuery = gql`
   query($id: ID!){
-    key(id: $id) {
+    keyVault_Key(id: $id) {
       id
       authId
       key
@@ -81,7 +81,7 @@ const getKeyQuery = gql`
 
 const getAuditLog = gql`
   query($key: String!){
-    auditLogs(key: $key){
+    keyVault_AuditLogs(key: $key){
       id,
       date,
       action,
@@ -89,5 +89,21 @@ const getAuditLog = gql`
     }
   }
 `
+const getBotsQuery = gql`
+  query{
+    teams_FbByTeamMember{
+      name
+      fb{
+        name
+      }
+    }
+  }
+`
 
-export { getSecret, getKeysQuery, addKeyMutation, editKeyMutation, getKeyQuery, getAuditLog }
+const removeKeyMutation = gql`
+  mutation($id: ID!){
+    keyVault_RemoveKey( id: $id)
+  }
+`
+
+export { getSecret, getKeysQuery, addKeyMutation, editKeyMutation, getKeyQuery, getAuditLog, removeKeyMutation, getBotsQuery }

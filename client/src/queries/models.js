@@ -6,10 +6,6 @@ const exchanges = [
   {
     id: '1',
     name: 'Poloniex'
-  },
-  {
-    id: '2',
-    name: 'Binance'
   }
 ]
 

@@ -3,3 +3,4 @@ client/src/auth/Auth0.js
 server/auth/Auth0.js
 server/auth/dbConfig.js
 server/auth/utils.js
+client/package-lock.json

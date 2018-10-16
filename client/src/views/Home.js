@@ -1,12 +1,15 @@
 import React, { Component } from 'react'
 
-import { Typography, Paper, List, ListItem, ListItemText , Avatar} from '@material-ui/core'
+import { Typography, Paper, List, ListItem,
+  ListItemText , Avatar, IconButton, Link } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 
 import ActivityIcon from '@material-ui/icons/LibraryBooks';
 import AssingIcon from '@material-ui/icons/CompareArrows';
 import StoreIcon from '@material-ui/icons/SaveAlt';
 import ManageIcon from '@material-ui/icons/VerticalSplit';
+
+import BrowseIcon from '@material-ui/icons/ImportContacts'
 
 const styles = theme => ({
   root: {
@@ -53,9 +56,6 @@ class Home extends Component {
             <ListItemText primary="Review activity associated to your keys." />
           </ListItem>
         </List>
-
-        <Typography gutterBottom variant='caption'>Please login at the right top corner to get started.</Typography>
-
       </Paper>
     )
   }

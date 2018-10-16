@@ -62,7 +62,8 @@ class KeyDialog extends Component {
               <DialogContent>
                 <DialogContentText>
                   You will need to complete this form with the information from
-                  the exchange.
+                  the exchange. The available bots are retrieved from the Teams you have, make
+                  sure you setup your team first!
                 </DialogContentText>
                 <AddKey handleNewKeyDialogClose={this.handleNewKeyDialogClose}/>
               </DialogContent>

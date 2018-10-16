@@ -121,6 +121,7 @@ const RootQuery = new GraphQLObjectType({
     keys: {
       type: new GraphQLList(KeyType),
       resolve (parent, args, context) {
+        logger.info('keys -> resolve -> Entering Fuction.')
         let authIdOnSession = context.user.sub // TODO can this be changed?
         return Key.find({authId: authIdOnSession})
       }
@@ -131,6 +132,7 @@ const RootQuery = new GraphQLObjectType({
         key: {type: new GraphQLNonNull(GraphQLString)}
       },
       resolve (parent, args, context) {
+        logger.info('auditLogs -> resolve -> Entering Fuction.')
         let authIdOnSession = context.user.sub
         return AuditLog.find({
           authId: authIdOnSession,
@@ -148,6 +150,7 @@ const RootQuery = new GraphQLObjectType({
       type: GraphQLString,
       args: {id: {type: new GraphQLNonNull(GraphQLID)}},
       resolve (parent, args, context) {
+        logger.info('secret -> resolve -> Entering Fuction.')
         let authIdOnSession = context.user.sub
         return new Promise((resolve, reject) => {
           Key.findOne({$and: [
@@ -189,6 +192,7 @@ const Mutation = new GraphQLObjectType({
         botId: {type: GraphQLID}
       },
       resolve (parent, args, context) {
+        logger.info('addKey -> resolve -> Entering Fuction.')
         // TODO Relocate business logic for resolve methods
         let authIdOnSession = context.user.sub
 
@@ -235,6 +239,7 @@ const Mutation = new GraphQLObjectType({
         botId: {type: GraphQLID}
       },
       resolve (parent, args, context) {
+        logger.info('editKey -> resolve -> Entering Fuction.')
         // TODO Relocate business logic for resolve methods
         let authIdOnSession = context.user.sub
         var query = {_id: args.id}
@@ -260,6 +265,7 @@ const Mutation = new GraphQLObjectType({
         botId: {type: new GraphQLNonNull(GraphQLID)}
       },
       resolve (parent, args) {
+        logger.info('assignKeyBot -> resolve -> Entering Fuction.')
         // TODO Relocate business logic for resolve methods
         return new Promise((resolve, reject) => {
           var query = {key: args.key}
@@ -327,6 +333,29 @@ const Mutation = new GraphQLObjectType({
             })
           })
         }
+      }
+    },
+    removeKey: {
+      type: GraphQLString,
+      args: {
+        id: {type: new GraphQLNonNull(GraphQLID)}
+      },
+      resolve (parent, args, context) {
+        logger.info('removeKey -> resolve -> Entering Fuction.')
+        // TODO Relocate business logic for resolve methods
+        let authIdOnSession = context.user.sub
+        var query = {_id: args.id}
+
+        saveAuditLog(args.id, 'removeKey', context)
+
+        Key.deleteOne(query, function (err) {
+            if (err){
+              logger.error('removeKey -> resolve -> Error removing key.', err)
+               return 'Error removing key'
+            }else{
+              return 'Key Removed'
+            }
+          })
       }
     },
     authenticate: {
