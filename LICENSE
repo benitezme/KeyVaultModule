@@ -17,25 +17,24 @@ in the crypto space and this module is still proprietary software.
 The reasons for opening up the code of this module at this stage are the following:
 
   * We believe that transparency is paramount to achieving our goals, so we want everyone 
-    to be able to understand what this module does and how. Opening up the code of this module allows 
-    anyone to take a close look.
+    to be able to understand what this module does and how. Opening up the code of this module 
+    allows anyone to take a close look.
 
-  * We welcome contributions from the community. Contributions are compensated on a case 
-    by case basis with ALGO tokens. Contributions are deemed _work for hire_ and contributors 
-    agree to provide an express grant of patent rights for their contributions.
+  * We welcome contributions from the community. Contributions may be compensated on a case 
+    by case basis with ALGO tokens. Contributors     agree to provide an express grant of patent
+    rights for their contributions.
 
 
 LICENSE WORDING
 
 Advanced Algos LTD. grants a limited license for the following uses:
 
-1. CODE REVIEW AND AUDITS. You are granted permission to clone the AACoud repository to analyze, 
+1. CODE REVIEW AND AUDITS. You are granted permission to clone this repository to analyze, 
    review or audit the code.
 
-2. COLLABORATING WITH ADVANCED ALGOS LTD. You are granted permission to fork the this module repository 
+2. COLLABORATING WITH ADVANCED ALGOS LTD. You are granted permission to fork the this repository 
    with the sole purpose of correcting bugs and developing functionality in agreement with 
-   Advanced Algos LTD. Before your contributions are merged into our repository, you will be requested 
-   to sign a Contributors Work for Hire Agreement.
+   Advanced Algos LTD. By contributing to this repository you explicitely agree to the terms detailed in CONTRIBUTING.MD.
 
 PLEASE SEE CONTRIBUTING.MD FOR MORE DETAILS ON THE IMPLICATIONS SURROUNDING YOUR CONTRIBUTIONS TO THIS REPOSITORY.
 
