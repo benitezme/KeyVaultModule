@@ -25,7 +25,7 @@ class Home extends Component {
     const { classes } = this.props
     return (
       <Paper className={classes.root}>
-        <Typography gutterBottom variant='display3'>Welcome!</Typography>
+        <Typography gutterBottom variant='h4'>On this section you will be able to:</Typography>
 
         <List>
           <ListItem>

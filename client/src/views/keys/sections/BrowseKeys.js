@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { graphql, compose } from 'react-apollo'
 import { getKeysQuery } from '../../../queries'
-import { getItem } from '../../../utils/local-storage'
 
 import KeyDialog from './KeyDialog'
 import ListKeys from './ListKeys'

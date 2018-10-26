@@ -8,7 +8,7 @@ const jwt = require('express-jwt');
 const jwksRsa = require('jwks-rsa');
 const AUTH_CONFIG = require('./auth/Auth0');
 const dbConfig = require('./auth/dbConfig')
-
+const logger = require('./config/logger')
 const app = express();
 
 // Allow cross origing request
@@ -18,7 +18,7 @@ app.use(cors());
 mongoose.connect(dbConfig.connectionString, { useNewUrlParser: true });
 
 mongoose.connection.once('open',()=>{
-  console.log('Connected to the DB.');
+  logger.info('Connected to the DB.');
 })
 
 /* Here we bind all requests to this endpoint to be procecced by the GraphQL Library. */
@@ -57,5 +57,5 @@ app.use('/graphql', graphqlHTTP(req => {
 
 
 app.listen(4002, ()=>{
-  console.log('now listening on port 4002.');
+  logger.info('now listening on port 4002.');
 });
