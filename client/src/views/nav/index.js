@@ -70,27 +70,24 @@ class NavBar extends Component {
               Key Vault
             </Typography>
 
-            <Button
-              variant='text'
-              size='small'
-              className={classNames(classes.button, classes.cssRoot)}
-              title='Key Vault Home'
-              component={HomeLink}
-              to={`${match.url}`}>
-              <HomeIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
-              Home
-            </Button>
+            {this.state.user !== undefined && this.state.user !== null ? (
+                <React.Fragment>
+                  <Button
+                    variant='text'
+                    size='small'
+                    className={classNames(classes.button, classes.cssRoot)}
+                    title='Browse Keys'
+                    component={BrowseLink}
+                    to={`${match.url}/browse`}>
+                    <BrowseIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
+                    Browse Keys
+                  </Button>
+                </React.Fragment>
+              ) : (
+                <React.Fragment />
+              )}
 
-            <Button
-              variant='text'
-              size='small'
-              className={classNames(classes.button, classes.cssRoot)}
-              title='Browse Keys'
-              component={BrowseLink}
-              to={`${match.url}/browse`}>
-              <BrowseIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
-              Browse Keys
-            </Button>
+
 
           </Toolbar>
         </AppBar>
