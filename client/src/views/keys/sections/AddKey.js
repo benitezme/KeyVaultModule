@@ -215,8 +215,8 @@ class AddKey extends Component {
 
     displayBots(){
       if(!this.props.getBotsQuery.loading){
-        let bots = this.props.getBotsQuery.teams_FbByTeamMember.fb
-        if (bots.length > 0){
+        let bots = this.props.getBotsQuery.teams_FbByTeamMember
+        if (bots !== null && bots.fb.length > 0){
           return bots.map(bot => (
             <MenuItem value={this.slugify(bot.name)}>{bot.name}</MenuItem>
           ))
@@ -296,17 +296,7 @@ class AddKey extends Component {
 }
 
 export default compose(
-  graphql(addKeyMutation,{name:'addKeyMutation'}),
-  graphql(getBotsQuery, { // What follows is the way to pass a parameter to a query.
-    name: 'getBotsQuery',
-    options: (props) => {
-      let user = JSON.parse(localStorage.getItem('user'))
-      return {
-        variables: {
-          ownerId: user.authId
-        }
-      }
-    }
-  }),
+  graphql(addKeyMutation, { name:'addKeyMutation' }),
+  graphql(getBotsQuery, { name: 'getBotsQuery' }),
   withStyles(styles)
 )(AddKey)
