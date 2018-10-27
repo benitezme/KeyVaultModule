@@ -4,7 +4,7 @@ import classNames from 'classnames'
 import { withStyles } from '@material-ui/core/styles'
 import {AppBar, Typography, Button, Toolbar} from '@material-ui/core'
 
-import BrowseIcon from '@material-ui/icons/ImportContacts'
+import ManageKeysIcon from '@material-ui/icons/VPNKey'
 import HomeIcon from '@material-ui/icons/Home'
 
 import { Link } from 'react-router-dom'
@@ -79,8 +79,8 @@ class NavBar extends Component {
                     title='Browse Keys'
                     component={BrowseLink}
                     to={`${match.url}/browse`}>
-                    <BrowseIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
-                    Browse Keys
+                    <ManageKeysIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
+                    Manage Keys
                   </Button>
                 </React.Fragment>
               ) : (
