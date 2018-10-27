@@ -4,9 +4,8 @@ const crypto = require('crypto')
 const Key = require('../models/key')
 const AuditLog = require('../models/auditLog')
 const exchanges = require('../models/exchange')
-const utils = require('../auth/utils')
+const utils = require('../config/utils')
 
-const authenticator = require('./resolvers/Authenticator')
 const logger = require('../config/logger')
 
 const {
@@ -22,7 +21,6 @@ const {
 } = graphql
 
 function saveAuditLog (keyId, action, context, details) {
-  let authIdOnSession = context.user.sub
   let localDate = new Date()
   let date = new Date(Date.UTC(
     localDate.getUTCFullYear(),
@@ -35,7 +33,7 @@ function saveAuditLog (keyId, action, context, details) {
   )
 
   var auditLogEntry = new AuditLog({
-    authId: authIdOnSession,
+    authId: context.userId,
     keyId: keyId,
     action: action,
     details: details,
@@ -122,8 +120,7 @@ const RootQuery = new GraphQLObjectType({
       type: new GraphQLList(KeyType),
       resolve (parent, args, context) {
         logger.info('keys -> resolve -> Entering Fuction.')
-        let authIdOnSession = context.user.sub // TODO can this be changed?
-        return Key.find({authId: authIdOnSession})
+        return Key.find({authId: context.userId})
       }
     },
     auditLogs: {
@@ -133,9 +130,8 @@ const RootQuery = new GraphQLObjectType({
       },
       resolve (parent, args, context) {
         logger.info('auditLogs -> resolve -> Entering Fuction.')
-        let authIdOnSession = context.user.sub
         return AuditLog.find({
-          authId: authIdOnSession,
+          authId: context.userId,
           keyId: args.key
         })
       }
@@ -151,11 +147,10 @@ const RootQuery = new GraphQLObjectType({
       args: {id: {type: new GraphQLNonNull(GraphQLID)}},
       resolve (parent, args, context) {
         logger.info('secret -> resolve -> Entering Fuction.')
-        let authIdOnSession = context.user.sub
         return new Promise((resolve, reject) => {
           Key.findOne({$and: [
               {_id: args.id},
-              {authId: authIdOnSession},
+              {authId: context.userId},
           ]}, (err, key) => {
             if (err || key === null) reject(err)
             else {
@@ -194,7 +189,6 @@ const Mutation = new GraphQLObjectType({
       resolve (parent, args, context) {
         logger.info('addKey -> resolve -> Entering Fuction.')
         // TODO Relocate business logic for resolve methods
-        let authIdOnSession = context.user.sub
 
         //TODO change password
         const cipher = crypto.createCipher('aes192', utils.serverSecret)
@@ -202,7 +196,7 @@ const Mutation = new GraphQLObjectType({
         secret += cipher.final('hex')
 
         let newKey = new Key({
-          authId: authIdOnSession,
+          authId: context.userId,
           key: args.key,
           secret: secret,
           exchange: args.exchange,
@@ -241,7 +235,7 @@ const Mutation = new GraphQLObjectType({
       resolve (parent, args, context) {
         logger.info('editKey -> resolve -> Entering Fuction.')
         // TODO Relocate business logic for resolve methods
-        let authIdOnSession = context.user.sub
+        // TODO Validate the owner
         var query = {_id: args.id}
         var options = { new: true}
         let update = {
@@ -343,7 +337,6 @@ const Mutation = new GraphQLObjectType({
       resolve (parent, args, context) {
         logger.info('removeKey -> resolve -> Entering Fuction.')
         // TODO Relocate business logic for resolve methods
-        let authIdOnSession = context.user.sub
         var query = {_id: args.id}
 
         saveAuditLog(args.id, 'removeKey', context)
@@ -356,16 +349,6 @@ const Mutation = new GraphQLObjectType({
               return 'Key Removed'
             }
           })
-      }
-    },
-    authenticate: {
-      type: UserType,
-      args: {
-        idToken: {type: new GraphQLNonNull(GraphQLString)}
-      },
-      resolve (parent, args) {
-        logger.info('authenticate -> resolve -> Entering function.')
-        return authenticator.resolve(parent, args)
       }
     }
   }
