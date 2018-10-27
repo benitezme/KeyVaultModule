@@ -66,7 +66,7 @@ class ListKeys extends Component {
           <Grid item xs={12} sm container>
             <Grid item xs container direction='column' spacing={16}>
               <Grid item xs>
-                <Typography gutterBottom variant='headline'>Key: {key.key}</Typography>
+                <Typography gutterBottom variant='h5'>Key: {key.key}</Typography>
                 <Typography gutterBottom>Bot: {key.botId}</Typography>
                 <Typography gutterBottom>Type: {key.type}</Typography>
                 {/*

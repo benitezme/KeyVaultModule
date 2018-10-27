@@ -45,7 +45,7 @@ class KeyDialog extends Component {
     const { classes } = this.props
     return (
         <Paper className={classes.root}>
-          <Typography gutterBottom variant='headline'>Create another Key:</Typography>
+          <Typography gutterBottom variant='h5'>Create another Key:</Typography>
           <Button variant="fab" color="primary"
             aria-label="addNewKey" className={classes.button}
             onClick={this.handleNewKeyDialogOpen} >

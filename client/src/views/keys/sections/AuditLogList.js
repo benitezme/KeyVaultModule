@@ -47,14 +47,14 @@ class AuditLogList extends Component {
     const { classes } = this.props
     var data = this.props.data
     if(data.loading){
-      return <Typography className={classes.root} variant='subheading'>Loading...</Typography>
+      return <Typography className={classes.root} variant='subtitle1'>Loading...</Typography>
     }else{
 
       if(!data.keyVault_AuditLogs){
-        return <Typography className={classes.root} variant='subheading'>There has been an erorr.</Typography>
+        return <Typography className={classes.root} variant='subtitle1'>There has been an erorr.</Typography>
       }
       if(data.keyVault_AuditLogs.length === 0){
-        return <Typography className={classes.root} variant='subheading'>There is no audit history for this key.</Typography>
+        return <Typography className={classes.root} variant='subtitle1'>There is no audit history for this key.</Typography>
       }
 
       return (
