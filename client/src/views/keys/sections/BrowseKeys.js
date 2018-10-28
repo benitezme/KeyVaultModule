@@ -32,24 +32,24 @@ class BrowseKeys extends Component {
     const data = this.props.data
     if (data.loading) {
       return (
-        <Paper className={classes.root}>
+        <div className={classes.root}>
           <Typography variant='subtitle1'>Loading keys...</Typography>
-        </Paper>
+        </div>
       )
     } else if (data.keyVault_Keys && data.keyVault_Keys.length > 0) {
       return this.displayKeys()
     } else if (data.error) {
         return (
-          <Paper className={classes.root}>
+          <div className={classes.root}>
             <Typography className={classes.root} variant='subtitle1'>Please Login to access your keys.</Typography>
-          </Paper>
+          </div>
         )
     } else {
       return (
-        <Paper className={classes.root}>
-          <Typography className={classes.root} variant='subtitle1'>You don't have any keys yet.</Typography>
+        <div className={classes.root}>
+          <Typography className={classes.root} variant='subtitle1'>You don't have any keys yet. After you create a new key, it will be listed here.</Typography>
           <KeyDialog />
-        </Paper>
+        </div>
       )
     }
   }
