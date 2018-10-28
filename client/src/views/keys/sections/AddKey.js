@@ -52,8 +52,8 @@ class AddKey extends Component {
       exchange:'',
       type:'',
       description:'',
-      validFrom: '',
-      validTo: '',
+      validFrom: 0,
+      validTo: 0,
       active: true,
       botId:'',
       showPassword : false, //for showing the secret
@@ -169,7 +169,7 @@ class AddKey extends Component {
                 InputLabelProps={{
                   shrink: true,
                 }}
-                onChange={(e)=>this.setState({validFrom:e.target.value})}
+                onChange={(e)=>this.setState({validFrom: new Date(e.target.value).getTime()})}
                 fullWidth
               />
 
@@ -181,7 +181,7 @@ class AddKey extends Component {
               InputLabelProps={{
                 shrink: true,
               }}
-              onChange={(e)=>this.setState({validTo:e.target.value})}
+              onChange={(e)=>this.setState({validTo: new Date(e.target.value).getTime()})}
               fullWidth
             /> */}
 
@@ -217,8 +217,8 @@ class AddKey extends Component {
       if(!this.props.getBotsQuery.loading){
         let bots = this.props.getBotsQuery.teams_FbByTeamMember
         if (bots !== null && bots.fb.length > 0){
-          return bots.map(bot => (
-            <MenuItem value={this.slugify(bot.name)}>{bot.name}</MenuItem>
+          return bots.fb.map(bot => (
+            <MenuItem key={bot.name} value={this.slugify(bot.name)}>{bot.name}</MenuItem>
           ))
         }else{
           return <MenuItem value={''}>You don't have bots yet!</MenuItem>

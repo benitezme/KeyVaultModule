@@ -88,8 +88,8 @@ const KeyType = new GraphQLObjectType({
     type: {type: GraphQLString},
     description: {type: GraphQLString},
     exchange: {type: GraphQLString},
-    validFrom: {type: GraphQLString},
-    validTo: {type: GraphQLString},
+    validFrom: {type: GraphQLInt},
+    validTo: {type: GraphQLInt},
     active: {type: GraphQLBoolean},
     botId: {type: GraphQLString} // TODO create the connection to another module
   })
@@ -181,8 +181,8 @@ const Mutation = new GraphQLObjectType({
         exchange: {type: new GraphQLNonNull(GraphQLString)},
         type: {type: GraphQLString}, // TODO Tipify
         description: {type: GraphQLString},
-        validFrom: {type: GraphQLString},
-        validTo: {type: GraphQLString},
+        validFrom: {type: GraphQLInt},
+        validTo: {type: GraphQLInt},
         active: {type: GraphQLBoolean},
         botId: {type: GraphQLID}
       },
@@ -227,8 +227,8 @@ const Mutation = new GraphQLObjectType({
         id: {type: new GraphQLNonNull(GraphQLID)},
         type: {type: GraphQLString}, // TODO Tipify
         description: {type: GraphQLString},
-        validFrom: {type: GraphQLString},
-        validTo: {type: GraphQLString},
+        validFrom: {type: GraphQLInt},
+        validTo: {type: GraphQLInt},
         active: {type: GraphQLBoolean},
         botId: {type: GraphQLID}
       },
