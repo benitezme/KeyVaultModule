@@ -4,13 +4,16 @@ import classNames from 'classnames'
 import { withStyles } from '@material-ui/core/styles'
 import {AppBar, Typography, Button, Toolbar} from '@material-ui/core'
 
-import ManageKeysIcon from '@material-ui/icons/VPNKey'
+import ManageKeysIcon from '@material-ui/icons/VpnKey'
+import AddKeyIcon from '@material-ui/icons/AddCircleOutline'
 import HomeIcon from '@material-ui/icons/Home'
+import AuditLogIcon from '@material-ui/icons/ImportContacts'
 
 import { Link } from 'react-router-dom'
 
 const HomeLink = props => <Link to='/key-vault' {...props} />
 const BrowseLink = props => <Link to='/key-vault/browse' {...props} />
+const AddKeyLink = props => <Link to='/key-vault/addKey' {...props} />
 
 const styles = theme => ({
   root: {
@@ -82,6 +85,18 @@ class NavBar extends Component {
                     <ManageKeysIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
                     Manage Keys
                   </Button>
+
+                  <Button
+                    variant='text'
+                    size='small'
+                    className={classNames(classes.button, classes.cssRoot)}
+                    title='Add Key'
+                    component={AddKeyLink}
+                    to={`${match.url}/addKey`}>
+                    <AddKeyIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
+                    Add Key
+                  </Button>
+
                 </React.Fragment>
               ) : (
                 <React.Fragment />

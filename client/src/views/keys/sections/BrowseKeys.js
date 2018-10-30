@@ -12,8 +12,10 @@ import { withStyles } from '@material-ui/core/styles'
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    padding: 20,
-    margin: 10
+    padding: 10,
+    margin: 10,
+    width: '70%',
+    marginLeft: '15%',
   }
 })
 
@@ -48,7 +50,6 @@ class BrowseKeys extends Component {
       return (
         <div className={classes.root}>
           <Typography className={classes.root} variant='subtitle1'>You don't have any keys yet. After you create a new key, it will be listed here.</Typography>
-          <KeyDialog />
         </div>
       )
     }
@@ -56,14 +57,14 @@ class BrowseKeys extends Component {
 
   displayKeys () {
     var data = this.props.data
+    const { classes } = this.props
     const length = data.keyVault_Keys.length
     return data.keyVault_Keys.map((key, i) => {
       if (length === i + 1) {
         return (
-          <React.Fragment key='keyList'>
+          <div className={classes.root}>
             <ListKeys key={key.id} currentKey={key} />
-            <KeyDialog key='addKeyDialog' />
-          </React.Fragment>
+          </div>
         )
       } else {
         return <ListKeys key={key.id} currentKey={key} />
