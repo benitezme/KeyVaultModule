@@ -1,6 +1,6 @@
 {
   "name": "@advancedalgos/key-vault-client",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "Advanced Algos KeyVault client-side web app",
   "main": "src/index.js",
   "dependencies": {

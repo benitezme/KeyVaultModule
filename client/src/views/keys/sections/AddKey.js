@@ -12,10 +12,18 @@ import { types, exchanges} from '../../../queries/models'
 
 import {
    MenuItem, Button, IconButton, InputAdornment, TextField,
-   FormControl, InputLabel, Input
+   FormControl, InputLabel, Input, Typography, Paper, Dialog,
+   DialogTitle, DialogContent, DialogContentText, DialogActions
 } from '@material-ui/core'
 
 const styles = theme => ({
+  root: {
+    width: '50%',
+    flexGrow: 1,
+    padding: 10,
+    marginLeft: '25%',
+    marginTop: '2%'
+  },
   container: {
     display: 'flex',
     flexWrap: 'wrap',
@@ -39,6 +47,14 @@ const styles = theme => ({
     textAlign: 'center',
     marginTop: 10
   },
+  typography: {
+    width: '80%',
+    marginLeft: '10%',
+    marginTop: 20
+  },
+  form: {
+    marginTop: 20
+  },
 
 });
 
@@ -60,7 +76,8 @@ class AddKey extends Component {
       keyError: false,
       secretError: false,
       exchangeError: false,
-      botIdError: false
+      botIdError: false,
+      isNewKeyDialogOpen: false,
     }
   }
 
@@ -80,20 +97,34 @@ class AddKey extends Component {
   render() {
     const { classes } = this.props
     return (
-      <React.Fragment>
-        <Button variant="outlined" size="small" fullWidth className={classes.actionButton}
-          href="https://advancedalgos.net/documentation-poloniex-api-key.shtml">
-          More details
-        </Button>
-        <form className={classes.root} noValidate autoComplete="off" onSubmit={this.submitForm.bind(this)}>
-            <TextField
+        <Paper className={classes.root}>
+
+        <form noValidate autoComplete="off" onSubmit={this.submitForm.bind(this)}>
+
+            <Typography className={classes.typography} variant='headline' gutterBottom>
+              Add a New Exchange Key
+            </Typography>
+
+            <Typography className={classes.typography} variant='subtitle1' align='justify'>
+              You will need to complete this section with the information from
+              the exchange.
+            </Typography>
+
+            <Button  variant="outlined" size="small" fullWidth className={classes.typography}
+              target="_blank"
+              href="https://advancedalgos.net/documentation-poloniex-api-key.shtml">
+              More details here
+            </Button>
+
+          <TextField
               id="key"
               label="Key"
-              className={classes.textField}
+              className={classNames(classes.form, classes.textField)}
               value={this.state.key}
               onChange={(e)=>this.setState({key:e.target.value})}
               onBlur={(e)=>this.setState({keyError:false})}
               error={this.state.keyError}
+              autoComplete="false"
               fullWidth
             />
 
@@ -108,6 +139,7 @@ class AddKey extends Component {
               onBlur={(e)=>this.setState({secretError:false})}
               error={this.state.secretError}
               fullWidth
+              autoComplete="false"
               endAdornment={
                   <InputAdornment position="end">
                     <IconButton
@@ -122,10 +154,14 @@ class AddKey extends Component {
             />
           </FormControl>
 
+          <Typography className={classes.typography} variant='subtitle1' align='justify'>
+            For now, the only exchange available on the platform is Poloniex.
+          </Typography>
+
           <TextField
              select
              label="Exchange"
-             className={classNames(classes.margin, classes.textField)}
+             className={classNames(classes.margin, classes.textField, classes.form)}
              value={this.state.exchange}
              onChange={(e)=> this.setState({exchange:e.target.value})}
              onBlur={(e)=>this.setState({exchangeError:false})}
@@ -137,10 +173,15 @@ class AddKey extends Component {
                ))}
           </TextField>
 
+          <Typography className={classes.typography} variant='subtitle1' align='justify'>
+            The following fields corresponds to the platform configurations. The available bots are retrieved from the Teams you have, make
+            sure you setup your team first!
+          </Typography>
+
           <TextField
              select
              label="Type"
-             className={classNames(classes.margin, classes.textField)}
+             className={classNames(classes.margin, classes.textField, classes.form)}
              value={this.state.type}
              onChange={(e)=>this.setState({type:e.target.value})}
              fullWidth
@@ -207,9 +248,27 @@ class AddKey extends Component {
                  Add Key
                </Button>
              </div>
-
         </form>
-      </React.Fragment>
+
+        <Dialog
+          open={this.state.isNewKeyDialogOpen}
+          onClose={this.handleNewKeyDialogClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{"Exchange Key Succesfully Added"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              You now will be able to run your bot in competition and live using this key.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleNewKeyDialogClose} color="primary" autoFocus>
+              Ok
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Paper>
     );
   }
 
@@ -263,9 +322,33 @@ class AddKey extends Component {
           refetchQueries: [{query: getKeysQuery}]
         })
 
-        this.props.handleNewKeyDialogClose()
+        this.handleNewKeyDialogOpen()
       }
     }
+
+    handleNewKeyDialogOpen = () => {
+      this.setState({ isNewKeyDialogOpen: true })
+    };
+
+    handleNewKeyDialogClose = () => {
+      this.setState({
+        key:'',
+        secret:'',
+        exchange:'',
+        type:'',
+        description:'',
+        validFrom: 0,
+        validTo: 0,
+        active: true,
+        botId:'',
+        showPassword : false,
+        keyError: false,
+        secretError: false,
+        exchangeError: false,
+        botIdError: false,
+        isNewKeyDialogOpen: false
+      })
+    };
 
     validate(){
       let isError = false
