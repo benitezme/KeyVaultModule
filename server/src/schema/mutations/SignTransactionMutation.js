@@ -8,6 +8,7 @@ import { Key, Exchange } from '../../models'
 import logger from '../../config/logger'
 import saveAuditLog from './AddAuditLog'
 import crypto from 'crypto'
+import _ from 'lodash'
 
 const args = {
   botId: {type: GraphQLString},
