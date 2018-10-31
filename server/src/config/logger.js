@@ -1,4 +1,4 @@
-const { createLogger, format, transports } = require('winston')
+import { createLogger, format, transports } from 'winston'
 const { combine, timestamp, simple } = format
 
 const options = {
@@ -36,4 +36,4 @@ const logger = createLogger({
   exitOnError: false // do not exit on handled exceptions
 })
 
-module.exports = logger
+export default logger
