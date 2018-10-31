@@ -31,8 +31,8 @@ const styles = theme => ({
     height: '100%'
   },
   textField: {
-    width: '60%',
-    marginLeft:'20%',
+    width: '80%',
+    marginLeft:'10%',
     marginBottom: 10
   },
   menu: {
@@ -101,7 +101,7 @@ class AddKey extends Component {
 
         <form noValidate autoComplete="off" onSubmit={this.submitForm.bind(this)}>
 
-            <Typography className={classes.typography} variant='headline' gutterBottom>
+            <Typography className={classes.typography} variant='h5' gutterBottom>
               Add a New Exchange Key
             </Typography>
 
@@ -259,7 +259,7 @@ class AddKey extends Component {
           <DialogTitle id="alert-dialog-title">{"Exchange Key Succesfully Added"}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              You now will be able to run your bot in competition and live using this key.
+              You now will be able to run your bot in competition and live modes using this key.
             </DialogContentText>
           </DialogContent>
           <DialogActions>
@@ -280,7 +280,9 @@ class AddKey extends Component {
             <MenuItem key={bot.name} value={this.slugify(bot.name)}>{bot.name}</MenuItem>
           ))
         }else{
-          return <MenuItem value={''}>You don't have bots yet!</MenuItem>
+          return <MenuItem key='test-bot' value='test-bot'>Test Bot</MenuItem>
+
+          // return <MenuItem value={''}>You don't have bots yet!</MenuItem>
 
         }
       }
@@ -334,8 +336,8 @@ class AddKey extends Component {
       this.setState({
         key:'',
         secret:'',
-        exchange:'',
-        type:'',
+        exchange:'1',
+        type:'Competition',
         description:'',
         validFrom: 0,
         validTo: 0,

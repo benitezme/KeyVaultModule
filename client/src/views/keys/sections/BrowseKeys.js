@@ -13,7 +13,6 @@ const styles = theme => ({
   root: {
     flexGrow: 1,
     padding: 10,
-    margin: 10,
     width: '70%',
     marginLeft: '15%',
   }
@@ -58,17 +57,12 @@ class BrowseKeys extends Component {
   displayKeys () {
     var data = this.props.data
     const { classes } = this.props
-    const length = data.keyVault_Keys.length
     return data.keyVault_Keys.map((key, i) => {
-      if (length === i + 1) {
-        return (
-          <div className={classes.root}>
-            <ListKeys key={key.id} currentKey={key} />
-          </div>
-        )
-      } else {
-        return <ListKeys key={key.id} currentKey={key} />
-      }
+      return (
+        <div key={key.id} className={classes.root}>
+          <ListKeys currentKey={key} />
+        </div>
+      )
     })
   }
 }

@@ -1,12 +1,12 @@
-const graphql = require('graphql')
-const _ = require('lodash')
-const crypto = require('crypto')
-const Key = require('../models/key')
-const AuditLog = require('../models/auditLog')
-const exchanges = require('../models/exchange')
-const utils = require('../config/utils')
+import graphql from 'graphql'
+import _ from 'lodash'
+import crypto from 'crypto'
+import Key from '../models/key'
+import AuditLog from '../models/auditLog'
+import exchanges from '../models/exchange'
+import utils from '../config/utils'
 
-const logger = require('../config/logger')
+import logger from '../config/logger'
 
 const {
   GraphQLObjectType,
@@ -150,16 +150,15 @@ const RootQuery = new GraphQLObjectType({
         return new Promise((resolve, reject) => {
           Key.findOne({$and: [
               {_id: args.id},
-              {authId: context.userId},
+              {authId: context.userId}
           ]}, (err, key) => {
             if (err || key === null) reject(err)
             else {
-
               saveAuditLog(key.id, 'secretRequested', context)
 
-              const decipher = crypto.createDecipher('aes192', utils.serverSecret);
-              let decrypted = decipher.update(key.secret, 'hex', 'utf8');
-              decrypted += decipher.final('utf8');
+              const decipher = crypto.createDecipher('aes192', process.env.SERVER_SECRET)
+              let decrypted = decipher.update(key.secret, 'hex', 'utf8')
+              decrypted += decipher.final('utf8')
 
               resolve(decrypted)
             }
@@ -190,8 +189,8 @@ const Mutation = new GraphQLObjectType({
         logger.info('addKey -> resolve -> Entering Fuction.')
         // TODO Relocate business logic for resolve methods
 
-        //TODO change password
-        const cipher = crypto.createCipher('aes192', utils.serverSecret)
+        // TODO change password
+        const cipher = crypto.createCipher('aes192', process.env.SERVER_SECRET)
         let secret = cipher.update(args.secret, 'utf8', 'hex')
         secret += cipher.final('hex')
 
@@ -285,7 +284,7 @@ const Mutation = new GraphQLObjectType({
       resolve (parent, args, context) {
         // TODO Relocate business logic for resolve methods
         logger.info('signTransaction -> resolve -> Entering function.')
-        if(!context){
+        if (!context) {
           logger.error('signTransaction -> resolve -> Authentication Fail.')
           return 'Error: Authentication Fail.'
         } else {
@@ -296,33 +295,33 @@ const Mutation = new GraphQLObjectType({
                 {exchange: 1},
                 {type: 'Competition'}
                 // {botId: args.botId}
-              ]}).exec(function (err, key) {
-                if (key) {
-                  logger.info('signTransaction -> resolve -> Retrieve key -> Key found.')
+            ]}).exec(function (err, key) {
+              if (key) {
+                logger.info('signTransaction -> resolve -> Retrieve key -> Key found.')
                   // Get exchange properties
-                  var exchange = _.find(exchanges, {id: key.exchange})
+                var exchange = _.find(exchanges, {id: key.exchange})
 
-                  const decipher = crypto.createDecipher('aes192', utils.serverSecret);
-                  let secret = decipher.update(key.secret, 'hex', 'utf8');
-                  secret += decipher.final('utf8');
+                const decipher = crypto.createDecipher('aes192', process.env.SERVER_SECRET)
+                let secret = decipher.update(key.secret, 'hex', 'utf8')
+                secret += decipher.final('utf8')
 
                   // Sign transaction
-                  var qsSignature = crypto.createHmac(exchange.algorithm, secret)
+                var qsSignature = crypto.createHmac(exchange.algorithm, secret)
                             .update(args.transaction)
                             .digest('hex')
 
-                  saveAuditLog(key.id, 'signTransaction', context, args.transaction)
+                saveAuditLog(key.id, 'signTransaction', context, args.transaction)
 
-                  var signedTransaction = {
-                    key: key.key,
-                    signature: qsSignature,
-                    date: new Date().valueOf()
-                  }
+                var signedTransaction = {
+                  key: key.key,
+                  signature: qsSignature,
+                  date: new Date().valueOf()
+                }
 
-                  resolve(signedTransaction)
-                } else {
-                  logger.info('signTransaction -> resolve -> Retrieve key -> Key not found.')
-                  reject('Error: key not found.')
+                resolve(signedTransaction)
+              } else {
+                logger.info('signTransaction -> resolve -> Retrieve key -> Key not found.')
+                reject('Error: key not found.')
               }
             })
           })
@@ -342,13 +341,13 @@ const Mutation = new GraphQLObjectType({
         saveAuditLog(args.id, 'removeKey', context)
 
         Key.deleteOne(query, function (err) {
-            if (err){
-              logger.error('removeKey -> resolve -> Error removing key.', err)
-               return 'Error removing key'
-            }else{
-              return 'Key Removed'
-            }
-          })
+          if (err) {
+            logger.error('removeKey -> resolve -> Error removing key.', err)
+            return 'Error removing key'
+          } else {
+            return 'Key Removed'
+          }
+        })
       }
     }
   }
