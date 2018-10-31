@@ -275,7 +275,7 @@ class AddKey extends Component {
     displayBots(){
       if(!this.props.getBotsQuery.loading){
         let bots = this.props.getBotsQuery.teams_FbByTeamMember
-        if (bots !== null && bots.fb.length > 0){
+        if (bots !== undefined && bots.fb.length > 0){
           return bots.fb.map(bot => (
             <MenuItem key={bot.name} value={this.slugify(bot.name)}>{bot.name}</MenuItem>
           ))
