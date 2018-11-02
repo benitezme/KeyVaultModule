@@ -26,8 +26,7 @@ const resolve = (parent, { botId, transaction }, context) => {
       Key.findOne({$and: [
           {botId: botId},
           {exchange: 1},
-          {type: 'Competition'},
-          {authId: context.userId}
+          {type: 'Competition'}
         ]}).exec(function (err, key) {
           if (key) {
             logger.info('signTransaction -> Retrieve key -> Key found.')

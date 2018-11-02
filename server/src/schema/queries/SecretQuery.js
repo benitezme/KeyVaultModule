@@ -28,7 +28,7 @@ const resolve = (parent, { id }, context) => {
   return new Promise((resolve, reject) => {
     Key.findOne({$and: [
         {_id: id},
-        {authId: context.userId},
+        {authId: context.userId}
     ]}, (err, key) => {
       if (err || key === null) reject(err)
       else {
