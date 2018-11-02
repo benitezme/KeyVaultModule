@@ -5,8 +5,18 @@ import schema from './schema'
 import mongoose from 'mongoose'
 import cors from 'cors'
 import logger from './config/logger'
+import wrongPreshared from './errors/notAllowed.json';
 
 const app = express()
+
+app.post('/graphql', (req, res, next) => {
+  if (req.headers.preshared === process.env.PRESHARED_GATEWAY_KEY) {
+    next();
+  } else {
+    res.send(wrongPreshared);
+  }
+});
+
 
 // Allow cross origing request
 app.use(cors())
