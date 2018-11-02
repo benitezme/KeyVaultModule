@@ -113,7 +113,7 @@ class AddKey extends Component {
             <Button  variant="outlined" size="small" fullWidth className={classes.typography}
               target="_blank"
               href="https://advancedalgos.net/documentation-poloniex-api-key.shtml">
-              More details here
+              Click here for step by step instructions on how to get a key
             </Button>
 
           <TextField
