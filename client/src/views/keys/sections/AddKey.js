@@ -259,7 +259,7 @@ class AddKey extends Component {
           <DialogTitle id="alert-dialog-title">{"Exchange Key Succesfully Added"}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              You now will be able to run your bot in competition and live modes using this key.
+              Now you will be able to run your bot in competition and live modes using this key. There are no further actions from you required for that.
             </DialogContentText>
           </DialogContent>
           <DialogActions>
