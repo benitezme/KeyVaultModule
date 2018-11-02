@@ -174,13 +174,12 @@ class AddKey extends Component {
           </TextField>
 
           <Typography className={classes.typography} variant='subtitle1' align='justify'>
-            The following fields corresponds to the platform configurations. The available bots are retrieved from the Teams you have, make
-            sure you setup your team first!
+            Please specify the intended use for this key. You must detail if you want to use it for Live Trade or Competitions and with which one of your bots.
           </Typography>
 
           <TextField
              select
-             label="Type"
+             label="Running Mode"
              className={classNames(classes.margin, classes.textField, classes.form)}
              value={this.state.type}
              onChange={(e)=>this.setState({type:e.target.value})}
