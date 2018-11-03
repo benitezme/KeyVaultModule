@@ -1,6 +1,4 @@
-const bots = ['Artudito', 'Robert', 'RocketFeller']
-
-const types = [ 'Development', 'Live', 'Competition' ]
+const types = [ 'Live', 'Competition' ]
 
 const exchanges = [
   {
@@ -9,4 +7,4 @@ const exchanges = [
   }
 ]
 
-export { bots, types, exchanges }
+export { types, exchanges }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {graphql, compose} from 'react-apollo'
-import { getSecret, getKeysQuery, editKeyMutation } from '../../../queries'
+import { getSecret, getKeysQuery, editKeyMutation, getBotsQuery } from '../../../queries'
 
 import { withStyles } from '@material-ui/core/styles'
 import classNames from 'classnames'
@@ -12,7 +12,7 @@ import {
    FormControl, InputLabel, Input, FormControlLabel, Checkbox
 } from '@material-ui/core'
 
-import { types, exchanges, bots} from '../../../queries/models'
+import { types, exchanges } from '../../../queries/models'
 
 const styles = theme => ({
   root: {
@@ -162,14 +162,14 @@ class EditKey extends Component {
           /> */}
 
           <TextField
-             // select
+             select
              label="Bot"
              className={classNames(classes.margin, classes.textField)}
              value={this.state.botId}
              onChange={(e)=>this.setState({botId:e.target.value})}
              fullWidth
              >
-               {/* {this.displayBots()} */}
+               {this.displayBots()}
            </TextField>
 
            <br />
@@ -223,17 +223,22 @@ class EditKey extends Component {
         active: this.state.active,
         botId: this.state.botId
       },
-      refetchQueries: [{query: getKeysQuery, getSecret}]
+      refetchQueries: [{query: getKeysQuery, getSecret, getAuditLog}]
     })
     this.props.handleEditKeyDialogClose();
   }
 
   displayBots(){
-    return bots.map(bot => {
-      return (
-        <MenuItem key={bot} value={bot}>{bot}</MenuItem>
-      )
-    })
+    if(!this.props.getBotsQuery.loading){
+      let bots = this.props.getBotsQuery.teams_FbByTeamMember
+      if (bots !== undefined && bots.fb.length > 0){
+        return bots.fb.map(bot => (
+          <MenuItem key={bot.name} value={this.slugify(bot.name)}>{bot.name}</MenuItem>
+        ))
+      }else{
+        return <MenuItem key={'no-bot'} value={''}>You don't have bots yet!</MenuItem>
+      }
+    }
   }
 }
 
@@ -249,7 +254,8 @@ export default compose(
           }
         }
       }
-    })
+    }),
+    graphql(getBotsQuery,{name:'getBotsQuery'}),
   ),
   withStyles(styles)
 )(EditKey)

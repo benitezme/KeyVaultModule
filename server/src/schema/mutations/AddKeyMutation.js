@@ -12,7 +12,7 @@ import {
 } from '../../errors'
 
 import { KeyType } from '../types'
-import { Key } from '../../models'
+import { Key, Exchange, KeyMode } from '../../models'
 import logger from '../../config/logger'
 import saveAuditLog from './AddAuditLog'
 import isUserAuthorized from './AuthorizeUser'
@@ -40,6 +40,16 @@ const resolve = (parent, { key, secret, exchange, type, description,
 
   if(!isUserAuthorized(context.authorization, botId)) {
     reject(new WrongArgumentsError('You are not eligible to assign this bot to the key, the bot is not yours!.'))
+    return
+  }
+
+  if (!Exchange.some(exchange => exchange.name === exchange)) {
+    reject(new WrongArgumentsError('The exchange selected is not valid.'))
+    return
+  }
+
+  if (!KeyMode.some(keyMode => keyMode === type)) {
+    reject(new WrongArgumentsError('The key mode type selected is not valid.'))
     return
   }
 

@@ -13,4 +13,4 @@ const exchanges = [
   }
 ]
 
-module.exports = exchanges;
+export default exchanges
