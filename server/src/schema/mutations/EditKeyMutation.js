@@ -6,10 +6,16 @@ import {
   GraphQLBoolean
 } from 'graphql'
 
+import {
+  AuthentificationError,
+  WrongArgumentsError
+} from '../../errors'
+
 import { KeyType } from '../types'
 import { Key } from '../../models'
 import logger from '../../config/logger'
 import saveAuditLog from './AddAuditLog'
+import isUserAuthorized from './AuthorizeUser'
 
 const args = {
   id: {type: new GraphQLNonNull(GraphQLID)},
@@ -29,6 +35,12 @@ const resolve = (parent, { id, type, description, validFrom, validTo, active,
     throw new AuthentificationError()
   }
 
+  if(!isUserAuthorized(context.authorization, botId)) {
+    reject(new WrongArgumentsError('You are not eligible to assign this bot to the key, the bot is not yours!.'))
+    return
+  }
+
+  logger.debug('editKey -> Editing key.')
   var query = {
     _id: id,
     authId: context.userId

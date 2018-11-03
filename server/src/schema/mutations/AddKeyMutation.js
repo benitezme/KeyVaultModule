@@ -7,13 +7,15 @@ import {
 } from 'graphql'
 
 import {
-  AuthentificationError
+  AuthentificationError,
+  WrongArgumentsError
 } from '../../errors'
 
 import { KeyType } from '../types'
 import { Key } from '../../models'
 import logger from '../../config/logger'
 import saveAuditLog from './AddAuditLog'
+import isUserAuthorized from './AuthorizeUser'
 import crypto from 'crypto'
 
 const args = {
@@ -35,6 +37,13 @@ const resolve = (parent, { key, secret, exchange, type, description,
   if (!context.userId) {
     throw new AuthentificationError()
   }
+
+  if(!isUserAuthorized(context.authorization, botId)) {
+    reject(new WrongArgumentsError('You are not eligible to assign this bot to the key, the bot is not yours!.'))
+    return
+  }
+
+  logger.debug('addKey -> Adding new key.')
 
   const cipher = crypto.createCipher('aes192', process.env.SERVER_SECRET)
   let secretEncrypted = cipher.update(secret, 'utf8', 'hex')

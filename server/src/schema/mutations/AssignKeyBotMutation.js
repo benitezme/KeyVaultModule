@@ -6,12 +6,14 @@ import {
 } from 'graphql'
 
 import {
-  AuthentificationError
+  AuthentificationError,
+  WrongArgumentsError
 } from '../../errors'
 
 import { Key } from '../../models'
 import logger from '../../config/logger'
 import saveAuditLog from './AddAuditLog'
+import isUserAuthorized from './AuthorizeUser'
 
 const args = {
   key: {type: new GraphQLNonNull(GraphQLString)},
@@ -26,6 +28,14 @@ const resolve = (parent, { key, botId }, context) => {
   }
 
   return new Promise((resolve, reject) => {
+
+    if(!isUserAuthorized(context.authorization, botId)) {
+      reject(new WrongArgumentsError('You are not eligible to assign this bot to the key, the bot is not yours!.'))
+      return
+    }
+
+    logger.debug('assignKeyBot -> Updating key.')
+
     var query = {
       key: key,
       authId: context.userId
@@ -40,7 +50,6 @@ const resolve = (parent, { key, botId }, context) => {
       }
     })
   })
-
 }
 
 const mutation = {
