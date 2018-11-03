@@ -6,14 +6,12 @@ import {
 
 import {
   AuthentificationError,
-  WrongArgumentsError,
   KeyVaultError
 } from '../../errors'
 
 import { Key } from '../../models'
 import logger from '../../config/logger'
 import saveAuditLog from './AddAuditLog'
-import isUserAuthorized from './AuthorizeUser'
 
 const args = {
   id: {type: new GraphQLNonNull(GraphQLID)}
@@ -24,11 +22,6 @@ const resolve = (parent, { id }, context) => {
 
   if (!context.userId) {
     throw new AuthentificationError()
-  }
-
-  if(!isUserAuthorized(context.authorization, botId)) {
-    reject(new WrongArgumentsError('You are not eligible to assign this bot to the key, the bot is not yours!.'))
-    return
   }
 
   logger.debug('removeKey -> Removing key.')

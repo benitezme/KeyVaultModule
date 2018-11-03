@@ -36,12 +36,12 @@ const resolve = (parent, { id, type, description, validFrom, validTo, active,
   }
 
   if(!isUserAuthorized(context.authorization, botId)) {
-    reject(new WrongArgumentsError('You are not eligible to assign this bot to the key, the bot is not yours!.'))
+    throw new WrongArgumentsError('You are not eligible to assign this bot to the key, the bot is not yours!.')
     return
   }
 
   if (!KeyMode.some(keyMode => keyMode === type)) {
-    reject(new WrongArgumentsError('The key mode type selected is not valid.'))
+    throw new WrongArgumentsError('The key mode type selected is not valid.')
     return
   }
 

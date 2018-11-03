@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {graphql, compose} from 'react-apollo'
-import { getSecret, getKeysQuery, editKeyMutation, getBotsQuery } from '../../../queries'
+import { getSecret, getKeysQuery, editKeyMutation, getBotsQuery, getAuditLog } from '../../../queries'
 
 import { withStyles } from '@material-ui/core/styles'
 import classNames from 'classnames'
@@ -83,7 +83,6 @@ class EditKey extends Component {
             value={this.props.getSecret.loading ? '' : this.props.getSecret.keyVault_Secret}
             onChange={(e)=>this.setState({secret:e.target.value})}
             fullWidth
-            disabled
             endAdornment={
                 <InputAdornment position="end">
                   <IconButton
@@ -223,7 +222,7 @@ class EditKey extends Component {
         active: this.state.active,
         botId: this.state.botId
       },
-      refetchQueries: [{query: getKeysQuery, getSecret, getAuditLog}]
+      refetchQueries: [{query: getKeysQuery, getAuditLog}]
     })
     this.props.handleEditKeyDialogClose();
   }
@@ -239,6 +238,23 @@ class EditKey extends Component {
         return <MenuItem key={'no-bot'} value={''}>You don't have bots yet!</MenuItem>
       }
     }
+  }
+
+  slugify(botName){
+    const a = 'àáäâãåèéëêìíïîòóöôùúüûñçßÿœæŕśńṕẃǵǹḿǘẍźḧ·/_,:;'
+    const b = 'aaaaaaeeeeiiiioooouuuuncsyoarsnpwgnmuxzh------'
+    const p = new RegExp(a.split('').join('|'), 'g')
+
+    return botName
+      .toString()
+      .toLowerCase()
+      .replace(/\s+/g, '-') // Replace spaces with -
+      .replace(p, c => b.charAt(a.indexOf(c))) // Replace special characters
+      .replace(/&/g, '-and-') // Replace & with 'and'
+      .replace(/[^\w-]+/g, '') // Remove all non-word characters
+      .replace(/--+/g, '-') // Replace multiple - with single -
+      .replace(/^-+/, '') // Trim - from start of text
+      .replace(/-+$/, '') // Trim - from end of text
   }
 }
 

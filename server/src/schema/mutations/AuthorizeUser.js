@@ -1,9 +1,9 @@
 import axios from 'axios'
 import logger from '../../config/logger'
 
-const isUserAuthorized = (authorization, botId) => {
+const isUserAuthorized = async(authorization, botId) => {
   logger.debug('AuthorizeUser -> Checking authorization.')
-  axios({
+  await axios({
     url: process.env.GATEWAY_ENDPOINT,
     method: 'post',
     data: {
@@ -23,7 +23,8 @@ const isUserAuthorized = (authorization, botId) => {
     },
   }).then(
     (result) => {
-      if (!result.data.data.teams_FbByTeamMember.some(fb => fb.slug === botId)) {
+      logger.debug('AuthorizeUser -> Checking authorization successful.')
+      if (!result.data.data.teams_FbByTeamMember.fb.some(fb => fb.slug === botId)) {
         return false
       } else {
         return true

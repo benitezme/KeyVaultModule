@@ -31,7 +31,7 @@ const resolve = (parent, { botId, transaction }, context) => {
   return new Promise((resolve, reject) => {
 
     if(!isUserAuthorized(context.authorization, botId)) {
-      reject(new WrongArgumentsError('You are not eligible to sign this transaction.'))
+      throw new WrongArgumentsError('You are not eligible to sign this transaction.')
       return
     }
 

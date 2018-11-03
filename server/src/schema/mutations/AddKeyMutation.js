@@ -39,17 +39,17 @@ const resolve = (parent, { key, secret, exchange, type, description,
   }
 
   if(!isUserAuthorized(context.authorization, botId)) {
-    reject(new WrongArgumentsError('You are not eligible to assign this bot to the key, the bot is not yours!.'))
+    throw new WrongArgumentsError('You are not eligible to assign this bot to the key, the bot is not yours!.')
     return
   }
 
-  if (!Exchange.some(exchange => exchange.name === exchange)) {
-    reject(new WrongArgumentsError('The exchange selected is not valid.'))
+  if (!Exchange.some(e => e.id === exchange)) {
+    throw new WrongArgumentsError('The exchange selected is not valid.')
     return
   }
 
   if (!KeyMode.some(keyMode => keyMode === type)) {
-    reject(new WrongArgumentsError('The key mode type selected is not valid.'))
+    throw new WrongArgumentsError('The key mode type selected is not valid.')
     return
   }
 
