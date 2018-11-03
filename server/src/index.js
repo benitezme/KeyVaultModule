@@ -10,7 +10,7 @@ import wrongPreshared from './errors/notAllowed.json';
 const app = express()
 
 app.post('/graphql', (req, res, next) => {
-  if (req.headers.preshared === process.env.PRESHARED_GATEWAY_KEY) {
+  if (req.headers.preshared === process.env.KEYVAULT_API_PRESHARED) {
     next();
   } else {
     res.send(wrongPreshared);
