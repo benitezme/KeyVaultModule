@@ -71,7 +71,6 @@ const resolve = (parent, { botId, transaction }, context) => {
         }
       })
     })
-  }
 }
 
 const mutation = {

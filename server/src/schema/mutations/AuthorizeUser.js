@@ -28,7 +28,7 @@ const isUserAuthorized = (authorization, botId) => {
       } else {
         return true
       }
-    )
+    })
 }
 
 export default isUserAuthorized

@@ -1,5 +1,6 @@
 import { createLogger, format, transports } from 'winston'
 const { combine, timestamp, simple } = format
+import { inspect } from 'util'
 
 const options = {
   file: {
@@ -23,11 +24,12 @@ const options = {
 
 const logger = createLogger({
   level: 'info',
-  format: combine(
-    timestamp({
-      format: 'YYYY-MM-DD HH:mm:ss'
-    }),
-    simple()
+  format: format.combine(
+          format.colorize(),
+          format.timestamp({ format: 'YY/MM/DD HH:mm' }),
+          format.printf(
+            info => `${info.timestamp} - ${info.level}: ${JSON.parse(JSON.stringify(inspect(info.message)))}`
+          )
   ),
   transports: [
     new transports.File(options.file),
