@@ -8,4 +8,4 @@ const auditLogSchema = new Schema({
   date: String
 })
 
-module.exports = mongoose.model('AuditLog', auditLogSchema)
+export default mongoose.model('AuditLog', auditLogSchema)

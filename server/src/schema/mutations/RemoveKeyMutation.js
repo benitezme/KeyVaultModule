@@ -24,6 +24,8 @@ const resolve = (parent, { id }, context) => {
     throw new AuthentificationError()
   }
 
+  logger.debug('removeKey -> Removing key.')
+
   var query = {
     _id: id,
     authId: context.userId

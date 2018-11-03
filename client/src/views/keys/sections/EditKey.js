@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {graphql, compose} from 'react-apollo'
-import { getSecret, getKeysQuery, editKeyMutation } from '../../../queries'
+import { getSecret, getKeysQuery, editKeyMutation, getBotsQuery, getAuditLog } from '../../../queries'
 
 import { withStyles } from '@material-ui/core/styles'
 import classNames from 'classnames'
@@ -12,7 +12,7 @@ import {
    FormControl, InputLabel, Input, FormControlLabel, Checkbox
 } from '@material-ui/core'
 
-import { types, exchanges, bots} from '../../../queries/models'
+import { types, exchanges } from '../../../queries/models'
 
 const styles = theme => ({
   root: {
@@ -83,7 +83,6 @@ class EditKey extends Component {
             value={this.props.getSecret.loading ? '' : this.props.getSecret.keyVault_Secret}
             onChange={(e)=>this.setState({secret:e.target.value})}
             fullWidth
-            disabled
             endAdornment={
                 <InputAdornment position="end">
                   <IconButton
@@ -162,14 +161,14 @@ class EditKey extends Component {
           /> */}
 
           <TextField
-             // select
+             select
              label="Bot"
              className={classNames(classes.margin, classes.textField)}
              value={this.state.botId}
              onChange={(e)=>this.setState({botId:e.target.value})}
              fullWidth
              >
-               {/* {this.displayBots()} */}
+               {this.displayBots()}
            </TextField>
 
            <br />
@@ -223,17 +222,39 @@ class EditKey extends Component {
         active: this.state.active,
         botId: this.state.botId
       },
-      refetchQueries: [{query: getKeysQuery, getSecret}]
+      refetchQueries: [{query: getKeysQuery, getAuditLog}]
     })
     this.props.handleEditKeyDialogClose();
   }
 
   displayBots(){
-    return bots.map(bot => {
-      return (
-        <MenuItem key={bot} value={bot}>{bot}</MenuItem>
-      )
-    })
+    if(!this.props.getBotsQuery.loading){
+      let bots = this.props.getBotsQuery.teams_FbByTeamMember
+      if (bots !== undefined && bots.fb.length > 0){
+        return bots.fb.map(bot => (
+          <MenuItem key={bot.name} value={this.slugify(bot.name)}>{bot.name}</MenuItem>
+        ))
+      }else{
+        return <MenuItem key={'no-bot'} value={''}>You don't have bots yet!</MenuItem>
+      }
+    }
+  }
+
+  slugify(botName){
+    const a = 'àáäâãåèéëêìíïîòóöôùúüûñçßÿœæŕśńṕẃǵǹḿǘẍźḧ·/_,:;'
+    const b = 'aaaaaaeeeeiiiioooouuuuncsyoarsnpwgnmuxzh------'
+    const p = new RegExp(a.split('').join('|'), 'g')
+
+    return botName
+      .toString()
+      .toLowerCase()
+      .replace(/\s+/g, '-') // Replace spaces with -
+      .replace(p, c => b.charAt(a.indexOf(c))) // Replace special characters
+      .replace(/&/g, '-and-') // Replace & with 'and'
+      .replace(/[^\w-]+/g, '') // Remove all non-word characters
+      .replace(/--+/g, '-') // Replace multiple - with single -
+      .replace(/^-+/, '') // Trim - from start of text
+      .replace(/-+$/, '') // Trim - from end of text
   }
 }
 
@@ -249,7 +270,8 @@ export default compose(
           }
         }
       }
-    })
+    }),
+    graphql(getBotsQuery,{name:'getBotsQuery'}),
   ),
   withStyles(styles)
 )(EditKey)

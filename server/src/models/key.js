@@ -13,4 +13,4 @@ const keySchema = new Schema({
   botId: String
 })
 
-module.exports = mongoose.model('Key', keySchema)
+export default mongoose.model('Key', keySchema)
