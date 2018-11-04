@@ -1,9 +1,9 @@
 import axios from 'axios'
 import logger from '../../config/logger'
 
-const isUserAuthorized = async(authorization, botId) => {
+const isUserAuthorized = (authorization, botId) => {
   logger.debug('AuthorizeUser -> Checking authorization.')
-  await axios({
+  axios({
     url: process.env.GATEWAY_ENDPOINT,
     method: 'post',
     data: {
