@@ -30,47 +30,47 @@ const resolve = (parent, { botId, transaction }, context) => {
 
   return new Promise((resolve, reject) => {
 
-    if(context.userId !== process.env.AACLOUD_CLIENT_ID) {
-      if( !isUserAuthorized(context.authorization, botId) ) {
-        reject (WrongArgumentsError('You are not eligible to sign this transaction.'))
-      }
-    }
+    if( context.userId === process.env.AACLOUD_CLIENT_ID
+       || isUserAuthorized(context.authorization, botId)) {
 
-    logger.debug('signTransaction -> Retrieving key.')
+      logger.debug('signTransaction -> Retrieving key.')
 
-    Key.findOne({$and: [
-        {botId: botId},
-        {exchange: 1},
-        {type: 'Competition'}
-      ]}).exec(function (err, key) {
-        if (key) {
-          logger.debug('signTransaction -> Retrieve key -> Key found.')
-          // Get exchange properties
-          var exchange = _.find(Exchange, {id: key.exchange})
+      Key.findOne({$and: [
+          {botId: botId},
+          {exchange: 1},
+          {type: 'Competition'}
+        ]}).exec(function (err, key) {
+          if (key) {
+            logger.debug('signTransaction -> Retrieve key -> Key found.')
+            // Get exchange properties
+            var exchange = _.find(Exchange, {id: key.exchange})
 
-          const decipher = crypto.createDecipher('aes192', process.env.SERVER_SECRET);
-          let secret = decipher.update(key.secret, 'hex', 'utf8');
-          secret += decipher.final('utf8');
+            const decipher = crypto.createDecipher('aes192', process.env.SERVER_SECRET);
+            let secret = decipher.update(key.secret, 'hex', 'utf8');
+            secret += decipher.final('utf8');
 
-          // Sign transaction
-          var qsSignature = crypto.createHmac(exchange.algorithm, secret)
-                    .update(transaction)
-                    .digest('hex')
+            // Sign transaction
+            var qsSignature = crypto.createHmac(exchange.algorithm, secret)
+                      .update(transaction)
+                      .digest('hex')
 
-          saveAuditLog(key.id, 'signTransaction', context, transaction)
+            saveAuditLog(key.id, 'signTransaction', context, transaction)
 
-          var signedTransaction = {
-            key: key.key,
-            signature: qsSignature,
-            date: new Date().valueOf()
+            var signedTransaction = {
+              key: key.key,
+              signature: qsSignature,
+              date: new Date().valueOf()
+            }
+
+            resolve(signedTransaction)
+          } else {
+            logger.error('signTransaction -> Retrieve key -> Key not found.')
+            reject('Error: key not found.')
           }
-
-          resolve(signedTransaction)
-        } else {
-          logger.error('signTransaction -> Retrieve key -> Key not found.')
-          reject('Error: key not found.')
-        }
-      })
+        })
+      } else {
+          reject (WrongArgumentsError('You are not eligible to sign this transaction.'))
+      }
     })
 }
 
