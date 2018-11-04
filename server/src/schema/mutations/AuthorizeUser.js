@@ -24,7 +24,9 @@ const isUserAuthorized = async(authorization, botId) => {
   }).then(
     (result) => {
       logger.debug('AuthorizeUser -> Checking authorization successful.')
-      if (!result.data.data.teams_FbByTeamMember.fb.some(fb => fb.slug === botId)) {
+      if (!result.data.data.teams_FbByTeamMember &&
+          !result.data.data.teams_FbByTeamMember.fb.some(
+            fb => fb.slug === botId)) {
         return false
       } else {
         return true
