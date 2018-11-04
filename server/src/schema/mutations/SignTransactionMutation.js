@@ -28,10 +28,10 @@ const resolve = (parent, { botId, transaction }, context) => {
     throw new AuthentificationError()
   }
 
-  return new Promise((resolve, reject) => {
-
-    if( context.userId === process.env.AACLOUD_CLIENT_ID
-       || isUserAuthorized(context.authorization, botId)) {
+  if( context.userId === process.env.AACLOUD_CLIENT_ID
+     || isUserAuthorized(context.authorization, botId)) {
+       
+    return new Promise((resolve, reject) => {
 
       logger.debug('signTransaction -> Retrieving key.')
 
@@ -68,10 +68,10 @@ const resolve = (parent, { botId, transaction }, context) => {
             reject('Error: key not found.')
           }
         })
-      } else {
-          reject (WrongArgumentsError('You are not eligible to sign this transaction.'))
-      }
-    })
+      })
+    } else {
+        throw new WrongArgumentsError('You are not eligible to sign this transaction.')
+    }
 }
 
 const mutation = {
