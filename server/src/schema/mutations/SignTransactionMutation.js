@@ -28,9 +28,9 @@ const resolve = (parent, { botId, transaction }, context) => {
     throw new AuthentificationError()
   }
 
-  if( context.userId === process.env.AACLOUD_CLIENT_ID
+  if( context.userId === process.env.AACLOUD_ID
      || isUserAuthorized(context.authorization, botId)) {
-       
+
     return new Promise((resolve, reject) => {
 
       logger.debug('signTransaction -> Retrieving key.')
