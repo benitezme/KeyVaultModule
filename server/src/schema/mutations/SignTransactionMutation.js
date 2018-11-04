@@ -26,13 +26,14 @@ const resolve = (parent, { botId, transaction }, context) => {
 
   if (!context.userId) {
     throw new AuthentificationError()
+  } else if (context.userId !== process.env.AACLOUD_CLIENT_ID) {
+    throw new WrongArgumentsError('You are not eligible to sign this transaction.')
   }
 
   return new Promise((resolve, reject) => {
 
     if(!isUserAuthorized(context.authorization, botId)) {
-      throw new WrongArgumentsError('You are not eligible to sign this transaction.')
-      return
+      reject (WrongArgumentsError('You are not eligible to sign this transaction.'))
     }
 
     logger.debug('signTransaction -> Retrieving key.')

@@ -30,8 +30,7 @@ const resolve = (parent, { key, botId }, context) => {
   return new Promise((resolve, reject) => {
 
     if(!isUserAuthorized(context.authorization, botId)) {
-      throw new WrongArgumentsError('You are not eligible to assign this bot to the key, the bot is not yours!.')
-      return
+      reject(WrongArgumentsError('You are not eligible to assign this bot to the key, the bot is not yours!.'))
     }
 
     logger.debug('assignKeyBot -> Updating key.')
