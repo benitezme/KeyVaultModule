@@ -21,7 +21,7 @@ const args = {
   transaction: {type: new GraphQLNonNull(GraphQLString)}
 }
 
-const resolve = (parent, { botId, transaction }, context) => {
+const resolve = async (parent, { botId, transaction }, context) => {
   logger.debug('signTransaction -> Entering function.')
 
   if (!context.userId) {
@@ -29,7 +29,7 @@ const resolve = (parent, { botId, transaction }, context) => {
   }
 
   if( context.userId === process.env.AACLOUD_ID
-     || isUserAuthorized(context.authorization, botId)) {
+     || await isUserAuthorized(context.authorization, botId)) {
 
     return new Promise((resolve, reject) => {
 
