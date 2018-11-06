@@ -29,3 +29,4 @@ global.CUSTOM_FAIL_RESPONSE = {
     result: "Fail Because",
     message: "Custom Message"
 };
+ 

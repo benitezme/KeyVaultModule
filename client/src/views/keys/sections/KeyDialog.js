@@ -11,9 +11,9 @@ import {
 const styles = theme => ({
   button: {
     display: 'block',
-    marginTop: '1em',
+    // marginTop: '1em',
     marginLeft: 'auto',
-    lineHeight: '1em',
+    // lineHeight: '1em',
     marginRight: 'auto',
   },
   root:{
@@ -44,12 +44,12 @@ class KeyDialog extends Component {
   render () {
     const { classes } = this.props
     return (
-        <Paper className={classes.root}>
-          <Typography gutterBottom variant='headline'>Create another Key:</Typography>
-          <Button variant="fab" color="primary"
+        <div className={classes.root}>
+          {/* <Typography gutterBottom variant='h5'>Create another Key:</Typography> */}
+          <Button variant="contained" color="secondary"
             aria-label="addNewKey" className={classes.button}
             onClick={this.handleNewKeyDialogOpen} >
-              <AddIcon />
+              Add a new key
           </Button>
           <Dialog
               open={this.state.isNewKeyDialogOpen}
@@ -68,7 +68,7 @@ class KeyDialog extends Component {
                 <AddKey handleNewKeyDialogClose={this.handleNewKeyDialogClose}/>
               </DialogContent>
             </Dialog>
-          </Paper>
+          </div>
     )
   }
 }

@@ -25,8 +25,8 @@ const getKeysQuery = gql`
 
 const addKeyMutation = gql`
   mutation($key: String!, $secret: String!, $exchange: String!,
-            $type: String!, $description: String!, $validFrom: String!,
-            $validTo: String!, $active: Boolean!, $botId: ID!){
+            $type: String!, $description: String!, $validFrom: Int!,
+            $validTo: Int!, $active: Boolean!, $botId: ID!){
     keyVault_AddKey(
       key: $key,
       secret: $secret,
@@ -45,8 +45,8 @@ const addKeyMutation = gql`
 `
 
 const editKeyMutation = gql`
-  mutation($id: ID!, $type: String!, $description: String!, $validFrom: String!,
-            $validTo: String!, $active: Boolean!, $botId: ID!){
+  mutation($id: ID!, $type: String!, $description: String!, $validFrom: Int!,
+            $validTo: Int!, $active: Boolean!, $botId: ID!){
     keyVault_EditKey(
       id: $id,
       type: $type,

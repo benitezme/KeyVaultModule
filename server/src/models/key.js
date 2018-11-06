@@ -1,5 +1,4 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+import mongoose, { Schema } from 'mongoose'
 
 const keySchema = new Schema({
   authId: String,
@@ -12,6 +11,6 @@ const keySchema = new Schema({
   validTo: String,
   active: Boolean,
   botId: String
-});
+})
 
-module.exports = mongoose.model('Key', keySchema);
+export default mongoose.model('Key', keySchema)

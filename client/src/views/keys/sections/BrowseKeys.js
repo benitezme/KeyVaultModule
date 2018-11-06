@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { graphql, compose } from 'react-apollo'
 import { getKeysQuery } from '../../../queries'
-import { getItem } from '../../../utils/local-storage'
 
 import KeyDialog from './KeyDialog'
 import ListKeys from './ListKeys'
@@ -13,8 +12,9 @@ import { withStyles } from '@material-ui/core/styles'
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    padding: 20,
-    margin: 10
+    padding: 10,
+    width: '70%',
+    marginLeft: '15%',
   }
 })
 
@@ -33,42 +33,36 @@ class BrowseKeys extends Component {
     const data = this.props.data
     if (data.loading) {
       return (
-        <Paper className={classes.root}>
-          <Typography variant='subheading'>Loading keys...</Typography>
-        </Paper>
+        <div className={classes.root}>
+          <Typography variant='subtitle1'>Loading keys...</Typography>
+        </div>
       )
     } else if (data.keyVault_Keys && data.keyVault_Keys.length > 0) {
       return this.displayKeys()
     } else if (data.error) {
         return (
-          <Paper className={classes.root}>
-            <Typography className={classes.root} variant='subheading'>Please Login to access your keys.</Typography>
-          </Paper>
+          <div className={classes.root}>
+            <Typography className={classes.root} variant='subtitle1'>Please Login to access your keys.</Typography>
+          </div>
         )
     } else {
       return (
-        <Paper className={classes.root}>
-          <Typography className={classes.root} variant='subheading'>You don't have any keys yet.</Typography>
-          <KeyDialog />
-        </Paper>
+        <div className={classes.root}>
+          <Typography className={classes.root} variant='subtitle1'>You don't have any keys yet. After you create a new key, it will be listed here.</Typography>
+        </div>
       )
     }
   }
 
   displayKeys () {
     var data = this.props.data
-    const length = data.keyVault_Keys.length
+    const { classes } = this.props
     return data.keyVault_Keys.map((key, i) => {
-      if (length === i + 1) {
-        return (
-          <React.Fragment key='keyList'>
-            <ListKeys key={key.id} currentKey={key} />
-            <KeyDialog key='addKeyDialog' />
-          </React.Fragment>
-        )
-      } else {
-        return <ListKeys key={key.id} currentKey={key} />
-      }
+      return (
+        <div key={key.id} className={classes.root}>
+          <ListKeys currentKey={key} />
+        </div>
+      )
     })
   }
 }

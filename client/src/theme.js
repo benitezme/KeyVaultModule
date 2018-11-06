@@ -6,7 +6,8 @@ export const theme = createMuiTheme({
     secondary: { main: '#CC5835' } // RUSTED_RED.
   },
   typography: {
-    fontFamily: '"Saira","Saira Condenses", sans-serif'
+    fontFamily: '"Saira","Saira Condenses", sans-serif',
+    useNextVariants: true
   },
   overrides: {
     Paper: {

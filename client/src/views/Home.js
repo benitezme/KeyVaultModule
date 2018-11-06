@@ -24,8 +24,8 @@ class Home extends Component {
   render () {
     const { classes } = this.props
     return (
-      <Paper className={classes.root}>
-        <Typography gutterBottom variant='display3'>Welcome!</Typography>
+      <div className={classes.root}>
+        <Typography gutterBottom variant='h4'>On this section you will be able to:</Typography>
 
         <List>
           <ListItem>
@@ -56,7 +56,7 @@ class Home extends Component {
             <ListItemText primary="Review activity associated to your keys." />
           </ListItem>
         </List>
-      </Paper>
+      </div>
     )
   }
 }
