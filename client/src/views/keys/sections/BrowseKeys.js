@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { graphql, compose } from 'react-apollo'
 import { getKeysQuery } from '../../../queries'
 
+import TopBar from '../../nav'
+
 import KeyDialog from './KeyDialog'
 import ListKeys from './ListKeys'
 
@@ -31,25 +33,50 @@ class BrowseKeys extends Component {
   render () {
     const { classes } = this.props
     const data = this.props.data
+
     if (data.loading) {
       return (
-        <div className={classes.root}>
-          <Typography variant='subtitle1'>Loading keys...</Typography>
-        </div>
+        <React.Fragment>
+          <TopBar
+            size='medium'
+            title='Browse Keys'
+            text=''
+            backgroundUrl='https://advancedalgos.net/img/photos/key-vault.jpg'
+          />
+          <div className={classes.root}>
+            <Typography variant='subtitle1'>Loading keys...</Typography>
+          </div>
+        </React.Fragment>
       )
     } else if (data.keyVault_Keys && data.keyVault_Keys.length > 0) {
       return this.displayKeys()
     } else if (data.error) {
         return (
-          <div className={classes.root}>
-            <Typography className={classes.root} variant='subtitle1'>Please Login to access your keys.</Typography>
-          </div>
+          <React.Fragment>
+            <TopBar
+              size='medium'
+              title='Browse Keys'
+              text=''
+              backgroundUrl='https://advancedalgos.net/img/photos/key-vault.jpg'
+            />
+            <div className={classes.root}>
+              <Typography className={classes.root} variant='subtitle1'>Please Login to access your keys.</Typography>
+            </div>
+          </React.Fragment>
         )
     } else {
       return (
-        <div className={classes.root}>
-          <Typography className={classes.root} variant='subtitle1'>You don't have any keys yet. After you create a new key, it will be listed here.</Typography>
-        </div>
+        <React.Fragment>
+          <TopBar
+            size='medium'
+            title='Browse Keys'
+            text=''
+            backgroundUrl='https://advancedalgos.net/img/photos/key-vault.jpg'
+          />
+          <div className={classes.root}>
+            <Typography className={classes.root} variant='subtitle1'>You don't have any keys yet. After you create a new key, it will be listed here.</Typography>
+          </div>
+        </React.Fragment>
       )
     }
   }
@@ -59,9 +86,17 @@ class BrowseKeys extends Component {
     const { classes } = this.props
     return data.keyVault_Keys.map((key, i) => {
       return (
-        <div key={key.id} className={classes.root}>
-          <ListKeys currentKey={key} />
-        </div>
+        <React.Fragment>
+          <TopBar
+            size='medium'
+            title='Manage Keys'
+            text=''
+            backgroundUrl='https://advancedalgos.net/img/photos/key-vault.jpg'
+          />
+          <div key={key.id} className={classes.root}>
+            <ListKeys currentKey={key} />
+          </div>
+        </React.Fragment>
       )
     })
   }

@@ -11,22 +11,7 @@ const styles = theme => ({
     flexGrow: 1,
     padding: 20,
     margin: 10
-  },
-  textField: {
-    width: '60%',
-    marginLeft:'20%',
-    marginBottom: 10
-  },
-  menu: {
-    width: 200,
-  },
-  button: {
-    margin: theme.spacing.unit,
-  },
-  actionButton: {
-    textAlign: 'center',
-    marginTop: 10
-  },
+  }
 });
 
 

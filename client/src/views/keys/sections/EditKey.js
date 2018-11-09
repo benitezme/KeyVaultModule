@@ -188,7 +188,7 @@ class EditKey extends Component {
              <Button
                type="submit"
                onClick={this.handleEditKeyDialogClose}
-               variant="outlined" color="primary">
+               variant='contained' color='secondary'>
                Edit Key
              </Button>
 
