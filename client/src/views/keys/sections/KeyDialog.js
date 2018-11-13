@@ -11,9 +11,7 @@ import {
 const styles = theme => ({
   button: {
     display: 'block',
-    // marginTop: '1em',
     marginLeft: 'auto',
-    // lineHeight: '1em',
     marginRight: 'auto',
   },
   root:{
@@ -45,7 +43,6 @@ class KeyDialog extends Component {
     const { classes } = this.props
     return (
         <div className={classes.root}>
-          {/* <Typography gutterBottom variant='h5'>Create another Key:</Typography> */}
           <Button variant="contained" color="secondary"
             aria-label="addNewKey" className={classes.button}
             onClick={this.handleNewKeyDialogOpen} >

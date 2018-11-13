@@ -69,29 +69,26 @@ class ListKeys extends Component {
                 <Typography gutterBottom variant='h5'>Key: {key.key}</Typography>
                 <Typography gutterBottom>Bot: {key.botId}</Typography>
                 <Typography gutterBottom>Type: {key.type}</Typography>
-                {/*
-                <Typography gutterBottom>Description: {key.description}</Typography>
-                <Typography gutterBottom>Valid From: {key.validFrom}</Typography>
-                <Typography gutterBottom>Valid To: {key.validTo}</Typography>
-                <Typography gutterBottom>Active: {key.active !== null ? key.active.toString():''}</Typography>
-                */}
               </Grid>
               <Grid item className={classes.buttonGrid}>
                 <Button
                   className={classes.buttonList}
-                  variant='outlined' color='primary' size='small'
-                  onClick={() => this.auditLog()}
-                  >Review Audit Log</Button>
+                  variant='contained' color='secondary' size='small'
+                  onClick={() => this.editKey()}>
+                  Edit
+                </Button>
                 <Button
                   className={classes.buttonList}
-                  variant='outlined' color='primary' size='small'
-                  onClick={() => this.editKey()}
-                  >Edit</Button>
-                  <Button
-                    className={classes.buttonList}
-                    variant='outlined' color='primary' size='small'
-                    onClick={() => this.removeKey(key)}
-                    >Remove</Button>
+                  variant='contained' color='secondary' size='small'
+                  onClick={() => this.auditLog()}>
+                  Review Audit Log
+                </Button>
+                <Button
+                  className={classes.buttonList}
+                  variant='contained' color='secondary' size='small'
+                  onClick={() => this.removeKey(key)}>
+                  Remove
+                </Button>
 
                   <Dialog
                       open={this.state.isEditKeyDialogOpen}
