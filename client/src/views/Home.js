@@ -20,8 +20,8 @@ class Home extends Component {
       <React.Fragment>
         <TopBar
           size='big'
-          title='Key Vault'
-          text='Manage your exchange API keys that will be available for the platform.'
+          title='Key Vault Module'
+          text='Responsible for keeping the exchange API keys safe.'
           backgroundUrl='https://advancedalgos.net/img/photos/key-vault.jpg'
         />
       </React.Fragment>
