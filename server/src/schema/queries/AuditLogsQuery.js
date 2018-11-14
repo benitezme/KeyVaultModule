@@ -26,7 +26,7 @@ const resolve = (parent, { key }, context) => {
   return AuditLog.find({
     authId: context.userId,
     keyId: key
-  })
+  }).sort({date: -1}).limit(20)
 }
 
 const query = {

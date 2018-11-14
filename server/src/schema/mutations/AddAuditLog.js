@@ -10,8 +10,7 @@ const saveAuditLog = (keyId, action, context, details) => {
     localDate.getUTCDate(),
     localDate.getUTCHours(),
     localDate.getUTCMinutes(),
-    localDate.getUTCSeconds(),
-    localDate.getUTCMilliseconds())
+    localDate.getUTCSeconds()).valueOf() / 1000
   )
 
   var auditLogEntry = new AuditLog({
@@ -19,7 +18,7 @@ const saveAuditLog = (keyId, action, context, details) => {
     keyId: keyId,
     action: action,
     details: details,
-    date: date.toISOString()
+    date: date
   })
 
   logger.info('saveAuditLog -> Saving a new Audit Log Record.')

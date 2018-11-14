@@ -5,6 +5,7 @@ import { getAuditLog } from '../../../queries'
 import { Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core';
 
 import { withStyles } from '@material-ui/core/styles'
+import { toLocalTime } from '../../../utils'
 
 const styles = theme => ({
   root: {
@@ -57,7 +58,7 @@ class AuditLogList extends Component {
               return (
                 <TableRow key={row.id}>
                   <TableCell component="th" scope="row">
-                    {row.date}
+                    {toLocalTime(row.date)}
                   </TableCell>
                   <TableCell>{row.action}</TableCell>
                   <TableCell>{row.details}</TableCell>
