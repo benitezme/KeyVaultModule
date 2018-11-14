@@ -18,19 +18,11 @@ import { slugify } from '../../../utils'
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    padding: 20,
+    padding: 10,
     margin: 10
   },
   textField: {
-    width: '60%',
-    marginLeft:'20%',
     marginBottom: 10
-  },
-  menu: {
-    width: 200,
-  },
-  button: {
-    margin: theme.spacing.unit,
   },
   actionButton: {
     textAlign: 'center',
@@ -62,7 +54,6 @@ class EditKey extends Component {
   render() {
     const { classes } = this.props
     return (
-
       <form className={classes.root} noValidate autoComplete="off" onSubmit={this.submitForm.bind(this)}>
         <TextField
           id="key"
@@ -75,7 +66,7 @@ class EditKey extends Component {
           disabled
         />
 
-        <FormControl className={classNames(classes.margin, classes.textField)}>
+        <FormControl fullWidth className={classes.textField}>
           <InputLabel htmlFor="secret">Secret</InputLabel>
           <Input
             id="secret"
@@ -101,7 +92,7 @@ class EditKey extends Component {
         <TextField
            select
            label="Exchange"
-           className={classNames(classes.margin, classes.textField)}
+           className={classes.textField}
            value={this.state.exchange}
            onChange={(e)=> this.setState({exchange:e.target.value})}
            fullWidth
@@ -115,7 +106,7 @@ class EditKey extends Component {
          <TextField
            select
            label="Type"
-           className={classNames(classes.margin, classes.textField)}
+           className={classes.textField}
            value={this.state.type}
            onChange={(e)=>this.setState({type:e.target.value})}
            fullWidth
@@ -164,7 +155,7 @@ class EditKey extends Component {
           <TextField
              select
              label="Bot"
-             className={classNames(classes.margin, classes.textField)}
+             className={classes.textField}
              value={this.state.botId}
              onChange={(e)=>this.setState({botId:e.target.value})}
              fullWidth
@@ -175,17 +166,6 @@ class EditKey extends Component {
            <br />
 
            <div className={classes.actionButton} >
-             {/* <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={this.state.active}
-                    onChange={this.handleChange('active')}
-                    value="active"
-                    color="primary"
-                  />
-                }
-                label="Active"
-              /> */}
              <Button
                type="submit"
                onClick={this.handleEditKeyDialogClose}
