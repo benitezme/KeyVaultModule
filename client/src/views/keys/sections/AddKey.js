@@ -11,6 +11,7 @@ import Visibility from '@material-ui/icons/Visibility'
 import VisibilityOff from '@material-ui/icons/VisibilityOff'
 
 import { types, exchanges} from '../../../queries/models'
+import { slugify } from '../../../utils'
 
 import {
    MenuItem, Button, IconButton, InputAdornment, TextField,
@@ -20,11 +21,7 @@ import {
 
 const styles = theme => ({
   root: {
-    width: '50%',
-    flexGrow: 1,
-    padding: 10,
-    marginLeft: '25%',
-    marginTop: '2%',
+    marginTop: 30,
     marginBottom: 30
   },
   container: {
@@ -75,7 +72,7 @@ class AddKey extends Component {
       validTo: 0,
       active: true,
       botId:'',
-      showPassword : false, //for showing the secret
+      showPassword : false,
       keyError: false,
       secretError: false,
       exchangeError: false,
@@ -107,7 +104,7 @@ class AddKey extends Component {
             text=''
             backgroundUrl='https://advancedalgos.net/img/photos/key-vault.jpg'
           />
-          <Paper className={classes.root}>
+          <Paper className={classNames('container', classes.root)}>
 
           <form noValidate autoComplete="off" onSubmit={this.submitForm.bind(this)}>
 
@@ -211,30 +208,6 @@ class AddKey extends Component {
                fullWidth
              />
 
-              {/* <TextField
-                  id="validFrom"
-                  label="Valid From"
-                  type="datetime-local"
-                  className={classes.textField}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  onChange={(e)=>this.setState({validFrom: new Date(e.target.value).getTime()})}
-                  fullWidth
-                />
-
-              <TextField
-                id="validTo"
-                label="Valid To"
-                type="datetime-local"
-                className={classes.textField}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                onChange={(e)=>this.setState({validTo: new Date(e.target.value).getTime()})}
-                fullWidth
-              /> */}
-
               <TextField
                  select
                  label="Bot"
@@ -287,29 +260,12 @@ class AddKey extends Component {
         let bots = this.props.getBotsQuery.teams_FbByTeamMember
         if (bots !== undefined && bots.fb.length > 0){
           return bots.fb.map(bot => (
-            <MenuItem key={bot.name} value={this.slugify(bot.name)}>{bot.name}</MenuItem>
+            <MenuItem key={bot.name} value={slugify(bot.name)}>{bot.name}</MenuItem>
           ))
         }else{
           return <MenuItem key={'no-bot'} value={''}>You don't have bots yet!</MenuItem>
         }
       }
-    }
-
-    slugify(botName){
-      const a = 'àáäâãåèéëêìíïîòóöôùúüûñçßÿœæŕśńṕẃǵǹḿǘẍźḧ·/_,:;'
-      const b = 'aaaaaaeeeeiiiioooouuuuncsyoarsnpwgnmuxzh------'
-      const p = new RegExp(a.split('').join('|'), 'g')
-
-      return botName
-        .toString()
-        .toLowerCase()
-        .replace(/\s+/g, '-') // Replace spaces with -
-        .replace(p, c => b.charAt(a.indexOf(c))) // Replace special characters
-        .replace(/&/g, '-and-') // Replace & with 'and'
-        .replace(/[^\w-]+/g, '') // Remove all non-word characters
-        .replace(/--+/g, '-') // Replace multiple - with single -
-        .replace(/^-+/, '') // Trim - from start of text
-        .replace(/-+$/, '') // Trim - from end of text
     }
 
     submitForm(e){

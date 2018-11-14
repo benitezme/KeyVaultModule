@@ -1,3 +1,14 @@
+export function toLocalTime (epoch) {
+  const localDate = new Date(0);
+  localDate.setUTCSeconds(epoch);
+  const options = { year: 'numeric', month: 'long', day: '2-digit' };
+  return (
+    `${localDate.toLocaleDateString(options)
+    } at ${
+      localDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}`
+  );
+};
+
 export function isDefined (d) {
   return d !== null && typeof d !== 'undefined'
 }
@@ -38,10 +49,6 @@ export function mergeDeep (target, ...sources) {
     }
   }
   return mergeDeep(target, ...sources)
-}
-
-export function deleteCookie (c) {
-  document.cookie.split(';').forEach(function (c) { document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/') })
 }
 
 export function slugify (string) {

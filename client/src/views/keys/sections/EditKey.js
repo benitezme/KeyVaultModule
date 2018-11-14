@@ -13,6 +13,7 @@ import {
 } from '@material-ui/core'
 
 import { types, exchanges } from '../../../queries/models'
+import { slugify } from '../../../utils'
 
 const styles = theme => ({
   root: {
@@ -232,29 +233,12 @@ class EditKey extends Component {
       let bots = this.props.getBotsQuery.teams_FbByTeamMember
       if (bots !== undefined && bots.fb.length > 0){
         return bots.fb.map(bot => (
-          <MenuItem key={bot.name} value={this.slugify(bot.name)}>{bot.name}</MenuItem>
+          <MenuItem key={bot.name} value={slugify(bot.name)}>{bot.name}</MenuItem>
         ))
       }else{
         return <MenuItem key={'no-bot'} value={''}>You don't have bots yet!</MenuItem>
       }
     }
-  }
-
-  slugify(botName){
-    const a = 'àáäâãåèéëêìíïîòóöôùúüûñçßÿœæŕśńṕẃǵǹḿǘẍźḧ·/_,:;'
-    const b = 'aaaaaaeeeeiiiioooouuuuncsyoarsnpwgnmuxzh------'
-    const p = new RegExp(a.split('').join('|'), 'g')
-
-    return botName
-      .toString()
-      .toLowerCase()
-      .replace(/\s+/g, '-') // Replace spaces with -
-      .replace(p, c => b.charAt(a.indexOf(c))) // Replace special characters
-      .replace(/&/g, '-and-') // Replace & with 'and'
-      .replace(/[^\w-]+/g, '') // Remove all non-word characters
-      .replace(/--+/g, '-') // Replace multiple - with single -
-      .replace(/^-+/, '') // Trim - from start of text
-      .replace(/-+$/, '') // Trim - from end of text
   }
 }
 

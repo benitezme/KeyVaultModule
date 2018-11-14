@@ -74,20 +74,20 @@ class ListKeys extends Component {
                 <Button
                   className={classes.buttonList}
                   variant='contained' color='secondary' size='small'
-                  onClick={() => this.editKey()}>
-                  Edit
-                </Button>
-                <Button
-                  className={classes.buttonList}
-                  variant='contained' color='secondary' size='small'
                   onClick={() => this.auditLog()}>
-                  Review Audit Log
+                  Audit Log
                 </Button>
                 <Button
                   className={classes.buttonList}
                   variant='contained' color='secondary' size='small'
                   onClick={() => this.removeKey(key)}>
                   Remove
+                </Button>
+                <Button
+                  className={classes.buttonList}
+                  variant='contained' color='secondary' size='small'
+                  onClick={() => this.editKey()}>
+                  Edit
                 </Button>
 
                   <Dialog
