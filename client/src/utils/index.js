@@ -13,10 +13,6 @@ export function isDefined (d) {
   return d !== null && typeof d !== 'undefined'
 }
 
-export function isNotDefined (d) {
-  return !isDefined(d)
-}
-
 export const isArray = Array.isArray
 
 export function isObject (d) {

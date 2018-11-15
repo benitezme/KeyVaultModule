@@ -11,7 +11,7 @@ import Visibility from '@material-ui/icons/Visibility'
 import VisibilityOff from '@material-ui/icons/VisibilityOff'
 
 import { types, exchanges} from '../../../queries/models'
-import { slugify } from '../../../utils'
+import { slugify, isDefined } from '../../../utils'
 
 import {
    MenuItem, Button, IconButton, InputAdornment, TextField,
@@ -62,7 +62,9 @@ class AddKey extends Component {
 
   constructor(props){
     super(props)
+    let user = localStorage.getItem('user')
     this.state = {
+      user: JSON.parse(user),
       key:'',
       secret:'',
       exchange:'',
@@ -96,7 +98,16 @@ class AddKey extends Component {
 
   render() {
     const { classes } = this.props
-    return (
+    if( !isDefined(this.state.user) ) {
+      return (
+        <TopBar
+          size='big'
+          title='Add Key'
+          text="Please login to add a new key."
+          backgroundUrl='https://advancedalgos.net/img/photos/key-vault.jpg'
+        />
+      )
+    } else return (
         <React.Fragment>
           <TopBar
             size='medium'
@@ -241,7 +252,7 @@ class AddKey extends Component {
             <DialogTitle id="alert-dialog-title">{"Exchange Key Succesfully Added"}</DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                Now you will be able to run your bot in competition and live modes using this key. There are no further actions from you required for that.
+                Now you will be able to run your bot in {this.state.type} mode using this key. You are all set for real trading!
               </DialogContentText>
             </DialogContent>
             <DialogActions>
@@ -258,7 +269,7 @@ class AddKey extends Component {
     displayBots(){
       if(!this.props.getBotsQuery.loading){
         let bots = this.props.getBotsQuery.teams_FbByTeamMember
-        if (bots !== undefined && bots.fb.length > 0){
+        if (isDefined(bots) && bots.fb.length > 0){
           return bots.fb.map(bot => (
             <MenuItem key={bot.name} value={slugify(bot.name)}>{bot.name}</MenuItem>
           ))

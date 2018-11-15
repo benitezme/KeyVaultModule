@@ -19,39 +19,108 @@ class BrowseKeys extends Component {
   }
 
   render () {
-    return (
-      <React.Fragment>
+    let data = this.props.data
+
+    if (data.loading) {
+      return (
         <TopBar
-          size='medium'
-          title='Browse Keys'
-          text=''
+          size='big'
+          title='Manage your keys'
+          text="Loading keys..."
           backgroundUrl='https://advancedalgos.net/img/photos/key-vault.jpg'
         />
-        <div className='container'>
-          { this.getBodyContent(this.props.data) }
-        </div>
-      </React.Fragment>
+      )
+    } else if (data.keyVault_Keys && data.keyVault_Keys.length > 0) {
+      return (
+        <React.Fragment>
+          <TopBar
+            size='big'
+            title='Manage your keys'
+            text=""
+            backgroundUrl='https://advancedalgos.net/img/photos/key-vault.jpg'
+          />
+
+          <div className='container'>
+            {
+                data.keyVault_Keys.map((key, i) => {
+                return (
+                  <ListKeys key={key.id} currentKey={key} />
+                )
+              })
+            }
+          </div>
+        </React.Fragment>
     )
+    } else if (data.error) {
+      return (
+        <TopBar
+          size='big'
+          title='No keys to display'
+          text="Please login to access your keys."
+          backgroundUrl='https://advancedalgos.net/img/photos/key-vault.jpg'
+        />
+      )
+    } else {
+      return (
+          <TopBar
+            size='big'
+            title='No keys to display'
+            text="You don't have any keys yet. After you create a new key, it will be listed here."
+            backgroundUrl='https://advancedalgos.net/img/photos/key-vault.jpg'
+          />
+      )
+    }
   }
 
   getBodyContent (data) {
     if (data.loading) {
       return (
-        <Typography variant='subtitle1'>Loading keys...</Typography>
+        <TopBar
+          size='big'
+          title='Manage your keys'
+          text="Loading keys..."
+          backgroundUrl='https://advancedalgos.net/img/photos/key-vault.jpg'
+        />
       )
     } else if (data.keyVault_Keys && data.keyVault_Keys.length > 0) {
-      return data.keyVault_Keys.map((key, i) => {
-        return (
-          <ListKeys key={key.id} currentKey={key} />
-        )
-      })
+      return (
+        <React.Fragment>
+        <TopBar
+          size='big'
+          title='Manage your keys'
+          text="Loading keys..."
+          backgroundUrl='https://advancedalgos.net/img/photos/key-vault.jpg'
+        />
+
+        <div className='container'>
+          {
+              data.keyVault_Keys.map((key, i) => {
+              return (
+                <ListKeys key={key.id} currentKey={key} />
+              )
+            })
+          }
+        </div>
+        </React.Fragment>
+    )
     } else if (data.error) {
       return (
-        <Typography variant='subtitle1'>Please Login to access your keys.</Typography>
+        <TopBar
+          size='big'
+          title='No keys to display'
+          text="Please Login to access your keys."
+          backgroundUrl='https://advancedalgos.net/img/photos/key-vault.jpg'
+        />
       )
     } else {
       return (
-        <Typography variant='subtitle1'>You don't have any keys yet. After you create a new key, it will be listed here.</Typography>
+
+          <TopBar
+            size='big'
+            title='No keys to display'
+            text="You don't have any keys yet. After you create a new key, it will be listed here."
+            backgroundUrl='https://advancedalgos.net/img/photos/key-vault.jpg'
+          />
       )
     }
   }
