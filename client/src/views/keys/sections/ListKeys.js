@@ -134,7 +134,9 @@ class ListKeys extends Component {
                       </DialogTitle>
                       <DialogContent>
                         <DialogContentText>
-                          Are you sure you want to remove this key from the system? This will not remove or disable the key on the exchange.
+                          Are you sure you want to remove this key from the system?
+                          Removing a key will impact to any running bots associated to this key
+                          and it will not remove or disable the key on the exchange.
                         </DialogContentText>
 
                         <DialogActions>
