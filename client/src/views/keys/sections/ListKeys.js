@@ -10,7 +10,8 @@ import Binance from '../../../img/binance.png'
 // Material-ui
 import {
   Grid, Paper, Typography, ButtonBase, Button,
-  Dialog, DialogContent, DialogContentText, DialogTitle
+  Dialog, DialogContent, DialogContentText, DialogTitle,
+  DialogActions
 } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 
@@ -48,7 +49,8 @@ class ListKeys extends Component {
     super(props)
     this.state = {
       isEditKeyDialogOpen: false,
-      isAuditLogDialogOpen: false
+      isAuditLogDialogOpen: false,
+      isRemoveDialogOpen: false
     }
   }
 
@@ -80,7 +82,7 @@ class ListKeys extends Component {
                 <Button
                   className={classes.buttonList}
                   variant='contained' color='secondary' size='small'
-                  onClick={() => this.removeKey(key)}>
+                  onClick={this.handleRemoveDialogOpen}>
                   Remove
                 </Button>
                 <Button
@@ -90,37 +92,62 @@ class ListKeys extends Component {
                   Edit
                 </Button>
 
+                <Dialog
+                    open={this.state.isEditKeyDialogOpen}
+                    onClose={this.handleEditKeyDialogClose}
+                    aria-labelledby="addKey-dialog-title"
+                  >
+                    <DialogTitle id="addKey-dialog-title">
+                      Edit Key
+                    </DialogTitle>
+                    <DialogContent>
+                      <DialogContentText>
+                        You will need to complete this form with the information from
+                        the exchange.
+                      </DialogContentText>
+
+                      <EditKey currentKey={key} handleEditKeyDialogClose={this.handleEditKeyDialogClose}/>
+
+                    </DialogContent>
+                  </Dialog>
+
                   <Dialog
-                      open={this.state.isEditKeyDialogOpen}
-                      onClose={this.handleEditKeyDialogClose}
-                      aria-labelledby="addKey-dialog-title"
+                      open={this.state.isAuditLogDialogOpen}
+                      onClose={this.handleAuditLogDialogClose}
+                      aria-labelledby="auditLog-dialog-title"
                     >
-                      <DialogTitle id="addKey-dialog-title">
-                        Edit Key
+                      <DialogTitle id="auditLog-dialog-title">
+                        Audit Log History
+                      </DialogTitle>
+                      <DialogContent>
+                        <AuditLogList currentKey={key} handleEditKeyDialogClose={this.handleAuditLogDialogClose}/>
+                      </DialogContent>
+                  </Dialog>
+
+                  <Dialog
+                      open={this.state.isRemoveDialogOpen}
+                      onClose={this.handleRemoveDialogClose}
+                      aria-labelledby="removeKey-dialog-title"
+                    >
+                      <DialogTitle id="removeKey-dialog-title">
+                        Remove Key
                       </DialogTitle>
                       <DialogContent>
                         <DialogContentText>
-                          You will need to complete this form with the information from
-                          the exchange.
+                          Are you sure you want to remove this key from the system? This will not remove or disable the key on the exchange.
                         </DialogContentText>
 
-                        <EditKey currentKey={key} handleEditKeyDialogClose={this.handleEditKeyDialogClose}/>
-
+                        <DialogActions>
+                          <Button onClick={this.handleRemoveDialogOK} color="primary">
+                            Remove
+                          </Button>
+                          <Button onClick={this.handleRemoveDialogCancel} color="primary" autoFocus>
+                            Cancel
+                          </Button>
+                        </DialogActions>
                       </DialogContent>
                     </Dialog>
 
-                    <Dialog
-                        open={this.state.isAuditLogDialogOpen}
-                        onClose={this.handleAuditLogDialogClose}
-                        aria-labelledby="auditLog-dialog-title"
-                      >
-                        <DialogTitle id="auditLog-dialog-title">
-                          Audit Log History
-                        </DialogTitle>
-                        <DialogContent>
-                          <AuditLogList currentKey={key} handleEditKeyDialogClose={this.handleAuditLogDialogClose}/>
-                        </DialogContent>
-                      </Dialog>
               </Grid>
             </Grid>
           </Grid>
@@ -153,6 +180,20 @@ class ListKeys extends Component {
   handleAuditLogDialogClose = () => {
     this.setState({ isAuditLogDialogOpen: false })
   }
+
+  handleRemoveDialogOpen = () => {
+    this.setState({ isRemoveDialogOpen: true })
+  }
+
+  handleRemoveDialogOK = () => {
+    this.removeKey(this.props.currentKey)
+    this.setState({ isRemoveDialogOpen: false })
+  }
+
+  handleRemoveDialogCancel = () => {
+    this.setState({ isRemoveDialogOpen: false })
+  }
+
 
   getImage (exchange) {
     if (exchange === '1') {

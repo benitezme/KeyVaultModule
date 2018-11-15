@@ -274,7 +274,7 @@ class AddKey extends Component {
             <MenuItem key={bot.name} value={slugify(bot.name)}>{bot.name}</MenuItem>
           ))
         }else{
-          return <MenuItem key={'no-bot'} value={''}>You don't have bots yet!</MenuItem>
+          return <MenuItem key='no-bot' value=''>You don't have bots yet!</MenuItem>
         }
       }
     }
