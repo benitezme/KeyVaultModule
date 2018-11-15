@@ -34,7 +34,7 @@ class BrowseKeys extends Component {
       return (
         <React.Fragment>
           <TopBar
-            size='big'
+            size='medium'
             title='Manage your keys'
             text=""
             backgroundUrl='https://advancedalgos.net/img/photos/key-vault.jpg'
