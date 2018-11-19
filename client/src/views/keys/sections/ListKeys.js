@@ -83,7 +83,7 @@ class ListKeys extends Component {
                   className={classes.buttonList}
                   variant='contained' color='secondary' size='small'
                   onClick={this.handleRemoveDialogOpen}>
-                  Remove
+                  Delete
                 </Button>
                 <Button
                   className={classes.buttonList}
@@ -130,18 +130,17 @@ class ListKeys extends Component {
                       aria-labelledby="removeKey-dialog-title"
                     >
                       <DialogTitle id="removeKey-dialog-title">
-                        Remove Key
+                        Delete Key
                       </DialogTitle>
                       <DialogContent>
                         <DialogContentText>
-                          Are you sure you want to remove this key from the system?
-                          Removing a key will impact to any running bots associated to this key
-                          and it will not remove or disable the key on the exchange.
+                          Are you sure you want to delete this key?
+                          Deleting this key will prevent any running bots associated to this key to access your account at the exchange.
                         </DialogContentText>
 
                         <DialogActions>
                           <Button onClick={this.handleRemoveDialogOK} color="primary">
-                            Remove
+                            Proceed
                           </Button>
                           <Button onClick={this.handleRemoveDialogCancel} color="primary" autoFocus>
                             Cancel
