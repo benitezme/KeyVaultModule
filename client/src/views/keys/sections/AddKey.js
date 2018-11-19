@@ -21,8 +21,11 @@ import {
 
 const styles = theme => ({
   root: {
-    marginTop: 30,
-    marginBottom: 30
+    width: '100%',
+    flexGrow: 1,
+    padding: 10,
+    marginTop: '5%',
+    marginBottom: '10%'
   },
   container: {
     display: 'flex',
@@ -50,7 +53,7 @@ const styles = theme => ({
   typography: {
     width: '80%',
     marginLeft: '10%',
-    marginTop: 20
+    marginTop: 40
   },
   form: {
     marginTop: 20
@@ -112,27 +115,23 @@ class AddKey extends Component {
           <TopBar
             size='medium'
             title='Add Key'
-            text=''
+            text='Add a new Exchange Key here.'
             backgroundUrl='https://advancedalgos.net/img/photos/key-vault.jpg'
           />
+
+          <div className='container'>
           <Paper className={classNames('container', classes.root)}>
 
           <form noValidate autoComplete="off" onSubmit={this.submitForm.bind(this)}>
 
               <Typography className={classes.typography} variant='h5' gutterBottom>
-                Add a New Exchange Key
+                New Exchange Key
               </Typography>
 
               <Typography className={classes.typography} variant='subtitle1' align='justify'>
-                You will need to complete this section with the information from
-                the exchange.
+                In order for your bots to access your own account at your Exchange, first you need to create a key at the exchange and bring that key and put it here, at the Advanced Algos Key Vault. If you have doubts on how to create a key at the Exchange, please check this <a href="https://advancedalgos.net/documentation-poloniex-api-key.shtml"
+                  target="_blank">tutorial</a>.
               </Typography>
-
-              <Button  variant="contained" color='secondary' size="small" fullWidth className={classes.typography}
-                target="_blank"
-                href="https://advancedalgos.net/documentation-poloniex-api-key.shtml">
-                Click here for step by step instructions on how to get a key
-              </Button>
 
             <TextField
                 id="key"
@@ -192,7 +191,7 @@ class AddKey extends Component {
             </TextField>
 
             <Typography className={classes.typography} variant='subtitle1' align='justify'>
-              Please specify the intended use for this key. You must detail if you want to use it for Live Trade or Competitions and with which one of your bots.
+              Please tell us the intended use for this key. You can use this key for either Live Trade or Competitions and with only one of your bots.
             </Typography>
 
             <TextField
@@ -262,6 +261,7 @@ class AddKey extends Component {
             </DialogActions>
           </Dialog>
         </Paper>
+        </div>
       </React.Fragment>
     );
   }
