@@ -56,7 +56,7 @@ class Home extends Component {
               </Typography>
             <Typography align='justify'>
               We recommend either creating a new account to use specifically with
-              Advanced Algos, or at least make sure you have very little money in
+              Superalgos, or at least make sure you have very little money in
               it—just enough to play around and participate in competitions
               (0.002 BTC is more than enough).
             </Typography>

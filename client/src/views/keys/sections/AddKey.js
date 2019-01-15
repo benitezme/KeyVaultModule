@@ -129,7 +129,7 @@ class AddKey extends Component {
               </Typography>
 
               <Typography className={classes.typography} variant='subtitle1' align='justify'>
-                In order for your bots to access your own account at your Exchange, first you need to create a key at the exchange and bring that key and put it here, at the Advanced Algos Key Vault. If you have doubts on how to create a key at the Exchange, please check this <a href="https://advancedalgos.net/documentation-poloniex-api-key.shtml"
+                In order for your bots to access your own account at your Exchange, first you need to create a key at the exchange and bring that key and put it here, at the Superalgos Key Vault. If you have doubts on how to create a key at the Exchange, please check this <a href="https://advancedalgos.net/documentation-poloniex-api-key.shtml"
                   target="_blank">tutorial</a>.
               </Typography>
 
