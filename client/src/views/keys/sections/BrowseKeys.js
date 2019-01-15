@@ -27,7 +27,7 @@ class BrowseKeys extends Component {
           size='big'
           title='Your Keys'
           text='Loading your keys...'
-          backgroundUrl='https://advancedalgos.net/img/photos/key-vault.jpg'
+          backgroundUrl='https://superalgos.org/img/photos/key-vault.jpg'
         />
       )
     } else if (data.keyVault_Keys && data.keyVault_Keys.length > 0) {
@@ -37,7 +37,7 @@ class BrowseKeys extends Component {
             size='medium'
             title='Your Keys'
             text='All your exchange keys are here.'
-            backgroundUrl='https://advancedalgos.net/img/photos/key-vault.jpg'
+            backgroundUrl='https://superalgos.org/img/photos/key-vault.jpg'
           />
 
           <div className='container'>
@@ -57,7 +57,7 @@ class BrowseKeys extends Component {
           size='big'
           title='Your Keys'
           text='Please login to gain access to your keys.'
-          backgroundUrl='https://advancedalgos.net/img/photos/key-vault.jpg'
+          backgroundUrl='https://superalgos.org/img/photos/key-vault.jpg'
         />
       )
     } else {
@@ -66,7 +66,7 @@ class BrowseKeys extends Component {
           size='big'
           title='Your Keys'
           text="You don't have any keys yet. Once you create one you will find it here."
-          backgroundUrl='https://advancedalgos.net/img/photos/key-vault.jpg'
+          backgroundUrl='https://superalgos.org/img/photos/key-vault.jpg'
           />
       )
     }
@@ -79,7 +79,7 @@ class BrowseKeys extends Component {
           size='big'
           title='Manage your keys'
           text='Loading keys...'
-          backgroundUrl='https://advancedalgos.net/img/photos/key-vault.jpg'
+          backgroundUrl='https://superalgos.org/img/photos/key-vault.jpg'
         />
       )
     } else if (data.keyVault_Keys && data.keyVault_Keys.length > 0) {
@@ -89,7 +89,7 @@ class BrowseKeys extends Component {
             size='big'
             title='Manage your keys'
             text='Loading keys...'
-            backgroundUrl='https://advancedalgos.net/img/photos/key-vault.jpg'
+            backgroundUrl='https://superalgos.org/img/photos/key-vault.jpg'
         />
 
           <div className='container'>
@@ -109,7 +109,7 @@ class BrowseKeys extends Component {
           size='big'
           title='No keys to display'
           text='Please Login to access your keys.'
-          backgroundUrl='https://advancedalgos.net/img/photos/key-vault.jpg'
+          backgroundUrl='https://superalgos.org/img/photos/key-vault.jpg'
         />
       )
     } else {
@@ -119,7 +119,7 @@ class BrowseKeys extends Component {
           size='big'
           title='No keys to display'
           text="You don't have any keys yet. After you create a new key, it will be listed here."
-          backgroundUrl='https://advancedalgos.net/img/photos/key-vault.jpg'
+          backgroundUrl='https://superalgos.org/img/photos/key-vault.jpg'
           />
       )
     }

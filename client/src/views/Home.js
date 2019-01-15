@@ -22,7 +22,7 @@ class Home extends Component {
           size='big'
           title='Key Vault Module'
           text='Responsible for keeping the exchange API keys safe.'
-          backgroundUrl='https://advancedalgos.net/img/photos/key-vault.jpg'
+          backgroundUrl='https://superalgos.org/img/photos/key-vault.jpg'
         />
 
         <div className='homePage container'>
@@ -36,7 +36,7 @@ class Home extends Component {
             <Typography align='justify'>
               The Key Vault is the module that manages and  securely stores your
               API keys. If you don’t know what an API key is or how to obtain
-              it, <a href="https://www.advancedalgos.net/documentation-poloniex-api-key.shtml"
+              it, <a href="https://www.superalgos.org/documentation-poloniex-api-key.shtml"
                 target="_blank">check the documentation</a>.
             </Typography>
             <Typography align='justify'>
