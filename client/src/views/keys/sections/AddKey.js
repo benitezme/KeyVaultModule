@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { graphql, compose } from 'react-apollo'
 import { addKeyMutation, getKeysQuery, getBotsQuery } from '../../../queries'
 
+import TopBar from '../../nav'
+
 //Material-ui
 import { withStyles } from '@material-ui/core/styles'
 import classNames from 'classnames'
@@ -22,7 +24,8 @@ const styles = theme => ({
     flexGrow: 1,
     padding: 10,
     marginLeft: '25%',
-    marginTop: '2%'
+    marginTop: '2%',
+    marginBottom: 30
   },
   container: {
     display: 'flex',
@@ -97,177 +100,185 @@ class AddKey extends Component {
   render() {
     const { classes } = this.props
     return (
-        <Paper className={classes.root}>
+        <React.Fragment>
+          <TopBar
+            size='medium'
+            title='Add Key'
+            text=''
+            backgroundUrl='https://advancedalgos.net/img/photos/key-vault.jpg'
+          />
+          <Paper className={classes.root}>
 
-        <form noValidate autoComplete="off" onSubmit={this.submitForm.bind(this)}>
+          <form noValidate autoComplete="off" onSubmit={this.submitForm.bind(this)}>
 
-            <Typography className={classes.typography} variant='h5' gutterBottom>
-              Add a New Exchange Key
-            </Typography>
+              <Typography className={classes.typography} variant='h5' gutterBottom>
+                Add a New Exchange Key
+              </Typography>
+
+              <Typography className={classes.typography} variant='subtitle1' align='justify'>
+                You will need to complete this section with the information from
+                the exchange.
+              </Typography>
+
+              <Button  variant="contained" color='secondary' size="small" fullWidth className={classes.typography}
+                target="_blank"
+                href="https://advancedalgos.net/documentation-poloniex-api-key.shtml">
+                Click here for step by step instructions on how to get a key
+              </Button>
+
+            <TextField
+                id="key"
+                label="Key"
+                className={classNames(classes.form, classes.textField)}
+                value={this.state.key}
+                onChange={(e)=>this.setState({key:e.target.value})}
+                onBlur={(e)=>this.setState({keyError:false})}
+                error={this.state.keyError}
+                autoComplete="false"
+                fullWidth
+              />
+
+            <FormControl className={classNames(classes.margin, classes.textField)}>
+              <InputLabel htmlFor="secret">Secret</InputLabel>
+              <Input
+                id="secret"
+                type={this.state.showPassword ? 'text' : 'password'}
+                label="Secret"
+                value={this.state.secret}
+                onChange={(e)=>this.setState({secret:e.target.value})}
+                onBlur={(e)=>this.setState({secretError:false})}
+                error={this.state.secretError}
+                fullWidth
+                autoComplete="false"
+                endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="Toggle password visibility"
+                        onClick={this.handleClickShowPassword}
+                        onMouseDown={this.handleMouseDownPassword}
+                      >
+                        {this.state.showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+              />
+            </FormControl>
 
             <Typography className={classes.typography} variant='subtitle1' align='justify'>
-              You will need to complete this section with the information from
-              the exchange.
+              For now, the only exchange available on the platform is Poloniex.
             </Typography>
 
-            <Button  variant="outlined" size="small" fullWidth className={classes.typography}
-              target="_blank"
-              href="https://advancedalgos.net/documentation-poloniex-api-key.shtml">
-              Click here for step by step instructions on how to get a key
-            </Button>
+            <TextField
+               select
+               label="Exchange"
+               className={classNames(classes.margin, classes.textField, classes.form)}
+               value={this.state.exchange}
+               onChange={(e)=> this.setState({exchange:e.target.value})}
+               onBlur={(e)=>this.setState({exchangeError:false})}
+               error={this.state.exchangeError}
+               fullWidth
+               >
+                 {exchanges.map(option => (
+                   <MenuItem key={option.id} value={option.id}>{option.name}</MenuItem>
+                 ))}
+            </TextField>
 
-          <TextField
-              id="key"
-              label="Key"
-              className={classNames(classes.form, classes.textField)}
-              value={this.state.key}
-              onChange={(e)=>this.setState({key:e.target.value})}
-              onBlur={(e)=>this.setState({keyError:false})}
-              error={this.state.keyError}
-              autoComplete="false"
-              fullWidth
-            />
+            <Typography className={classes.typography} variant='subtitle1' align='justify'>
+              Please specify the intended use for this key. You must detail if you want to use it for Live Trade or Competitions and with which one of your bots.
+            </Typography>
 
-          <FormControl className={classNames(classes.margin, classes.textField)}>
-            <InputLabel htmlFor="secret">Secret</InputLabel>
-            <Input
-              id="secret"
-              type={this.state.showPassword ? 'text' : 'password'}
-              label="Secret"
-              value={this.state.secret}
-              onChange={(e)=>this.setState({secret:e.target.value})}
-              onBlur={(e)=>this.setState({secretError:false})}
-              error={this.state.secretError}
-              fullWidth
-              autoComplete="false"
-              endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="Toggle password visibility"
-                      onClick={this.handleClickShowPassword}
-                      onMouseDown={this.handleMouseDownPassword}
-                    >
-                      {this.state.showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-            />
-          </FormControl>
-
-          <Typography className={classes.typography} variant='subtitle1' align='justify'>
-            For now, the only exchange available on the platform is Poloniex.
-          </Typography>
-
-          <TextField
-             select
-             label="Exchange"
-             className={classNames(classes.margin, classes.textField, classes.form)}
-             value={this.state.exchange}
-             onChange={(e)=> this.setState({exchange:e.target.value})}
-             onBlur={(e)=>this.setState({exchangeError:false})}
-             error={this.state.exchangeError}
-             fullWidth
-             >
-               {exchanges.map(option => (
-                 <MenuItem key={option.id} value={option.id}>{option.name}</MenuItem>
+            <TextField
+               select
+               label="Running Mode"
+               className={classNames(classes.margin, classes.textField, classes.form)}
+               value={this.state.type}
+               onChange={(e)=>this.setState({type:e.target.value})}
+               fullWidth
+               >
+               {types.map(option => (
+                 <MenuItem key={option} value={option}>
+                   {option}
+                 </MenuItem>
                ))}
-          </TextField>
+             </TextField>
 
-          <Typography className={classes.typography} variant='subtitle1' align='justify'>
-            Please specify the intended use for this key. You must detail if you want to use it for Live Trade or Competitions and with which one of your bots.
-          </Typography>
+             <TextField
+               id="description"
+               label="Description"
+               className={classes.textField}
+               value={this.state.description}
+               onChange={(e)=>this.setState({description:e.target.value})}
+               fullWidth
+             />
 
-          <TextField
-             select
-             label="Running Mode"
-             className={classNames(classes.margin, classes.textField, classes.form)}
-             value={this.state.type}
-             onChange={(e)=>this.setState({type:e.target.value})}
-             fullWidth
-             >
-             {types.map(option => (
-               <MenuItem key={option} value={option}>
-                 {option}
-               </MenuItem>
-             ))}
-           </TextField>
+              {/* <TextField
+                  id="validFrom"
+                  label="Valid From"
+                  type="datetime-local"
+                  className={classes.textField}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  onChange={(e)=>this.setState({validFrom: new Date(e.target.value).getTime()})}
+                  fullWidth
+                />
 
-           <TextField
-             id="description"
-             label="Description"
-             className={classes.textField}
-             value={this.state.description}
-             onChange={(e)=>this.setState({description:e.target.value})}
-             fullWidth
-           />
-
-            {/* <TextField
-                id="validFrom"
-                label="Valid From"
+              <TextField
+                id="validTo"
+                label="Valid To"
                 type="datetime-local"
                 className={classes.textField}
                 InputLabelProps={{
                   shrink: true,
                 }}
-                onChange={(e)=>this.setState({validFrom: new Date(e.target.value).getTime()})}
+                onChange={(e)=>this.setState({validTo: new Date(e.target.value).getTime()})}
                 fullWidth
-              />
+              /> */}
 
-            <TextField
-              id="validTo"
-              label="Valid To"
-              type="datetime-local"
-              className={classes.textField}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              onChange={(e)=>this.setState({validTo: new Date(e.target.value).getTime()})}
-              fullWidth
-            /> */}
+              <TextField
+                 select
+                 label="Bot"
+                 className={classNames(classes.margin, classes.textField)}
+                 value={this.state.botId}
+                 onChange={(e)=>this.setState({botId:e.target.value})}
+                 onBlur={(e)=>this.setState({botIdError:false})}
+                 error={this.state.botIdError}
+                 fullWidth
+                 >
+                   { this.displayBots() }
+               </TextField>
 
-            <TextField
-               select
-               label="Bot"
-               className={classNames(classes.margin, classes.textField)}
-               value={this.state.botId}
-               onChange={(e)=>this.setState({botId:e.target.value})}
-               onBlur={(e)=>this.setState({botIdError:false})}
-               error={this.state.botIdError}
-               fullWidth
-               >
-                 { this.displayBots() }
-             </TextField>
+               <br />
 
-             <br />
+               <div className={classes.actionButton} >
+                 <Button
+                   type="submit"
+                   variant='contained' color='secondary'>
+                   Add Key
+                 </Button>
+               </div>
+          </form>
 
-             <div className={classes.actionButton} >
-               <Button
-                 type="submit"
-                 variant="outlined" color="primary">
-                 Add Key
-               </Button>
-             </div>
-        </form>
-
-        <Dialog
-          open={this.state.isNewKeyDialogOpen}
-          onClose={this.handleNewKeyDialogClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">{"Exchange Key Succesfully Added"}</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              Now you will be able to run your bot in competition and live modes using this key. There are no further actions from you required for that.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleNewKeyDialogClose} color="primary" autoFocus>
-              Ok
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </Paper>
+          <Dialog
+            open={this.state.isNewKeyDialogOpen}
+            onClose={this.handleNewKeyDialogClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">{"Exchange Key Succesfully Added"}</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Now you will be able to run your bot in competition and live modes using this key. There are no further actions from you required for that.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={this.handleNewKeyDialogClose} color="primary" autoFocus>
+                Ok
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </Paper>
+      </React.Fragment>
     );
   }
 
