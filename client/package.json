@@ -1,7 +1,7 @@
 {
-  "name": "@advancedalgos/key-vault-client",
-  "version": "0.0.21",
-  "description": "Advanced Algos KeyVault client-side web app",
+  "name": "@superalgos/key-vault-client",
+  "version": "0.0.26",
+  "description": "Superalgos KeyVault client-side web app",
   "main": "src/index.js",
   "dependencies": {
     "@material-ui/core": "^3.2.2",

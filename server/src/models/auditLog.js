@@ -5,7 +5,7 @@ const auditLogSchema = new Schema({
   keyId: String,
   action: String,
   details: String,
-  date: String
+  date: Number
 })
 
 export default mongoose.model('AuditLog', auditLogSchema)

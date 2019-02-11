@@ -13,23 +13,16 @@ import {
 } from '@material-ui/core'
 
 import { types, exchanges } from '../../../queries/models'
+import { slugify } from '../../../utils'
 
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    padding: 20,
+    padding: 10,
     margin: 10
   },
   textField: {
-    width: '60%',
-    marginLeft:'20%',
     marginBottom: 10
-  },
-  menu: {
-    width: 200,
-  },
-  button: {
-    margin: theme.spacing.unit,
   },
   actionButton: {
     textAlign: 'center',
@@ -61,7 +54,6 @@ class EditKey extends Component {
   render() {
     const { classes } = this.props
     return (
-
       <form className={classes.root} noValidate autoComplete="off" onSubmit={this.submitForm.bind(this)}>
         <TextField
           id="key"
@@ -74,7 +66,7 @@ class EditKey extends Component {
           disabled
         />
 
-        <FormControl className={classNames(classes.margin, classes.textField)}>
+        <FormControl fullWidth className={classes.textField}>
           <InputLabel htmlFor="secret">Secret</InputLabel>
           <Input
             id="secret"
@@ -100,7 +92,7 @@ class EditKey extends Component {
         <TextField
            select
            label="Exchange"
-           className={classNames(classes.margin, classes.textField)}
+           className={classes.textField}
            value={this.state.exchange}
            onChange={(e)=> this.setState({exchange:e.target.value})}
            fullWidth
@@ -114,7 +106,7 @@ class EditKey extends Component {
          <TextField
            select
            label="Type"
-           className={classNames(classes.margin, classes.textField)}
+           className={classes.textField}
            value={this.state.type}
            onChange={(e)=>this.setState({type:e.target.value})}
            fullWidth
@@ -163,7 +155,7 @@ class EditKey extends Component {
           <TextField
              select
              label="Bot"
-             className={classNames(classes.margin, classes.textField)}
+             className={classes.textField}
              value={this.state.botId}
              onChange={(e)=>this.setState({botId:e.target.value})}
              fullWidth
@@ -174,17 +166,6 @@ class EditKey extends Component {
            <br />
 
            <div className={classes.actionButton} >
-             {/* <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={this.state.active}
-                    onChange={this.handleChange('active')}
-                    value="active"
-                    color="primary"
-                  />
-                }
-                label="Active"
-              /> */}
              <Button
                type="submit"
                onClick={this.handleEditKeyDialogClose}
@@ -232,29 +213,12 @@ class EditKey extends Component {
       let bots = this.props.getBotsQuery.teams_FbByTeamMember
       if (bots !== undefined && bots.fb.length > 0){
         return bots.fb.map(bot => (
-          <MenuItem key={bot.name} value={this.slugify(bot.name)}>{bot.name}</MenuItem>
+          <MenuItem key={bot.name} value={slugify(bot.name)}>{bot.name}</MenuItem>
         ))
       }else{
         return <MenuItem key={'no-bot'} value={''}>You don't have bots yet!</MenuItem>
       }
     }
-  }
-
-  slugify(botName){
-    const a = 'àáäâãåèéëêìíïîòóöôùúüûñçßÿœæŕśńṕẃǵǹḿǘẍźḧ·/_,:;'
-    const b = 'aaaaaaeeeeiiiioooouuuuncsyoarsnpwgnmuxzh------'
-    const p = new RegExp(a.split('').join('|'), 'g')
-
-    return botName
-      .toString()
-      .toLowerCase()
-      .replace(/\s+/g, '-') // Replace spaces with -
-      .replace(p, c => b.charAt(a.indexOf(c))) // Replace special characters
-      .replace(/&/g, '-and-') // Replace & with 'and'
-      .replace(/[^\w-]+/g, '') // Remove all non-word characters
-      .replace(/--+/g, '-') // Replace multiple - with single -
-      .replace(/^-+/, '') // Trim - from start of text
-      .replace(/-+$/, '') // Trim - from end of text
   }
 }
 

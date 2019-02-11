@@ -1,7 +1,8 @@
 import {
   GraphQLObjectType,
   GraphQLID,
-  GraphQLString
+  GraphQLString,
+  GraphQLInt
 } from 'graphql'
 
 import {
@@ -15,13 +16,11 @@ const AuditLogType = new GraphQLObjectType({
     authId: {type: GraphQLID},
     action: {type: GraphQLString},
     details: {type: GraphQLString},
-    date: {type: GraphQLString},
+    date: {type: GraphQLInt},
     key: {
       type: KeyType,
       resolve (parent, args) {
         return parent.key
-          // TODO Relocate business logic for resolve methods
-        //return Key.findById({ _id: parent.keyId })
       }
     }
   })

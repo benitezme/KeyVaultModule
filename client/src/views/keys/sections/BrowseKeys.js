@@ -1,24 +1,12 @@
 import React, { Component } from 'react'
-import { graphql, compose } from 'react-apollo'
+import { graphql } from 'react-apollo'
 import { getKeysQuery } from '../../../queries'
-
 import TopBar from '../../nav'
-
 import KeyDialog from './KeyDialog'
 import ListKeys from './ListKeys'
 
 // Material-ui
 import { Typography, Paper } from '@material-ui/core'
-import { withStyles } from '@material-ui/core/styles'
-
-const styles = theme => ({
-  root: {
-    flexGrow: 1,
-    padding: 10,
-    width: '70%',
-    marginLeft: '15%',
-  }
-})
 
 class BrowseKeys extends Component {
 
@@ -31,78 +19,112 @@ class BrowseKeys extends Component {
   }
 
   render () {
-    const { classes } = this.props
-    const data = this.props.data
+    let data = this.props.data
 
     if (data.loading) {
       return (
-        <React.Fragment>
-          <TopBar
-            size='medium'
-            title='Browse Keys'
-            text=''
-            backgroundUrl='https://advancedalgos.net/img/photos/key-vault.jpg'
-          />
-          <div className={classes.root}>
-            <Typography variant='subtitle1'>Loading keys...</Typography>
-          </div>
-        </React.Fragment>
+        <TopBar
+          size='big'
+          title='Your Keys'
+          text='Loading your keys...'
+          backgroundUrl='https://superalgos.org/img/photos/key-vault.jpg'
+        />
       )
     } else if (data.keyVault_Keys && data.keyVault_Keys.length > 0) {
-      return this.displayKeys()
-    } else if (data.error) {
-        return (
-          <React.Fragment>
-            <TopBar
-              size='medium'
-              title='Browse Keys'
-              text=''
-              backgroundUrl='https://advancedalgos.net/img/photos/key-vault.jpg'
-            />
-            <div className={classes.root}>
-              <Typography className={classes.root} variant='subtitle1'>Please Login to access your keys.</Typography>
-            </div>
-          </React.Fragment>
-        )
-    } else {
       return (
         <React.Fragment>
           <TopBar
             size='medium'
-            title='Browse Keys'
-            text=''
-            backgroundUrl='https://advancedalgos.net/img/photos/key-vault.jpg'
+            title='Your Keys'
+            text='All your exchange keys are here.'
+            backgroundUrl='https://superalgos.org/img/photos/key-vault.jpg'
           />
-          <div className={classes.root}>
-            <Typography className={classes.root} variant='subtitle1'>You don't have any keys yet. After you create a new key, it will be listed here.</Typography>
+
+          <div className='container'>
+            {
+                data.keyVault_Keys.map((key, i) => {
+                  return (
+                    <ListKeys key={key.id} currentKey={key} />
+                  )
+                })
+            }
           </div>
         </React.Fragment>
+      )
+    } else if (data.error) {
+      return (
+        <TopBar
+          size='big'
+          title='Your Keys'
+          text='Please login to gain access to your keys.'
+          backgroundUrl='https://superalgos.org/img/photos/key-vault.jpg'
+        />
+      )
+    } else {
+      return (
+        <TopBar
+          size='big'
+          title='Your Keys'
+          text="You don't have any keys yet. Once you create one you will find it here."
+          backgroundUrl='https://superalgos.org/img/photos/key-vault.jpg'
+          />
       )
     }
   }
 
-  displayKeys () {
-    var data = this.props.data
-    const { classes } = this.props
-    return data.keyVault_Keys.map((key, i) => {
+  getBodyContent (data) {
+    if (data.loading) {
+      return (
+        <TopBar
+          size='big'
+          title='Manage your keys'
+          text='Loading keys...'
+          backgroundUrl='https://superalgos.org/img/photos/key-vault.jpg'
+        />
+      )
+    } else if (data.keyVault_Keys && data.keyVault_Keys.length > 0) {
       return (
         <React.Fragment>
           <TopBar
-            size='medium'
-            title='Manage Keys'
-            text=''
-            backgroundUrl='https://advancedalgos.net/img/photos/key-vault.jpg'
-          />
-          <div key={key.id} className={classes.root}>
-            <ListKeys currentKey={key} />
+            size='big'
+            title='Manage your keys'
+            text='Loading keys...'
+            backgroundUrl='https://superalgos.org/img/photos/key-vault.jpg'
+        />
+
+          <div className='container'>
+            {
+              data.keyVault_Keys.map((key, i) => {
+                return (
+                  <ListKeys key={key.id} currentKey={key} />
+                )
+              })
+          }
           </div>
         </React.Fragment>
       )
-    })
+    } else if (data.error) {
+      return (
+        <TopBar
+          size='big'
+          title='No keys to display'
+          text='Please Login to access your keys.'
+          backgroundUrl='https://superalgos.org/img/photos/key-vault.jpg'
+        />
+      )
+    } else {
+      return (
+
+        <TopBar
+          size='big'
+          title='No keys to display'
+          text="You don't have any keys yet. After you create a new key, it will be listed here."
+          backgroundUrl='https://superalgos.org/img/photos/key-vault.jpg'
+          />
+      )
+    }
   }
+
 }
 
-export default compose(
-  graphql(getKeysQuery),
-  withStyles(styles)
-)(BrowseKeys)
+export default graphql(getKeysQuery)(BrowseKeys)
