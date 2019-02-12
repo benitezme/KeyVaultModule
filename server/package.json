@@ -1,7 +1,7 @@
 {
   "name": "key-vault-server",
   "version": "1.0.0",
-  "description": "Advanced Algos KeyVault backend API",
+  "description": "Superalgos KeyVault backend API",
   "main": "src/index.js",
   "scripts": {
     "start": "nodemon --exec babel-node --presets env,stage-2 src/index.js",
@@ -13,7 +13,7 @@
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-stage-2": "^6.24.1",
-    "nodemon": "^1.18.4"
+    "nodemon": "^1.18.10"
   },
   "dependencies": {
     "axios": "^0.18.0",
@@ -22,7 +22,7 @@
     "express": "^4.16.3",
     "express-graphql": "^0.6.12",
     "graphql": "^14.0.0",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.11",
     "mongoose": "^5.2.12",
     "winston": "^3.1.0"
   }

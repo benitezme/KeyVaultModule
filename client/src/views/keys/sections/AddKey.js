@@ -11,6 +11,7 @@ import Visibility from '@material-ui/icons/Visibility'
 import VisibilityOff from '@material-ui/icons/VisibilityOff'
 
 import { types, exchanges} from '../../../queries/models'
+import { slugify, isDefined } from '../../../utils'
 
 import {
    MenuItem, Button, IconButton, InputAdornment, TextField,
@@ -20,12 +21,11 @@ import {
 
 const styles = theme => ({
   root: {
-    width: '50%',
+    width: '100%',
     flexGrow: 1,
     padding: 10,
-    marginLeft: '25%',
-    marginTop: '2%',
-    marginBottom: 30
+    marginTop: '5%',
+    marginBottom: '10%'
   },
   container: {
     display: 'flex',
@@ -53,7 +53,7 @@ const styles = theme => ({
   typography: {
     width: '80%',
     marginLeft: '10%',
-    marginTop: 20
+    marginTop: 40
   },
   form: {
     marginTop: 20
@@ -65,7 +65,9 @@ class AddKey extends Component {
 
   constructor(props){
     super(props)
+    let user = localStorage.getItem('user')
     this.state = {
+      user: JSON.parse(user),
       key:'',
       secret:'',
       exchange:'',
@@ -75,7 +77,7 @@ class AddKey extends Component {
       validTo: 0,
       active: true,
       botId:'',
-      showPassword : false, //for showing the secret
+      showPassword : false,
       keyError: false,
       secretError: false,
       exchangeError: false,
@@ -99,32 +101,37 @@ class AddKey extends Component {
 
   render() {
     const { classes } = this.props
-    return (
+    if( !isDefined(this.state.user) ) {
+      return (
+        <TopBar
+          size='big'
+          title='Add Key'
+          text="Please login to add a new key."
+          backgroundUrl='https://superalgos.org/img/photos/key-vault.jpg'
+        />
+      )
+    } else return (
         <React.Fragment>
           <TopBar
             size='medium'
             title='Add Key'
-            text=''
-            backgroundUrl='https://advancedalgos.net/img/photos/key-vault.jpg'
+            text='Add a new Exchange Key here.'
+            backgroundUrl='https://superalgos.org/img/photos/key-vault.jpg'
           />
-          <Paper className={classes.root}>
+
+          <div className='container'>
+          <Paper className={classNames('container', classes.root)}>
 
           <form noValidate autoComplete="off" onSubmit={this.submitForm.bind(this)}>
 
               <Typography className={classes.typography} variant='h5' gutterBottom>
-                Add a New Exchange Key
+                New Exchange Key
               </Typography>
 
               <Typography className={classes.typography} variant='subtitle1' align='justify'>
-                You will need to complete this section with the information from
-                the exchange.
+                In order for your bots to access your own account at your Exchange, first you need to create a key at the exchange and bring that key and put it here, at the Superalgos Key Vault. If you have doubts on how to create a key at the Exchange, please check this <a href="https://superalgos.org/documentation-poloniex-api-key.shtml"
+                  target="_blank">tutorial</a>.
               </Typography>
-
-              <Button  variant="contained" color='secondary' size="small" fullWidth className={classes.typography}
-                target="_blank"
-                href="https://advancedalgos.net/documentation-poloniex-api-key.shtml">
-                Click here for step by step instructions on how to get a key
-              </Button>
 
             <TextField
                 id="key"
@@ -184,7 +191,7 @@ class AddKey extends Component {
             </TextField>
 
             <Typography className={classes.typography} variant='subtitle1' align='justify'>
-              Please specify the intended use for this key. You must detail if you want to use it for Live Trade or Competitions and with which one of your bots.
+              Please tell us the intended use for this key. You can use this key for either Live Trade or Competitions and with only one of your bots.
             </Typography>
 
             <TextField
@@ -210,30 +217,6 @@ class AddKey extends Component {
                onChange={(e)=>this.setState({description:e.target.value})}
                fullWidth
              />
-
-              {/* <TextField
-                  id="validFrom"
-                  label="Valid From"
-                  type="datetime-local"
-                  className={classes.textField}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  onChange={(e)=>this.setState({validFrom: new Date(e.target.value).getTime()})}
-                  fullWidth
-                />
-
-              <TextField
-                id="validTo"
-                label="Valid To"
-                type="datetime-local"
-                className={classes.textField}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                onChange={(e)=>this.setState({validTo: new Date(e.target.value).getTime()})}
-                fullWidth
-              /> */}
 
               <TextField
                  select
@@ -268,7 +251,7 @@ class AddKey extends Component {
             <DialogTitle id="alert-dialog-title">{"Exchange Key Succesfully Added"}</DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                Now you will be able to run your bot in competition and live modes using this key. There are no further actions from you required for that.
+                Now you will be able to run your bot in {this.state.type} mode using this key. You are all set for real trading!
               </DialogContentText>
             </DialogContent>
             <DialogActions>
@@ -278,6 +261,7 @@ class AddKey extends Component {
             </DialogActions>
           </Dialog>
         </Paper>
+        </div>
       </React.Fragment>
     );
   }
@@ -285,31 +269,14 @@ class AddKey extends Component {
     displayBots(){
       if(!this.props.getBotsQuery.loading){
         let bots = this.props.getBotsQuery.teams_FbByTeamMember
-        if (bots !== undefined && bots.fb.length > 0){
+        if (isDefined(bots) && bots.fb.length > 0){
           return bots.fb.map(bot => (
-            <MenuItem key={bot.name} value={this.slugify(bot.name)}>{bot.name}</MenuItem>
+            <MenuItem key={bot.name} value={slugify(bot.name)}>{bot.name}</MenuItem>
           ))
         }else{
-          return <MenuItem key={'no-bot'} value={''}>You don't have bots yet!</MenuItem>
+          return <MenuItem key='no-bot' value=''>You don't have bots yet!</MenuItem>
         }
       }
-    }
-
-    slugify(botName){
-      const a = 'àáäâãåèéëêìíïîòóöôùúüûñçßÿœæŕśńṕẃǵǹḿǘẍźḧ·/_,:;'
-      const b = 'aaaaaaeeeeiiiioooouuuuncsyoarsnpwgnmuxzh------'
-      const p = new RegExp(a.split('').join('|'), 'g')
-
-      return botName
-        .toString()
-        .toLowerCase()
-        .replace(/\s+/g, '-') // Replace spaces with -
-        .replace(p, c => b.charAt(a.indexOf(c))) // Replace special characters
-        .replace(/&/g, '-and-') // Replace & with 'and'
-        .replace(/[^\w-]+/g, '') // Remove all non-word characters
-        .replace(/--+/g, '-') // Replace multiple - with single -
-        .replace(/^-+/, '') // Trim - from start of text
-        .replace(/-+$/, '') // Trim - from end of text
     }
 
     submitForm(e){
