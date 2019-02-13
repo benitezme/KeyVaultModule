@@ -12,13 +12,13 @@ const KeyType = new GraphQLObjectType({
     id: {type: GraphQLID},
     authId: {type: GraphQLID},
     key: {type: GraphQLString},
-    type: {type: GraphQLString},
     description: {type: GraphQLString},
     exchange: {type: GraphQLString},
     validFrom: {type: GraphQLInt},
     validTo: {type: GraphQLInt},
     active: {type: GraphQLBoolean},
-    botId: {type: GraphQLString}
+    defaultKey: {type: GraphQLBoolean},
+    activeCloneId: {type: GraphQLString}
   })
 })
 export default KeyType

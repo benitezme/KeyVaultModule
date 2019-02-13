@@ -5,76 +5,71 @@ import {
 
 import {
   AuthentificationError,
-  WrongArgumentsError
+  KeyVaultError
 } from '../../errors'
 
 import { SignedTransactionType } from '../types'
 import { Key, Exchange } from '../../models'
 import logger from '../../config/logger'
 import saveAuditLog from './AddAuditLog'
-import isUserAuthorized from './AuthorizeUser'
+import { isDefined } from '../../utils'
 import crypto from 'crypto'
 import _ from 'lodash'
 
 const args = {
-  botId: {type: GraphQLString},
+  keyId: {type: new GraphQLNonNull(GraphQLString)},
+  cloneId: {type: new GraphQLNonNull(GraphQLString)},
   transaction: {type: new GraphQLNonNull(GraphQLString)}
 }
 
-const resolve = async (parent, { botId, transaction }, context) => {
+const resolve = async (parent, { keyId, cloneId, transaction }, context) => {
   logger.debug('signTransaction -> Entering function.')
 
   if (!context.userId) {
     throw new AuthentificationError()
   }
 
-  if( context.userId === process.env.AACLOUD_ID
-     || await isUserAuthorized(context.authorization, botId)) {
+  try {
+    logger.debug('signTransaction -> Retrieving key.')
 
-    return new Promise((resolve, reject) => {
-
-      logger.debug('signTransaction -> Retrieving key.')
-
-      Key.findOne({$and: [
-          {botId: botId},
-          {exchange: 1},
-          {type: 'Competition'}
-        ]}).exec(function (err, key) {
-          if (key) {
-            logger.debug('signTransaction -> Retrieve key -> Key found.')
-            // Get exchange properties
-            var exchange = _.find(Exchange, {id: key.exchange})
-
-            const decipher = crypto.createDecipher('aes192', process.env.SERVER_SECRET);
-            let secret = decipher.update(key.secret, 'hex', 'utf8');
-            secret += decipher.final('utf8');
-
-            // Sign transaction
-            var qsSignature = crypto.createHmac(exchange.algorithm, secret)
-                      .update(transaction)
-                      .digest('hex')
-
-            saveAuditLog(key.id, 'signTransaction', context, transaction)
-
-            var signedTransaction = {
-              key: key.key,
-              signature: qsSignature,
-              date: new Date().valueOf()
-            }
-
-            resolve(signedTransaction)
-          } else {
-            logger.error('signTransaction -> Retrieve key -> Key not found.')
-            reject('Error: key not found.')
-          }
-        })
+    let key = await Key.findOne({
+        _id: keyId,
+        activeCloneId: cloneId
       })
+
+    if (isDefined(key)) {
+      logger.debug('signTransaction -> Key found.')
+      // Get exchange properties
+      let exchange = _.find(Exchange, {id: key.exchange})
+
+      let decipher = crypto.createDecipher('aes192', process.env.SERVER_SECRET);
+      let secret = decipher.update(key.secret, 'hex', 'utf8');
+      secret += decipher.final('utf8');
+
+      // Sign transaction
+      let qsSignature = crypto.createHmac(exchange.algorithm, secret)
+                .update(transaction)
+                .digest('hex')
+
+      await saveAuditLog(key.id, 'signTransaction', context, transaction)
+
+      let signedTransaction = {
+        key: key.key,
+        signature: qsSignature,
+        date: new Date().valueOf()
+      }
+
+      return signedTransaction
     } else {
-        throw new WrongArgumentsError('You are not eligible to sign this transaction.')
+      throw new KeyVaultError('Key not found.')
     }
+  } catch (error) {
+    logger.error('signTransaction -> Error signing transaction. %s', error.stack)
+    throw new KeyVaultError('Error signing transaction. ' + error.message)
+  }
 }
 
-const mutation = {
+const SignTransactionMutation = {
   signTransaction: {
     type: SignedTransactionType,
     args,
@@ -82,4 +77,4 @@ const mutation = {
   }
 }
 
-export default mutation
+export default SignTransactionMutation

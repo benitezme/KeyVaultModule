@@ -1,65 +1,20 @@
 import React, { Component } from 'react'
 import { graphql, compose } from 'react-apollo'
-import { addKeyMutation, getKeysQuery, getBotsQuery } from '../../../queries'
-
 import TopBar from '../../nav'
-
-//Material-ui
 import { withStyles } from '@material-ui/core/styles'
-import classNames from 'classnames'
-import Visibility from '@material-ui/icons/Visibility'
-import VisibilityOff from '@material-ui/icons/VisibilityOff'
-
-import { types, exchanges} from '../../../queries/models'
-import { slugify, isDefined } from '../../../utils'
-
 import {
    MenuItem, Button, IconButton, InputAdornment, TextField,
    FormControl, InputLabel, Input, Typography, Paper, Dialog,
-   DialogTitle, DialogContent, DialogContentText, DialogActions
+   DialogTitle, DialogContent, DialogContentText, DialogActions,
+   FormControlLabel, Checkbox
 } from '@material-ui/core'
-
-const styles = theme => ({
-  root: {
-    width: '100%',
-    flexGrow: 1,
-    padding: 10,
-    marginTop: '5%',
-    marginBottom: '10%'
-  },
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    padding: 20,
-    height: '100%'
-  },
-  textField: {
-    width: '80%',
-    marginLeft:'10%',
-    marginBottom: 10
-  },
-  menu: {
-    width: 200,
-  },
-  button: {
-    position: 'fixed',
-    bottom: '10px',
-    right: '10px',
-  },
-  actionButton: {
-    textAlign: 'center',
-    marginTop: 10
-  },
-  typography: {
-    width: '80%',
-    marginLeft: '10%',
-    marginTop: 40
-  },
-  form: {
-    marginTop: 20
-  },
-
-});
+import Visibility from '@material-ui/icons/Visibility'
+import VisibilityOff from '@material-ui/icons/VisibilityOff'
+import styles from './styles'
+import classNames from 'classnames'
+import { addKeyMutation, getKeysQuery } from '../../../queries'
+import { exchanges} from '../../../queries/models'
+import { isDefined } from '../../../utils'
 
 class AddKey extends Component {
 
@@ -68,27 +23,23 @@ class AddKey extends Component {
     let user = localStorage.getItem('user')
     this.state = {
       user: JSON.parse(user),
-      key:'',
-      secret:'',
-      exchange:'',
-      type:'',
-      description:'',
+      key: '',
+      secret: '',
+      exchange: '',
+      type: '',
+      description: '',
       validFrom: 0,
       validTo: 0,
       active: true,
-      botId:'',
+      defaultKey: false,
       showPassword : false,
       keyError: false,
       secretError: false,
       exchangeError: false,
-      botIdError: false,
       isNewKeyDialogOpen: false,
+      serverResponse: '',
+      serverError: false
     }
-  }
-
-  componentDidMount(){
-    this.state.type = 'Competition'
-    this.state.exchange = '1'
   }
 
   handleMouseDownPassword = event => {
@@ -129,7 +80,11 @@ class AddKey extends Component {
               </Typography>
 
               <Typography className={classes.typography} variant='subtitle1' align='justify'>
-                In order for your bots to access your own account at your Exchange, first you need to create a key at the exchange and bring that key and put it here, at the Superalgos Key Vault. If you have doubts on how to create a key at the Exchange, please check this <a href="https://superalgos.org/documentation-poloniex-api-key.shtml"
+                In order for your bots to access your own account at the Exchange,
+                first you need to create a key at the exchange and register that key
+                here, at the Superalgos Key Vault. If you have doubts on how to
+                create a key at the Exchange, please check this
+                 <a href="https://superalgos.org/documentation-poloniex-api-key.shtml"
                   target="_blank">tutorial</a>.
               </Typography>
 
@@ -191,55 +146,31 @@ class AddKey extends Component {
             </TextField>
 
             <Typography className={classes.typography} variant='subtitle1' align='justify'>
-              Please tell us the intended use for this key. You can use this key for either Live Trade or Competitions and with only one of your bots.
+              If you select this as the default key, this is the one that will be
+              used to run the bot directly from the browser.
+              That way you can test everything is looking good before put it to
+              run on the Virtual Machine as a clone.
             </Typography>
 
-            <TextField
-               select
-               label="Running Mode"
-               className={classNames(classes.margin, classes.textField, classes.form)}
-               value={this.state.type}
-               onChange={(e)=>this.setState({type:e.target.value})}
-               fullWidth
-               >
-               {types.map(option => (
-                 <MenuItem key={option} value={option}>
-                   {option}
-                 </MenuItem>
-               ))}
-             </TextField>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={this.state.defaultKey}
+                  onChange={(e)=>this.setState({defaultKey:e.target.checked })}
+                  color="primary"
+                />
+              }
+              label="Default Key"
+              className={classNames(classes.form, classes.textField)}
+            />
 
-             <TextField
-               id="description"
-               label="Description"
-               className={classes.textField}
-               value={this.state.description}
-               onChange={(e)=>this.setState({description:e.target.value})}
-               fullWidth
-             />
-
-              <TextField
-                 select
-                 label="Bot"
-                 className={classNames(classes.margin, classes.textField)}
-                 value={this.state.botId}
-                 onChange={(e)=>this.setState({botId:e.target.value})}
-                 onBlur={(e)=>this.setState({botIdError:false})}
-                 error={this.state.botIdError}
-                 fullWidth
-                 >
-                   { this.displayBots() }
-               </TextField>
-
-               <br />
-
-               <div className={classes.actionButton} >
-                 <Button
-                   type="submit"
-                   variant='contained' color='secondary'>
-                   Add Key
-                 </Button>
-               </div>
+             <div className={classes.actionButton} >
+               <Button
+                 type="submit"
+                 variant='contained' color='secondary'>
+                 Add Key
+               </Button>
+             </div>
           </form>
 
           <Dialog
@@ -248,10 +179,10 @@ class AddKey extends Component {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >
-            <DialogTitle id="alert-dialog-title">{"Exchange Key Succesfully Added"}</DialogTitle>
+            <DialogTitle id="alert-dialog-title">Creating new Key</DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                Now you will be able to run your bot in {this.state.type} mode using this key. You are all set for real trading!
+                { this.state.serverResponse }
               </DialogContentText>
             </DialogContent>
             <DialogActions>
@@ -260,43 +191,39 @@ class AddKey extends Component {
               </Button>
             </DialogActions>
           </Dialog>
+
         </Paper>
         </div>
       </React.Fragment>
     );
   }
 
-    displayBots(){
-      if(!this.props.getBotsQuery.loading){
-        let bots = this.props.getBotsQuery.teams_FbByTeamMember
-        if (isDefined(bots) && bots.fb.length > 0){
-          return bots.fb.map(bot => (
-            <MenuItem key={bot.name} value={slugify(bot.name)}>{bot.name}</MenuItem>
-          ))
-        }else{
-          return <MenuItem key='no-bot' value=''>You don't have bots yet!</MenuItem>
-        }
-      }
-    }
-
-    submitForm(e){
+    async submitForm(e){
       e.preventDefault()
-      const err = this.validate()
-      if (!err){
-        this.props.addKeyMutation({
+      let error = this.validate()
+      if (!error){
+        let serverResponse = await this.props.addKeyMutation({
           variables:{
             key: this.state.key,
             secret: this.state.secret,
-            type: this.state.type,
             description: this.state.description,
             exchange: this.state.exchange,
             validFrom: this.state.validFrom,
             validTo: this.state.validTo,
             active: this.state.active,
-            botId: this.state.botId
+            defaultKey: this.state.defaultKey
           },
           refetchQueries: [{query: getKeysQuery}]
         })
+
+        error = serverResponse.errors || !isDefined(serverResponse.data.keyVault_AddKey)
+        if(error){
+          this.state.serverResponse = "There was an error creating the key."
+          this.state.serverError = true
+        }else{
+          this.state.serverResponse = "The new key was sucessfully created."
+          this.state.serverError = false
+        }
 
         this.handleNewKeyDialogOpen()
       }
@@ -308,22 +235,26 @@ class AddKey extends Component {
 
     handleNewKeyDialogClose = () => {
       this.setState({
-        key:'',
-        secret:'',
-        exchange:'1',
-        type:'Competition',
-        description:'',
-        validFrom: 0,
-        validTo: 0,
-        active: true,
-        botId:'',
-        showPassword : false,
-        keyError: false,
-        secretError: false,
-        exchangeError: false,
-        botIdError: false,
         isNewKeyDialogOpen: false
       })
+      if(!this.state.serverError)
+        this.setState({
+          key: '',
+          secret: '',
+          exchange: '1',
+          description: '',
+          validFrom: 0,
+          validTo: 0,
+          active: true,
+          showPassword : false,
+          keyError: false,
+          secretError: false,
+          exchangeError: false,
+          isNewKeyDialogOpen: false,
+          defaultKey: false,
+          serverResponse: '',
+          serverError: false
+        })
     };
 
     validate(){
@@ -344,11 +275,6 @@ class AddKey extends Component {
         this.setState(state => ({ exchangeError: true }));
       }
 
-      if(this.state.botId.length < 1) {
-        isError = true
-        this.setState(state => ({ botIdError: true }));
-      }
-
       return isError;
 
     }
@@ -356,6 +282,5 @@ class AddKey extends Component {
 
 export default compose(
   graphql(addKeyMutation, { name:'addKeyMutation' }),
-  graphql(getBotsQuery, { name: 'getBotsQuery' }),
   withStyles(styles)
 )(AddKey)

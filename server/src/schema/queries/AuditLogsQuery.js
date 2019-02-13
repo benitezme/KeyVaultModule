@@ -29,7 +29,7 @@ const resolve = (parent, { key }, context) => {
   }).sort({date: -1}).limit(20)
 }
 
-const query = {
+const AuditLogsQuery = {
   auditLogs: {
     type: new GraphQLList(AuditLogType),
     args,
@@ -37,4 +37,4 @@ const query = {
   }
 }
 
-export default query
+export default AuditLogsQuery

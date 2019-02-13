@@ -1,20 +1,8 @@
 import React, { Component } from 'react'
-
-import { Typography, Paper, List, ListItem,
-  ListItemText, Avatar, IconButton, Link } from '@material-ui/core'
-import { withStyles } from '@material-ui/core/styles'
-
+import { Typography } from '@material-ui/core'
 import TopBar from './nav'
 
-import ActivityIcon from '@material-ui/icons/LibraryBooks'
-import AssingIcon from '@material-ui/icons/CompareArrows'
-import StoreIcon from '@material-ui/icons/SaveAlt'
-import ManageIcon from '@material-ui/icons/VerticalSplit'
-
-import BrowseIcon from '@material-ui/icons/ImportContacts'
-
 class Home extends Component {
-
   render () {
     return (
       <React.Fragment>
@@ -36,8 +24,8 @@ class Home extends Component {
             <Typography align='justify'>
               The Key Vault is the module that manages and  securely stores your
               API keys. If you don’t know what an API key is or how to obtain
-              it, <a href="https://www.superalgos.org/documentation-poloniex-api-key.shtml"
-                target="_blank">check the documentation</a>.
+              it, <a href='https://www.superalgos.org/documentation-poloniex-api-key.shtml'
+                target='_blank'>check the documentation</a>.
             </Typography>
             <Typography align='justify'>
               When running in live or competition modes, trading bots do real
@@ -50,8 +38,8 @@ class Home extends Component {
           <div className='column'>
             <Typography align='justify'>
               At this point in time, you will need a verified account with
-              Poloniex. If you don't have one, <a href="https://poloniex.com/signup"
-                target="_blank">get it here</a>. Make sure you go through the
+              Poloniex. If you don't have one, <a href='https://poloniex.com/signup'
+                target='_blank'>get it here</a>. Make sure you go through the
               verification process so that you can trade freely.
               </Typography>
             <Typography align='justify'>
@@ -62,7 +50,6 @@ class Home extends Component {
             </Typography>
           </div>
         </div>
-
       </React.Fragment>
     )
   }

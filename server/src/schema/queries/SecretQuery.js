@@ -8,7 +8,6 @@ import {
   AuthentificationError
 } from '../../errors'
 
-import { KeyType } from '../types'
 import { Key } from '../../models'
 import logger from '../../config/logger'
 import saveAuditLog from '../mutations/AddAuditLog'
@@ -45,7 +44,7 @@ const resolve = (parent, { id }, context) => {
   })
 }
 
-const query = {
+const SecretQuery = {
   secret: {
     type: GraphQLString,
     args,
@@ -53,4 +52,4 @@ const query = {
   }
 }
 
-export default query
+export default SecretQuery

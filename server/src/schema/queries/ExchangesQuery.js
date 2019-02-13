@@ -12,7 +12,7 @@ const resolve = (parent, args, context) => {
   return Exchange
 }
 
-const query = {
+const ExchangesQuery = {
   exchanges: {
     type: new GraphQLList(ExchangeType),
     args,
@@ -20,4 +20,4 @@ const query = {
   }
 }
 
-export default query
+export default ExchangesQuery

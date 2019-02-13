@@ -22,7 +22,7 @@ const resolve = (parent, args, context) => {
   return Key.find({authId: context.userId})
 }
 
-const query = {
+const KeysQuery = {
   keys: {
     type: new GraphQLList(KeyType),
     args,
@@ -30,4 +30,4 @@ const query = {
   }
 }
 
-export default query
+export default KeysQuery
