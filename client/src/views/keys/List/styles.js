@@ -20,9 +20,9 @@ const styles = theme => ({
     margin: theme.spacing.unit,
     float: 'right'
   },
-  content:{
+  content: {
     marginTop: 'auto',
     marginDown: 'auto'
   }
 })
-export default styles;
+export default styles
