@@ -5,8 +5,8 @@ import {
 import AddKeyMutation from './AddKeyMutation'
 import EditKeyMutation from './EditKeyMutation'
 import RemoveKeyMutation from './RemoveKeyMutation'
-import AssignKeyBotMutation from './AssignKeyBotMutation'
 import SignTransactionMutation from './SignTransactionMutation'
+import AuthorizeClone from './AuthorizeClone'
 
 const Mutation = new GraphQLObjectType({
   name: 'Mutation',
@@ -14,8 +14,8 @@ const Mutation = new GraphQLObjectType({
     AddKeyMutation,
     EditKeyMutation,
     RemoveKeyMutation,
-    AssignKeyBotMutation,
-    SignTransactionMutation
+    SignTransactionMutation,
+    AuthorizeClone
   )
 })
 

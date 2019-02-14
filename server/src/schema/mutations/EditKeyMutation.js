@@ -8,66 +8,72 @@ import {
 
 import {
   AuthentificationError,
-  WrongArgumentsError
+  KeyVaultError
 } from '../../errors'
 
 import { KeyType } from '../types'
-import { Key, KeyMode } from '../../models'
+import { Key } from '../../models'
 import logger from '../../config/logger'
 import saveAuditLog from './AddAuditLog'
-import isUserAuthorized from './AuthorizeUser'
+import { isDefined } from '../../utils'
 
 const args = {
   id: {type: new GraphQLNonNull(GraphQLID)},
-  type: {type: GraphQLString}, // TODO Tipify
   description: {type: GraphQLString},
   validFrom: {type: GraphQLInt},
   validTo: {type: GraphQLInt},
   active: {type: GraphQLBoolean},
-  botId: {type: GraphQLID}
+  defaultKey: {type: GraphQLBoolean}
 }
 
-const resolve = (parent, { id, type, description, validFrom, validTo, active,
-  botId }, context) => {
+const resolve = async (parent, { id, description, validFrom, validTo, active,
+                  defaultKey }, context) => {
   logger.debug('editKey -> Entering Fuction.')
 
   if (!context.userId) {
     throw new AuthentificationError()
   }
 
-  if(!isUserAuthorized(context.authorization, botId)) {
-    throw new WrongArgumentsError('You are not eligible to assign this bot to the key, the bot is not yours!.')
-    return
+  try {
+    if(defaultKey){
+      logger.debug('addKey -> Default Key Changed.')
+      let currentDefaultKey = await Key.findOne( {
+        authId: context.userId,
+        defaultKey: true
+      })
+
+      if(isDefined(currentDefaultKey) && currentDefaultKey.id !== id){
+        logger.debug('addKey -> Changing old default key.')
+        currentDefaultKey.defaultKey = false
+        await currentDefaultKey.save()
+      }
+    }
+
+    var query = {
+      _id: id,
+      authId: context.userId
+    }
+    var options = { new: true}
+    let update = {
+      description: description,
+      validFrom: validFrom,
+      validTo: validTo,
+      active: active,
+      defaultKey: defaultKey
+    }
+
+    await saveAuditLog(id, 'editKey', context)
+
+    logger.debug('editKey -> Editing key.')
+    return Key.findOneAndUpdate(query, update, options)
+
+  } catch (error) {
+    logger.error('editKey -> Error Editing key. %s', error.stack)
+    throw new KeyVaultError('Error Editing key. ' + error.message)
   }
-
-  if (!KeyMode.some(keyMode => keyMode === type)) {
-    throw new WrongArgumentsError('The key mode type selected is not valid.')
-    return
-  }
-
-  logger.debug('editKey -> Editing key.')
-
-  var query = {
-    _id: id,
-    authId: context.userId
-  }
-  var options = { new: true}
-  let update = {
-    type: type,
-    description: description,
-    validFrom: validFrom,
-    validTo: validTo,
-    active: active,
-    botId: botId
-  }
-
-  saveAuditLog(id, 'editKey', context)
-
-  return Key.findOneAndUpdate(query, update, options)
-
 }
 
-const mutation = {
+const EditKeyMutation = {
   editKey: {
     type: KeyType,
     args,
@@ -75,4 +81,4 @@ const mutation = {
   }
 }
 
-export default mutation
+export default EditKeyMutation

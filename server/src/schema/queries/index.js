@@ -6,6 +6,8 @@ import AuditLogsQuery from './AuditLogsQuery'
 import ExchangesQuery from './ExchangesQuery'
 import KeysQuery from './KeysQuery'
 import SecretQuery from './SecretQuery'
+import DefaultKey from './DefaultKey'
+import AvailableKey from './AvailableKeys'
 
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
@@ -13,7 +15,9 @@ const RootQuery = new GraphQLObjectType({
     AuditLogsQuery,
     ExchangesQuery,
     KeysQuery,
-    SecretQuery
+    SecretQuery,
+    DefaultKey,
+    AvailableKey
   )
 })
 

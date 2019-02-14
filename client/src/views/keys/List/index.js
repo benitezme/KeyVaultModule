@@ -2,11 +2,7 @@ import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import { getKeysQuery } from '../../../queries'
 import TopBar from '../../nav'
-import KeyDialog from './KeyDialog'
 import ListKeys from './ListKeys'
-
-// Material-ui
-import { Typography, Paper } from '@material-ui/core'
 
 class BrowseKeys extends Component {
 

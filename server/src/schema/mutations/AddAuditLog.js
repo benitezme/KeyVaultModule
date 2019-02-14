@@ -2,7 +2,7 @@
 import { AuditLog } from '../../models'
 import logger from '../../config/logger'
 
-const saveAuditLog = (keyId, action, context, details) => {
+const AddAuditLog = (keyId, action, context, details) => {
   let localDate = new Date()
   let date = new Date(Date.UTC(
     localDate.getUTCFullYear(),
@@ -21,8 +21,8 @@ const saveAuditLog = (keyId, action, context, details) => {
     date: date
   })
 
-  logger.info('saveAuditLog -> Saving a new Audit Log Record.')
+  logger.debug('saveAuditLog -> Saving a new Audit Log Record.')
   auditLogEntry.save()
 }
 
-export default saveAuditLog
+export default AddAuditLog

@@ -17,32 +17,30 @@ const args = {
   id: {type: new GraphQLNonNull(GraphQLID)}
 }
 
-const resolve = (parent, { id }, context) => {
+const resolve = async (parent, { id }, context) => {
   logger.debug('removeKey -> Entering Fuction.')
 
   if (!context.userId) {
     throw new AuthentificationError()
   }
 
-  logger.debug('removeKey -> Removing key.')
+  try {
+    await saveAuditLog(id, 'removeKey', context)
 
-  var query = {
-    _id: id,
-    authId: context.userId
+    logger.debug('removeKey -> Removing key.')
+    await Key.deleteOne({
+      _id: id,
+      authId: context.userId
+    })
+
+    return 'Key Removed'
+  } catch (error) {
+    logger.error('removeKey -> Error removing key. %s', error.stack)
+    throw new KeyVaultError('Error removing key', error.message)
   }
-
-  saveAuditLog(id, 'removeKey', context)
-
-  Key.deleteOne(query, function (err) {
-    if (err){
-      throw new KeyVaultError('Error removing key', err)
-    }else{
-      return 'Key Removed'
-    }
-  })
 }
 
-const mutation = {
+const RemoveKeyMutation = {
   removeKey: {
     type: GraphQLString,
     args,
@@ -50,4 +48,4 @@ const mutation = {
   }
 }
 
-export default mutation
+export default RemoveKeyMutation
