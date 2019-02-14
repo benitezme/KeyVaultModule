@@ -3,18 +3,14 @@ import EditKey from '../Edit'
 import AuditLogList from '../Audit'
 import { graphql, compose } from 'react-apollo'
 import { removeKeyMutation, getKeysQuery } from '../../../queries'
-// Images
 import Poloniex from '../../../img/poloniex.png'
 import Binance from '../../../img/binance.png'
-
-// Material-ui
 import {
   Grid, Paper, Typography, ButtonBase, Button,
   Dialog, DialogContent, DialogContentText, DialogTitle,
   DialogActions
 } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
-
 import styles from './styles'
 
 class ListKeys extends Component {
