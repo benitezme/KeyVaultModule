@@ -30,7 +30,7 @@ const resolve = async (parent, { id }, context) => {
     logger.debug('removeKey -> Removing key.')
 
     return new Promise((res, rej) => {
-      Key.deleteOne({ _id: id, authId: context.userId }), (err) => {
+      Key.deleteOne({ _id: id, authId: context.userId }, (err) => {
         if (err) {
           logger.error('removeKey -> Error removing key from the DB. %s', err.stack)
           rej(err)
