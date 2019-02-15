@@ -49,7 +49,7 @@ const resolve = async (parent, { keyId, cloneId, releaseClon}, context) => {
       logger.debug('authorizeClone -> Key found.')
 
       if (!releaseClon) {
-        if (!isDefined(key.activeCloneId)) {
+        if (isDefined(key.activeCloneId)) {
           key.activeCloneId = cloneId
         } else {
           throw new WrongArgumentsError('The key is in use.')
