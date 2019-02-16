@@ -33,12 +33,15 @@ class AddKey extends Component {
       active: true,
       defaultKey: false,
       showPassword : false,
+      acceptedTermsOfService: false,
+
       keyError: false,
       secretError: false,
       exchangeError: false,
       isNewKeyDialogOpen: false,
       serverResponse: '',
-      serverError: false
+      serverError: false,
+      acceptedTermsOfServiceError: false
     }
   }
 
@@ -83,9 +86,9 @@ class AddKey extends Component {
                 In order for your bots to access your own account at the Exchange,
                 first you need to create a key at the exchange and register that key
                 here, at the Superalgos Key Vault. If you have doubts on how to
-                create a key at the Exchange, please check this
-                 <a href="https://superalgos.org/documentation-poloniex-api-key.shtml"
-                  target="_blank">tutorial</a>.
+                create a key at the Exchange, please check this <a
+                href="https://superalgos.org/documentation-poloniex-api-key.shtml"
+                target="_blank">tutorial</a>.
               </Typography>
 
             <TextField
@@ -164,6 +167,41 @@ class AddKey extends Component {
               className={classNames(classes.form, classes.textField)}
             />
 
+            <Typography className={classes.typography} variant='subtitle1' align='justify'>
+              <strong>
+                THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+                EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+                OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+                NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+                HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+                WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+                ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+                OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+              </strong>
+            </Typography>
+
+            <Typography className={classes.typography} variant='subtitle1' align='justify'>
+              Please read the Superalgos Terms of Service before continuing on this <a
+              href="https://superalgos.org/legal-terms-of-service.shtml"
+              target="_blank">link</a>.
+            </Typography>
+
+            <FormControlLabel
+             control={
+               <Checkbox
+                 checked={this.state.acceptedTermsOfService}
+                 onChange={(e)=>this.setState({acceptedTermsOfService:e.target.checked })}
+                 onBlur={(e)=>this.setState({acceptedTermsOfServiceError:false})}
+                 error={this.state.acceptedTermsOfServiceError}
+                 value="acceptedTermsOfService"
+                 color="primary"
+               />
+             }
+             label="I've read and agree with the Superalgos Terms of Service."
+             className={classNames(classes.form, classes.textField)}
+           />
+
+
              <div className={classes.actionButton} >
                <Button
                  type="submit"
@@ -211,7 +249,8 @@ class AddKey extends Component {
             validFrom: this.state.validFrom,
             validTo: this.state.validTo,
             active: this.state.active,
-            defaultKey: this.state.defaultKey
+            defaultKey: this.state.defaultKey,
+            acceptedTermsOfService: this.state.acceptedTermsOfService
           },
           refetchQueries: [{query: getKeysQuery}]
         })
@@ -247,13 +286,16 @@ class AddKey extends Component {
           validTo: 0,
           active: true,
           showPassword : false,
+          acceptedTermsOfService: false,
+
           keyError: false,
           secretError: false,
           exchangeError: false,
           isNewKeyDialogOpen: false,
           defaultKey: false,
           serverResponse: '',
-          serverError: false
+          serverError: false,
+          acceptedTermsOfServiceError: false
         })
     };
 
@@ -273,6 +315,11 @@ class AddKey extends Component {
       if(this.state.exchange.length < 1) {
         isError = true
         this.setState(state => ({ exchangeError: true }));
+      }
+
+      if(this.state.acceptedTermsOfService === true) {
+        isError = true
+        this.setState(state => ({ acceptedTermsOfServiceError: true }));
       }
 
       return isError;

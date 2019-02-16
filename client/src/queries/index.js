@@ -18,6 +18,7 @@ const getKeysQuery = gql`
       validTo
       active
       defaultKey
+      activeCloneId
     }
   }
 `
@@ -25,7 +26,7 @@ const getKeysQuery = gql`
 const addKeyMutation = gql`
   mutation($key: String!, $secret: String!, $exchange: String!,
             $description: String, $validFrom: Int, $validTo: Int,
-            $active: Boolean, $defaultKey: Boolean!){
+            $active: Boolean, $defaultKey: Boolean!, $acceptedTermsOfService: Boolean!){
     keyVault_AddKey(
       key: $key,
       secret: $secret,
@@ -34,7 +35,8 @@ const addKeyMutation = gql`
       validFrom: $validFrom,
       validTo: $validTo,
       active: $active,
-      defaultKey: $defaultKey
+      defaultKey: $defaultKey,
+      acceptedTermsOfService: $acceptedTermsOfService
     ){
       id
       key

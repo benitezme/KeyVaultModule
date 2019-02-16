@@ -35,17 +35,21 @@ const resolve = async (parent, { id, description, validFrom, validTo, active,
   }
 
   try {
-    if(defaultKey){
-      logger.debug('addKey -> Default Key Changed.')
-      let currentDefaultKey = await Key.findOne( {
+    if (defaultKey) {
+      logger.debug('editKey -> Default Key Changed.')
+      let currentDefaultKey = await Key.findOne({
         authId: context.userId,
         defaultKey: true
       })
 
-      if(isDefined(currentDefaultKey) && currentDefaultKey.id !== id){
-        logger.debug('addKey -> Changing old default key.')
-        currentDefaultKey.defaultKey = false
-        await currentDefaultKey.save()
+      if (isDefined(currentDefaultKey) && currentDefaultKey.id !== id) {
+        if (currentDefaultKey.activeCloneId.length > 0) {
+          throw new WrongArgumentsError('editKey -> The existing key can not be selected as default since it is in use.')
+        } else {
+          logger.debug('editKey -> Changing old default key.')
+          currentDefaultKey.defaultKey = false
+          await currentDefaultKey.save()
+        }
       }
     }
 
@@ -66,7 +70,6 @@ const resolve = async (parent, { id, description, validFrom, validTo, active,
 
     logger.debug('editKey -> Editing key.')
     return Key.findOneAndUpdate(query, update, options)
-
   } catch (error) {
     logger.error('editKey -> Error Editing key. %s', error.stack)
     throw new KeyVaultError('Error Editing key. ' + error.message)

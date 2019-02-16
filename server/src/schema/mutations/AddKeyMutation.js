@@ -26,11 +26,12 @@ const args = {
   validFrom: {type: GraphQLInt},
   validTo: {type: GraphQLInt},
   active: {type: GraphQLBoolean},
-  defaultKey: {type: new GraphQLNonNull(GraphQLBoolean)}
+  defaultKey: {type: new GraphQLNonNull(GraphQLBoolean)},
+  acceptedTermsOfService: {type: new GraphQLNonNull(GraphQLBoolean)}
 }
 
 const resolve = async (parent, { key, secret, exchange, description,
-                  validFrom, validTo, active, defaultKey }, context) => {
+                  validFrom, validTo, active, defaultKey, acceptedTermsOfService }, context) => {
   logger.debug('addKey -> Entering Fuction.')
 
   if (!context.userId) {
@@ -38,7 +39,11 @@ const resolve = async (parent, { key, secret, exchange, description,
   }
 
   if (!Exchange.some(e => e.id === exchange)) {
-    throw new WrongArgumentsError('The exchange selected is not valid.')
+    throw new WrongArgumentsError('addKey -> The exchange selected is not valid.')
+  }
+
+  if (acceptedTermsOfService === false) {
+    throw new WrongArgumentsError('addKey -> The Superalgos Terms of Service needs to accepted.')
   }
 
   try {
@@ -46,14 +51,14 @@ const resolve = async (parent, { key, secret, exchange, description,
     let secretEncrypted = cipher.update(secret, 'utf8', 'hex')
     secretEncrypted += cipher.final('hex')
 
-    if(defaultKey){
+    if (defaultKey) {
       logger.debug('addKey -> Default Key Changed.')
-      let currentDefaultKey = await Key.findOne( {
+      let currentDefaultKey = await Key.findOne({
         authId: context.userId,
         defaultKey: true
       })
 
-      if(isDefined(currentDefaultKey)){
+      if (isDefined(currentDefaultKey)) {
         logger.debug('addKey -> Changing old default key.')
         currentDefaultKey.defaultKey = false
         await currentDefaultKey.save()
@@ -71,7 +76,8 @@ const resolve = async (parent, { key, secret, exchange, description,
       validTo: validTo,
       active: active,
       defaultKey: defaultKey,
-      activeCloneId: ''
+      activeCloneId: '',
+      acceptedTermsOfService: acceptedTermsOfService
     })
 
     await newKey.save()
