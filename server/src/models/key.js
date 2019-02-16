@@ -10,7 +10,8 @@ const keySchema = new Schema({
   validTo: String,
   active: Boolean,
   defaultKey: Boolean,
-  activeCloneId: String
+  activeCloneId: String,
+  acceptedTermsOfService: Boolean
 })
 
 export default mongoose.model('Key', keySchema)
