@@ -23,9 +23,9 @@ const resolve = (parent, args, context) => {
 
     return Key.find({
       authId: context.userId,
-      activeCloneId: ''
+      activeCloneId: '',
+      defaultKey: false
     })
-
   } catch (error) {
     logger.error('availableKeys -> Error getting available keys. %s', error.stack)
     throw new KeyVaultError('Error getting available keys. ' + error.message)

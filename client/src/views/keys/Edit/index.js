@@ -3,7 +3,7 @@ import {graphql, compose} from 'react-apollo'
 import Visibility from '@material-ui/icons/Visibility'
 import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import {
-   MenuItem, Button, IconButton, InputAdornment, TextField,
+   MenuItem, Button, IconButton, InputAdornment, TextField, Typography,
    FormControl, InputLabel, Input, FormControlLabel, Checkbox
 } from '@material-ui/core'
 import { getSecret, getKeysQuery, editKeyMutation, getAuditLog } from '../../../queries'
@@ -11,6 +11,7 @@ import { exchanges } from '../../../queries/models'
 import styles from './styles'
 import { withStyles } from '@material-ui/core/styles'
 import classNames from 'classnames'
+import { isDefined } from '../../../utils'
 
 class EditKey extends Component {
 
@@ -28,7 +29,8 @@ class EditKey extends Component {
       validTo:  key.validTo,
       active: key.active,
       defaultKey: key.defaultKey,
-      showPassword: false
+      showPassword: false,
+      activeCloneId: key.activeCloneId
     }
   }
 
@@ -96,14 +98,29 @@ class EditKey extends Component {
            fullWidth
          />
 
+         {
+           this.state.activeCloneId.length > 0 &&
+             <React.Fragment>
+               <Typography className={classes.textField}>
+                 This key is currently in use by clon: {this.state.activeCloneId}
+               </Typography>
+             </React.Fragment>
+         }
+
          <FormControlLabel
-           control={
-             <Checkbox
-               checked={this.state.defaultKey}
-               onChange={(e)=>this.setState({defaultKey:e.target.checked })}
-               color="primary"
-             />
-           }
+           control={ this.state.activeCloneId.length === 0
+                  ? <Checkbox
+                     checked={this.state.defaultKey}
+                     onChange={(e)=>this.setState({defaultKey:e.target.checked })}
+                     color="primary"
+                   />
+                  : <Checkbox
+                      checked={this.state.defaultKey}
+                      onChange={(e)=>this.setState({defaultKey:e.target.checked })}
+                      color="primary"                      
+                      disabled
+                    />
+                  }
            label="Default Key"
            className={classNames(classes.form, classes.textField)}
          />
