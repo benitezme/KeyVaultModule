@@ -317,7 +317,7 @@ class AddKey extends Component {
         this.setState(state => ({ exchangeError: true }));
       }
 
-      if(this.state.acceptedTermsOfService === true) {
+      if(this.state.acceptedTermsOfService === false) {
         isError = true
         this.setState(state => ({ acceptedTermsOfServiceError: true }));
       }
