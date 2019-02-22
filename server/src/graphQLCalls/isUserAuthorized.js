@@ -31,10 +31,10 @@ const isUserAuthorized = async (authorization, cloneId, authId) => {
     },
   })
 
-  logger.debug('isUserAuthorized -> Clone obtained: %j: ',operationsQuery.data.data.operations_GetClones)
+  logger.debug('isUserAuthorized -> Clone obtained: %j: ',operationsQuery.data.data.operations_GetClone)
   let teamId
-  if(isDefined(operationsQuery.data.data.operations_GetClones)){
-    teamId = operationsQuery.data.data.operations_GetClones.teamId
+  if(isDefined(operationsQuery.data.data.operations_GetClone)){
+    teamId = operationsQuery.data.data.operations_GetClone.teamId
   } else {
     logger.debug('isUserAuthorized -> User is not authorized.')
     return false
