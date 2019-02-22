@@ -6,16 +6,15 @@ const isUserAuthorized = async (authorization, cloneId, authId) => {
   logger.debug('isUserAuthorized -> Checking authorization.')
 
   logger.debug('isUserAuthorized -> Getting clone information.')
-  let cloneIdList = []
-  cloneIdList.push(cloneId)
+
   let operationsQuery = await axios({
     url: process.env.GATEWAY_ENDPOINT,
     method: 'post',
     data: {
       query: `
-      query operations_GetClones($cloneIdList: [ID!]){
-        operations_GetClones(
-          cloneIdList: $cloneIdList
+      query operations_GetClone($cloneId: ID!){
+        operations_GetClone(
+          cloneId: $cloneId
         ){
           id
           teamId
@@ -24,7 +23,7 @@ const isUserAuthorized = async (authorization, cloneId, authId) => {
       }
       `,
       variables: {
-         cloneIdList: cloneIdList
+         cloneId: cloneId
        }
     },
     headers: {
@@ -35,13 +34,13 @@ const isUserAuthorized = async (authorization, cloneId, authId) => {
   logger.debug('isUserAuthorized -> Clone obtained: %j: ',operationsQuery.data.data.operations_GetClones)
   let teamId
   if(isDefined(operationsQuery.data.data.operations_GetClones)){
-    teamId = operationsQuery.data.data.operations_GetClones[0].teamId
+    teamId = operationsQuery.data.data.operations_GetClones.teamId
   } else {
     logger.debug('isUserAuthorized -> User is not authorized.')
     return false
   }
 
-  logger.debug('isUserAuthorized -> Getting team information.'+teamId)
+  logger.debug('isUserAuthorized -> Getting team information.')
   let teamsQuery = await axios({
     url: process.env.GATEWAY_ENDPOINT,
     method: 'post',
