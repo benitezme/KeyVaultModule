@@ -38,7 +38,7 @@ const resolve = async (parent, { key, secret, exchange, description,
     throw new AuthentificationError()
   }
 
-  if (!Exchange.some(e => e.id === exchange)) {
+  if (!Exchange.some(e => e.name === exchange)) {
     throw new WrongArgumentsError('addKey -> The exchange selected is not valid.')
   }
 
@@ -47,7 +47,8 @@ const resolve = async (parent, { key, secret, exchange, description,
   }
 
   try {
-    const cipher = crypto.createCipher('aes192', process.env.SERVER_SECRET)
+    const civ = crypto.randomBytes(16).toString('hex').slice(0, 16)
+    const cipher = crypto.createCipher('aes192', process.env.SERVER_SECRET, civ)
     let secretEncrypted = cipher.update(secret, 'utf8', 'hex')
     secretEncrypted += cipher.final('hex')
 
