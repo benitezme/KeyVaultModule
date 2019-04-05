@@ -4,7 +4,7 @@ import AuditLogList from '../Audit'
 import { graphql, compose } from 'react-apollo'
 import { removeKeyMutation, getKeysQuery } from '../../../queries'
 import Poloniex from '../../../img/poloniex.png'
-import Binance from '../../../img/binance.png'
+import Coss from '../../../img/coss.png'
 import {
   Grid, Paper, Typography, ButtonBase, Button,
   Dialog, DialogContent, DialogContentText, DialogTitle,
@@ -12,10 +12,11 @@ import {
 } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import styles from './styles'
+import classNames from 'classnames'
 
 class ListKeys extends Component {
 
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       isEditKeyDialogOpen: false,
@@ -24,127 +25,127 @@ class ListKeys extends Component {
     }
   }
 
-  render () {
+  render() {
     const { classes } = this.props
     const key = this.props.currentKey
     return (
-      <Paper key={key.id} className={classes.root}>
-        <Grid container spacing={16}>
+      <Paper key={key.id} className={classNames(classes.root, classes.block)} >
+        <Grid container spacing={16} className={classes.block}>
           <Grid item>
             <ButtonBase className={classes.image}>
               <img className={classes.img} alt='complex' src={this.getImage(key.exchange)} />
             </ButtonBase>
           </Grid>
-          <Grid item xs={12} sm container>
-              <Grid item xs className={classes.content}>
-                <Typography gutterBottom variant='h5'>
-                  Key: {key.defaultKey ? key.key + ' - (Default)': key.key }
-                </Typography>
-              </Grid>
-              <Grid item>
-                <Button
-                  className={classes.buttonList}
-                  variant='contained' color='secondary' size='small'
-                  onClick={() => this.auditLog()}>
-                  Audit Log
+          <Grid item xs={12} sm container className={classes.content}>
+            <Grid item xs className={classes.content}>
+              <Typography gutterBottom variant='h5'>
+                Key: {key.defaultKey ? key.key.substr(0, 32) + '... - (Default)' : key.key.substr(0, 32) + "..."}
+              </Typography>
+            </Grid>
+            <Grid item className={classes.content}>
+              <Button
+                className={classes.buttonList}
+                variant='contained' color='secondary' size='small'
+                onClick={() => this.auditLog()}>
+                Audit Log
                 </Button>
-                <Button
-                  className={classes.buttonList}
-                  variant='contained' color='secondary' size='small'
-                  onClick={this.handleRemoveDialogOpen}>
-                  Delete
+              <Button
+                className={classes.buttonList}
+                variant='contained' color='secondary' size='small'
+                onClick={this.handleRemoveDialogOpen}>
+                Delete
                 </Button>
-                <Button
-                  className={classes.buttonList}
-                  variant='contained' color='secondary' size='small'
-                  onClick={() => this.editKey()}>
-                  Edit
+              <Button
+                className={classes.buttonList}
+                variant='contained' color='secondary' size='small'
+                onClick={() => this.editKey()}>
+                Edit
                 </Button>
-              </Grid>
+            </Grid>
 
           </Grid>
         </Grid>
 
         <Dialog
-            open={this.state.isEditKeyDialogOpen}
-            onClose={this.handleEditKeyDialogClose}
-            aria-labelledby="addKey-dialog-title"
-          >
-            <DialogTitle id="addKey-dialog-title">
-              Edit Key
+          open={this.state.isEditKeyDialogOpen}
+          onClose={this.handleEditKeyDialogClose}
+          aria-labelledby="addKey-dialog-title"
+        >
+          <DialogTitle id="addKey-dialog-title">
+            Edit Key
             </DialogTitle>
-            <DialogContent>
-              <DialogContentText>
-                You will need to complete this form with the information from
-                the exchange.
+          <DialogContent>
+            <DialogContentText>
+              You will need to complete this form with the information from
+              the exchange.
               </DialogContentText>
 
-              <EditKey currentKey={key} handleEditKeyDialogClose={this.handleEditKeyDialogClose}/>
+            <EditKey currentKey={key} handleEditKeyDialogClose={this.handleEditKeyDialogClose} />
 
-            </DialogContent>
-          </Dialog>
+          </DialogContent>
+        </Dialog>
 
-          <Dialog
-              open={this.state.isAuditLogDialogOpen}
-              onClose={this.handleAuditLogDialogClose}
-              aria-labelledby="auditLog-dialog-title"
-            >
-              <DialogTitle id="auditLog-dialog-title">
-                Audit Log History
+        <Dialog
+          open={this.state.isAuditLogDialogOpen}
+          onClose={this.handleAuditLogDialogClose}
+          aria-labelledby="auditLog-dialog-title"
+        >
+          <DialogTitle id="auditLog-dialog-title">
+            Audit Log History
               </DialogTitle>
-              <DialogContent>
-                <AuditLogList currentKey={key} />
-              </DialogContent>
+          <DialogContent>
+            <AuditLogList currentKey={key} />
+          </DialogContent>
 
-              <DialogActions>
-                <Button onClick={this.handleAuditLogDialogClose} color="primary"
-                variant='contained' color='secondary' autoFocus>
-                  Close
+          <DialogActions>
+            <Button onClick={this.handleAuditLogDialogClose} color="primary"
+              variant='contained' color='secondary' autoFocus>
+              Close
                 </Button>
-              </DialogActions>
-          </Dialog>
+          </DialogActions>
+        </Dialog>
 
-          <Dialog
-              open={this.state.isRemoveDialogOpen}
-              onClose={this.handleRemoveDialogClose}
-              aria-labelledby="removeKey-dialog-title"
-            >
-              <DialogTitle id="removeKey-dialog-title">
-                Delete Key
+        <Dialog
+          open={this.state.isRemoveDialogOpen}
+          onClose={this.handleRemoveDialogClose}
+          aria-labelledby="removeKey-dialog-title"
+        >
+          <DialogTitle id="removeKey-dialog-title">
+            Delete Key
               </DialogTitle>
-              <DialogContent>
-                <DialogContentText>
-                  Are you sure you want to delete this key?
-                  Deleting this key will prevent any running bots associated to this key to access your account at the exchange.
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to delete this key?
+              Deleting this key will prevent any running bots associated to this key to access your account at the exchange.
                 </DialogContentText>
 
-                <DialogActions>
-                  <Button onClick={this.handleRemoveDialogOK} color="primary"
-                    variant='contained' color='secondary'>
-                    Proceed
+            <DialogActions>
+              <Button onClick={this.handleRemoveDialogOK} color="primary"
+                variant='contained' color='secondary'>
+                Proceed
                   </Button>
-                  <Button onClick={this.handleRemoveDialogCancel} color="primary"
-                    variant='contained' color='secondary' autoFocus>
-                    Cancel
+              <Button onClick={this.handleRemoveDialogCancel} color="primary"
+                variant='contained' color='secondary' autoFocus>
+                Cancel
                   </Button>
-                </DialogActions>
-              </DialogContent>
-            </Dialog>
+            </DialogActions>
+          </DialogContent>
+        </Dialog>
 
       </Paper>
     )
   }
 
-  editKey () {
+  editKey() {
     this.setState({ isEditKeyDialogOpen: true })
   }
 
-  removeKey (key) {
+  removeKey(key) {
     this.props.mutate({
-      variables:{
+      variables: {
         id: key.id
       },
-      refetchQueries: [{query: getKeysQuery}]
+      refetchQueries: [{ query: getKeysQuery }]
     })
   }
 
@@ -152,7 +153,7 @@ class ListKeys extends Component {
     this.setState({ isEditKeyDialogOpen: false })
   }
 
-  auditLog () {
+  auditLog() {
     this.setState({ isAuditLogDialogOpen: true })
   }
 
@@ -174,11 +175,11 @@ class ListKeys extends Component {
   }
 
 
-  getImage (exchange) {
-    if (exchange === '1') {
+  getImage(exchange) {
+    if (exchange === 'Poloniex') {
       return Poloniex
-    } else if (exchange === '2'){
-      return Binance
+    } else if (exchange === 'Coss') {
+      return Coss
     }
   }
 }

@@ -1,8 +1,3 @@
-const exchanges = [
-  {
-    id: '1',
-    name: 'Poloniex'
-  }
-]
+const exchanges = [ 'Poloniex', 'Coss' ]
 
 export { exchanges }

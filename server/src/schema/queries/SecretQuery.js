@@ -34,7 +34,8 @@ const resolve = (parent, { id }, context) => {
 
         saveAuditLog(key.id, 'secretRequested', context)
 
-        const decipher = crypto.createDecipher('aes192', process.env.SERVER_SECRET);
+        const civ = crypto.randomBytes(16).toString('hex').slice(0, 16)
+        const decipher = crypto.createDecipher('aes192', process.env.SERVER_SECRET, civ);
         let decrypted = decipher.update(key.secret, 'hex', 'utf8');
         decrypted += decipher.final('utf8');
 

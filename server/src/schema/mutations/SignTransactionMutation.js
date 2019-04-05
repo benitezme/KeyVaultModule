@@ -56,9 +56,10 @@ const resolve = async (parent, { transaction, keyId, cloneId }, context) => {
 
     logger.debug('signTransaction -> Key found.')
     // Get exchange properties
-    let exchange = _.find(Exchange, {id: key.exchange})
+    let exchange = _.find(Exchange, {name: key.exchange})
 
-    let decipher = crypto.createDecipher('aes192', process.env.SERVER_SECRET)
+    const civ = crypto.randomBytes(16).toString('hex').slice(0, 16)
+    let decipher = crypto.createDecipher('aes192', process.env.SERVER_SECRET, civ)
     let secret = decipher.update(key.secret, 'hex', 'utf8')
     secret += decipher.final('utf8')
 
