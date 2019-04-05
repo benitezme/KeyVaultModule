@@ -22,7 +22,10 @@ const styles = theme => ({
   },
   content: {
     marginTop: 'auto',
-    marginDown: 'auto'
-  }
+    marginBottom: 'auto'
+  },
+  block: {
+    minHeight: '150px'
+  },
 })
 export default styles

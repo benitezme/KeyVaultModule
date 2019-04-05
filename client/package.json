@@ -1,6 +1,6 @@
 {
   "name": "@superalgos/key-vault-client",
-  "version": "0.0.31",
+  "version": "0.0.32",
   "description": "Superalgos KeyVault client-side web app",
   "main": "src/index.js",
   "dependencies": {

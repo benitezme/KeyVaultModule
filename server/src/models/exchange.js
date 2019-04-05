@@ -7,8 +7,8 @@ const exchanges = [
   },
   {
     id: '2',
-    name: 'Binance',
-    description: 'Binance Exchange',
+    name: 'Coss',
+    description: 'Coss Exchange',
     algorithm: 'sha256'
   }
 ]
