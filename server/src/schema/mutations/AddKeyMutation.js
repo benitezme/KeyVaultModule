@@ -1,6 +1,5 @@
 import {
   GraphQLNonNull,
-  GraphQLID,
   GraphQLInt,
   GraphQLString,
   GraphQLBoolean
@@ -8,84 +7,94 @@ import {
 
 import {
   AuthentificationError,
-  WrongArgumentsError
+  WrongArgumentsError,
+  KeyVaultError
 } from '../../errors'
 
 import { KeyType } from '../types'
-import { Key, Exchange, KeyMode } from '../../models'
+import { Key, Exchange } from '../../models'
 import logger from '../../config/logger'
 import saveAuditLog from './AddAuditLog'
-import isUserAuthorized from './AuthorizeUser'
 import crypto from 'crypto'
+import { isDefined } from '../../utils'
 
 const args = {
   key: {type: new GraphQLNonNull(GraphQLString)},
   secret: {type: new GraphQLNonNull(GraphQLString)},
   exchange: {type: new GraphQLNonNull(GraphQLString)},
-  type: {type: GraphQLString}, // TODO Tipify
   description: {type: GraphQLString},
   validFrom: {type: GraphQLInt},
   validTo: {type: GraphQLInt},
   active: {type: GraphQLBoolean},
-  botId: {type: GraphQLID}
+  defaultKey: {type: new GraphQLNonNull(GraphQLBoolean)},
+  acceptedTermsOfService: {type: new GraphQLNonNull(GraphQLBoolean)}
 }
 
-const resolve = (parent, { key, secret, exchange, type, description,
- validFrom, validTo, active, botId }, context) => {
+const resolve = async (parent, { key, secret, exchange, description,
+                  validFrom, validTo, active, defaultKey, acceptedTermsOfService }, context) => {
   logger.debug('addKey -> Entering Fuction.')
 
   if (!context.userId) {
     throw new AuthentificationError()
   }
 
-  if(!isUserAuthorized(context.authorization, botId)) {
-    throw new WrongArgumentsError('You are not eligible to assign this bot to the key, the bot is not yours!.')
-    return
+  if (!Exchange.some(e => e.name === exchange)) {
+    throw new WrongArgumentsError('addKey -> The exchange selected is not valid.')
   }
 
-  if (!Exchange.some(e => e.id === exchange)) {
-    throw new WrongArgumentsError('The exchange selected is not valid.')
-    return
+  if (acceptedTermsOfService === false) {
+    throw new WrongArgumentsError('addKey -> The Superalgos Terms of Service needs to accepted.')
   }
 
-  if (!KeyMode.some(keyMode => keyMode === type)) {
-    throw new WrongArgumentsError('The key mode type selected is not valid.')
-    return
-  }
+  try {
+    const civ = crypto.randomBytes(16).toString('hex').slice(0, 16)
+    const cipher = crypto.createCipher('aes192', process.env.SERVER_SECRET, civ)
+    let secretEncrypted = cipher.update(secret, 'utf8', 'hex')
+    secretEncrypted += cipher.final('hex')
 
-  logger.debug('addKey -> Adding new key.')
+    if (defaultKey) {
+      logger.debug('addKey -> Default Key Changed.')
+      let currentDefaultKey = await Key.findOne({
+        authId: context.userId,
+        defaultKey: true
+      })
 
-  const cipher = crypto.createCipher('aes192', process.env.SERVER_SECRET)
-  let secretEncrypted = cipher.update(secret, 'utf8', 'hex')
-  secretEncrypted += cipher.final('hex')
-
-  let newKey = new Key({
-    authId: context.userId,
-    key: key,
-    secret: secretEncrypted,
-    exchange: exchange,
-    type: type,
-    description: description,
-    validFrom: validFrom,
-    validTo: validTo,
-    active: active,
-    botId: botId
-  })
-
-  newKey.id = newKey._id
-  return new Promise((resolve, reject) => {
-    newKey.save((err) => {
-      if (err) reject(err)
-      else {
-        //TODO transaction on database
-        saveAuditLog(newKey.id, 'addKey', context)
-        resolve(newKey)
+      if (isDefined(currentDefaultKey)) {
+        logger.debug('addKey -> Changing old default key.')
+        currentDefaultKey.defaultKey = false
+        await currentDefaultKey.save()
       }
+    }
+
+    logger.debug('addKey -> Creating new key.')
+    let newKey = new Key({
+      authId: context.userId,
+      key: key,
+      exchange: exchange,
+      secret: secretEncrypted,
+      description: description,
+      validFrom: validFrom,
+      validTo: validTo,
+      active: active,
+      defaultKey: defaultKey,
+      activeCloneId: '',
+      acceptedTermsOfService: acceptedTermsOfService
     })
-  })
+
+    await newKey.save()
+    newKey.id = newKey._id
+
+    await saveAuditLog(newKey.id, 'addKey', context)
+
+    logger.debug('addKey -> Creating new key sucessful.')
+    return newKey
+  } catch (error) {
+    logger.error('addKey -> Error creating new key. %s', error.stack)
+    throw new KeyVaultError('Error creating new key. ' + error.message)
+  }
 }
 
-const mutation = {
+const AddKeyMutation = {
   addKey: {
     type: KeyType,
     args,
@@ -93,4 +102,4 @@ const mutation = {
   }
 }
 
-export default mutation
+export default AddKeyMutation

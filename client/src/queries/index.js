@@ -12,31 +12,31 @@ const getKeysQuery = gql`
       id
       authId
       key
-      type
       description
       exchange
       validFrom
       validTo
       active
-      botId
+      defaultKey
+      activeCloneId
     }
   }
 `
 
 const addKeyMutation = gql`
   mutation($key: String!, $secret: String!, $exchange: String!,
-            $type: String!, $description: String!, $validFrom: Int!,
-            $validTo: Int!, $active: Boolean!, $botId: ID!){
+            $description: String, $validFrom: Int, $validTo: Int,
+            $active: Boolean, $defaultKey: Boolean!, $acceptedTermsOfService: Boolean!){
     keyVault_AddKey(
       key: $key,
       secret: $secret,
       exchange: $exchange,
-      type: $type,
       description: $description,
       validFrom: $validFrom,
       validTo: $validTo,
       active: $active,
-      botId: $botId
+      defaultKey: $defaultKey,
+      acceptedTermsOfService: $acceptedTermsOfService
     ){
       id
       key
@@ -45,16 +45,15 @@ const addKeyMutation = gql`
 `
 
 const editKeyMutation = gql`
-  mutation($id: ID!, $type: String!, $description: String!, $validFrom: Int!,
-            $validTo: Int!, $active: Boolean!, $botId: ID!){
+  mutation($id: ID!, $description: String!, $validFrom: Int!,
+            $validTo: Int!, $active: Boolean!, $defaultKey: Boolean!){
     keyVault_EditKey(
       id: $id,
-      type: $type,
       description: $description,
       validFrom: $validFrom,
       validTo: $validTo,
       active: $active,
-      botId: $botId
+      defaultKey: $defaultKey
     ){
       id
       key
@@ -89,16 +88,6 @@ const getAuditLog = gql`
     }
   }
 `
-const getBotsQuery = gql`
-  query{
-    teams_FbByTeamMember{
-      name
-      fb{
-        name
-      }
-    }
-  }
-`
 
 const removeKeyMutation = gql`
   mutation($id: ID!){
@@ -106,4 +95,4 @@ const removeKeyMutation = gql`
   }
 `
 
-export { getSecret, getKeysQuery, addKeyMutation, editKeyMutation, getKeyQuery, getAuditLog, removeKeyMutation, getBotsQuery }
+export { getSecret, getKeysQuery, addKeyMutation, editKeyMutation, getKeyQuery, getAuditLog, removeKeyMutation }

@@ -1,18 +1,16 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { Route, Switch } from 'react-router-dom'
-
 import { MuiPickersUtilsProvider } from 'material-ui-pickers'
 import LuxonUtils from 'material-ui-pickers/utils/luxon-utils'
-
-import { BrowseKeys, AddKey, AuditLogList } from './views/keys'
-import Home from './views/home'
+import { BrowseKeys, AddKey } from './views/keys'
+import Home from './views/Home'
 
 const App = () => (
   <MuiPickersUtilsProvider utils={LuxonUtils}>
     <Switch>
-      <Route exact path='/key-vault/' component={Home} />
-      <Route path='/key-vault/browse' component={BrowseKeys} />
-      <Route path='/key-vault/addKey' component={AddKey} />
+      <Route exact path='/keys/' component={Home} />
+      <Route path='/keys/browse' component={BrowseKeys} />
+      <Route path='/keys/addKey' component={AddKey} />
     </Switch>
   </MuiPickersUtilsProvider>
 )

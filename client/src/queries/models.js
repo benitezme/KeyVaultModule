@@ -1,10 +1,3 @@
-const types = [ 'Live', 'Competition' ]
+const exchanges = [ 'Poloniex', 'Coss' ]
 
-const exchanges = [
-  {
-    id: '1',
-    name: 'Poloniex'
-  }
-]
-
-export { types, exchanges }
+export { exchanges }

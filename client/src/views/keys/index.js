@@ -1,7 +1,4 @@
-import AddKey from './sections/AddKey'
-import BrowseKeys from './sections/BrowseKeys'
-import EditKeys from './sections/EditKey'
-import ListKeys from './sections/ListKeys'
-import KeyDialog from './sections/KeyDialog'
+import AddKey from './Add'
+import BrowseKeys from './List'
 
-export { AddKey, BrowseKeys, EditKeys, ListKeys, KeyDialog }
+export { AddKey, BrowseKeys }

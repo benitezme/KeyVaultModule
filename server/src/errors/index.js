@@ -14,7 +14,6 @@ export class DatabaseError extends Error {
   message = 'Ressource not found : ' + this.message
   constructor(message){
     super(message)
-    logger.error(this.stack)
   }
 }
 
@@ -23,7 +22,6 @@ export class WrongArgumentsError extends Error {
   message = 'Wrong arguments : ' + this.message
   constructor(message){
     super(message)
-    logger.error(this.stack)
   }
 }
 
@@ -32,7 +30,6 @@ export class ServiceUnavailableError extends Error {
   message = 'At least one service is unresponding ' + this.message
   constructor(message){
     super(message)
-    logger.error(this.stack)
   }
 }
 
@@ -41,6 +38,5 @@ export class KeyVaultError extends Error {
     message = 'KeyVault Internal Error: ' + this.message
   constructor(message){
     super(message)
-    logger.error(this.stack)
   }
 }

@@ -1,11 +1,8 @@
 import React, { Component } from 'react'
-import AddKey from './AddKey'
-
-// Material-ui
-import AddIcon from '@material-ui/icons/Add'
+import AddKey from '../Add'
 import { withStyles } from '@material-ui/core/styles'
 import {
-  Button, Dialog, DialogContent, DialogContentText, DialogTitle, Paper, Typography
+  Button, Dialog, DialogContent, DialogContentText, DialogTitle
 } from '@material-ui/core'
 
 const styles = theme => ({

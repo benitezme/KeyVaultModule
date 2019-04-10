@@ -8,7 +8,6 @@ import {
   AuthentificationError
 } from '../../errors'
 
-import { KeyType } from '../types'
 import { Key } from '../../models'
 import logger from '../../config/logger'
 import saveAuditLog from '../mutations/AddAuditLog'
@@ -35,7 +34,8 @@ const resolve = (parent, { id }, context) => {
 
         saveAuditLog(key.id, 'secretRequested', context)
 
-        const decipher = crypto.createDecipher('aes192', process.env.SERVER_SECRET);
+        const civ = crypto.randomBytes(16).toString('hex').slice(0, 16)
+        const decipher = crypto.createDecipher('aes192', process.env.SERVER_SECRET, civ);
         let decrypted = decipher.update(key.secret, 'hex', 'utf8');
         decrypted += decipher.final('utf8');
 
@@ -45,7 +45,7 @@ const resolve = (parent, { id }, context) => {
   })
 }
 
-const query = {
+const SecretQuery = {
   secret: {
     type: GraphQLString,
     args,
@@ -53,4 +53,4 @@ const query = {
   }
 }
 
-export default query
+export default SecretQuery
