@@ -3,7 +3,7 @@ import {
 } from 'graphql'
 
 import {
-  AuthentificationError
+  AuthenticationError
 } from '../../errors'
 
 import { KeyType } from '../types'
@@ -16,7 +16,7 @@ const resolve = (parent, args, context) => {
   logger.debug('keys -> Entering Fuction.')
 
   if (!context.userId) {
-    throw new AuthentificationError()
+    throw new AuthenticationError()
   }
 
   return Key.find({authId: context.userId})

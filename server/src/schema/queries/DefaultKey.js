@@ -1,5 +1,5 @@
 import {
-  AuthentificationError,
+  AuthenticationError,
   KeyVaultError
 } from '../../errors'
 
@@ -14,7 +14,7 @@ const resolve = (parent, args, context) => {
 
   try {
     if (!context.userId) {
-      throw new AuthentificationError()
+      throw new AuthenticationError()
     }
 
     return Key.findOne({

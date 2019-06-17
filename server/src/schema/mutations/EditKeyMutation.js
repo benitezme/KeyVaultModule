@@ -7,7 +7,7 @@ import {
 } from 'graphql'
 
 import {
-  AuthentificationError,
+  AuthenticationError,
   KeyVaultError
 } from '../../errors'
 
@@ -31,7 +31,7 @@ const resolve = async (parent, { id, description, validFrom, validTo, active,
   logger.debug('editKey -> Entering Fuction.')
 
   if (!context.userId) {
-    throw new AuthentificationError()
+    throw new AuthenticationError()
   }
 
   try {

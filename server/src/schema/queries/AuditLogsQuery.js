@@ -5,7 +5,7 @@ import {
 } from 'graphql'
 
 import {
-  AuthentificationError
+  AuthenticationError
 } from '../../errors'
 
 import { AuditLogType } from '../types'
@@ -20,7 +20,7 @@ const resolve = (parent, { key }, context) => {
   logger.debug('auditLogs -> Entering Fuction.')
 
   if (!context.userId) {
-    throw new AuthentificationError()
+    throw new AuthenticationError()
   }
 
   return AuditLog.find({
