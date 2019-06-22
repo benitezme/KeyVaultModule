@@ -33,7 +33,8 @@ app.use('/graphql', graphqlHTTP(req => {
     schema: schema,
     context: {
       userId: req.headers.userid,
-      authorization: req.headers.authorization
+      authorization: req.headers.authorization,
+      access_token: req.headers.access_token,
     },
     graphiql: true
   }

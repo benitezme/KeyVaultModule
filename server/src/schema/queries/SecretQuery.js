@@ -5,7 +5,7 @@ import {
 } from 'graphql'
 
 import {
-  AuthentificationError
+  AuthenticationError
 } from '../../errors'
 
 import { Key } from '../../models'
@@ -21,7 +21,7 @@ const resolve = (parent, { id }, context) => {
   logger.debug('secret -> Entering Fuction.')
 
   if (!context.userId) {
-    throw new AuthentificationError()
+    throw new AuthenticationError()
   }
 
   return new Promise((resolve, reject) => {

@@ -6,7 +6,7 @@ import {
 } from 'graphql'
 
 import {
-  AuthentificationError,
+  AuthenticationError,
   WrongArgumentsError,
   KeyVaultError
 } from '../../errors'
@@ -35,7 +35,7 @@ const resolve = async (parent, { key, secret, exchange, description,
   logger.debug('addKey -> Entering Fuction.')
 
   if (!context.userId) {
-    throw new AuthentificationError()
+    throw new AuthenticationError()
   }
 
   if (!Exchange.some(e => e.name === exchange)) {

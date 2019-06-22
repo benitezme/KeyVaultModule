@@ -5,7 +5,7 @@ import {
 } from 'graphql'
 
 import {
-  AuthentificationError,
+  AuthenticationError,
   WrongArgumentsError,
   KeyVaultError
 } from '../../errors'
@@ -28,7 +28,7 @@ const resolve = async (parent, { keyId, cloneId, releaseClon}, context) => {
   logger.debug('authorizeClone -> Entering function.')
 
   if (!context.userId) {
-    throw new AuthentificationError()
+    throw new AuthenticationError()
   }
 
   try {
@@ -51,17 +51,19 @@ const resolve = async (parent, { keyId, cloneId, releaseClon}, context) => {
       if (!releaseClon) {
         if (isDefined(key.activeCloneId)) {
           key.activeCloneId = cloneId
+          key.access_token = crypto.randomBytes(64).toString('hex')
         } else {
           throw new WrongArgumentsError('The key is in use.')
         }
       } else {
         key.activeCloneId = ''
+        key.access_token = ''
       }
       await saveAuditLog(key.id, 'authorizeClone', context, cloneId)
       await key.save()
 
       logger.debug('authorizeClone -> Assigned clon updated on the key.')
-      return key.id
+      return key.access_token
     } else {
       throw new KeyVaultError('Key not found.')
     }
