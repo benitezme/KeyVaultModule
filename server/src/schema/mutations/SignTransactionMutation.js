@@ -40,7 +40,7 @@ const resolve = async (parent, { transaction, keyId, cloneId }, context) => {
     }
 
     if (key.access_token !== context.keyvault) {
-      throw new WrongArgumentsError('signTransaction -> Wrong key not found.')
+      throw new WrongArgumentsError('signTransaction -> Wrong key.')
     }
 
     logger.debug('signTransaction -> Key found.')
