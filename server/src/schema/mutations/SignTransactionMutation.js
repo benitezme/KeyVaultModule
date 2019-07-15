@@ -26,13 +26,21 @@ const resolve = async (parent, { transaction, keyId, cloneId }, context) => {
   logger.debug('signTransaction -> Entering function.')
 
   try {
+    if (context.keyvault === undefined || context.keyvault === null) {
+      throw new WrongArgumentsError('signTransaction -> Access key not found.')
+    }
+
     let key = await Key.findOne({
       _id: keyId,
       activeCloneId: cloneId
     })
 
-    if (!isDefined(key) || key.access_token !== context.access_token) {
+    if (!isDefined(key)) {
       throw new WrongArgumentsError('signTransaction -> Key not found.')
+    }
+
+    if (key.access_token !== context.keyvault) {
+      throw new WrongArgumentsError('signTransaction -> Wrong key.')
     }
 
     logger.debug('signTransaction -> Key found.')
